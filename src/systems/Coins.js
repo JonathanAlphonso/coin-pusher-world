@@ -563,7 +563,17 @@ const Coins = {
         // Slot multiplier + combo multiplier
         const slotMult = bonusResult.multiplier || 1;
         const totalMult = slotMult * comboMult;
-        if (this.game) this.game.addScore(coin.value, body.x, body.y, body.z, totalMult);
+        if (this.game) {
+          this.game.addScore(coin.value, body.x, body.y, body.z, totalMult);
+          // Screen shake for high multiplier slots
+          if (slotMult >= 10) {
+            this.game.shake(1.0, 0.4);
+          } else if (slotMult >= 5) {
+            this.game.shake(0.6, 0.3);
+          } else if (slotMult >= 3) {
+            this.game.shake(0.3, 0.2);
+          }
+        }
         if (this.ui) this.ui.showCoinScore(Math.floor(coin.value * totalMult), { x: body.x, y: body.y, z: body.z });
 
         if (bonusResult.isBonus) {

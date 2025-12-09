@@ -49,6 +49,14 @@ const Game = {
   // Particle system
   particles: [],
 
+  // Screen shake
+  screenShake: {
+    intensity: 0,
+    duration: 0,
+    timer: 0,
+  },
+  originalCameraPosition: null,
+
   // System references
   physics: null,
   ui: null,
@@ -316,11 +324,59 @@ const Game = {
     // Update particles
     this.updateParticles(deltaTime);
 
+    // Update screen shake
+    this.updateScreenShake(deltaTime);
+
     // Update UI
     if (this.ui) this.ui.update(deltaTime);
 
     // Check for expansion
     this.checkExpansion();
+  },
+
+  // Trigger screen shake
+  shake: function (intensity = 0.5, duration = 0.3) {
+    // Only shake if this is stronger than current shake
+    if (intensity > this.screenShake.intensity) {
+      this.screenShake.intensity = intensity;
+      this.screenShake.duration = duration;
+      this.screenShake.timer = duration;
+
+      // Store original camera position if not already stored
+      if (!this.originalCameraPosition) {
+        this.originalCameraPosition = this.camera.position.clone();
+      }
+    }
+  },
+
+  // Update screen shake effect
+  updateScreenShake: function (deltaTime) {
+    if (this.screenShake.timer <= 0) return;
+
+    this.screenShake.timer -= deltaTime;
+
+    if (this.screenShake.timer <= 0) {
+      // Reset camera to original position
+      if (this.originalCameraPosition) {
+        this.camera.position.copy(this.originalCameraPosition);
+        this.originalCameraPosition = null;
+      }
+      this.screenShake.intensity = 0;
+      return;
+    }
+
+    // Calculate shake with decay
+    const progress = this.screenShake.timer / this.screenShake.duration;
+    const currentIntensity = this.screenShake.intensity * progress;
+
+    // Apply random offset to camera
+    if (this.originalCameraPosition) {
+      const offsetX = (Math.random() - 0.5) * 2 * currentIntensity;
+      const offsetY = (Math.random() - 0.5) * 2 * currentIntensity;
+
+      this.camera.position.x = this.originalCameraPosition.x + offsetX;
+      this.camera.position.y = this.originalCameraPosition.y + offsetY;
+    }
   },
 
   // Update particle effects

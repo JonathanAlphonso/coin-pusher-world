@@ -4363,6 +4363,11 @@ const Board = {
 
     if (this.ui) this.ui.showTierUnlock(theme.name + " Unlocked!", theme.icon);
 
+    // Screen shake for tier unlock celebration
+    if (this.game && this.game.shake) {
+      this.game.shake(1.2, 0.5);
+    }
+
     const newScoringY = this.getScoringY();
     const frontZ = tierPos.z + 1.5 + this.shelfDepth / 2 + 3.5;
     this.createScoringSlots(newScoringY, frontZ);

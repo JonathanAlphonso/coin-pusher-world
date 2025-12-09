@@ -152,7 +152,13 @@ const Jackpot = {
     if (this.ui) this.ui.showMessage("🎰 JACKPOT! +" + formatNumber(wonAmount) + "! 🎰");
     if (this.sound) this.sound.play("jackpot");
 
-    if (this.game) this.game.addScore(wonAmount, 0, 10, 0, 1);
+    if (this.game) {
+      this.game.addScore(wonAmount, 0, 10, 0, 1);
+      // Big screen shake for jackpot!
+      this.game.shake(1.5, 0.6);
+      // Track jackpot bursts
+      this.game.sessionStats.jackpotBursts++;
+    }
 
     this.spawnCelebration();
 
