@@ -18,6 +18,11 @@ const Game = {
   isPaused: false,
   score: 0,
 
+  // Auto-drop feature
+  autoDrop: false,
+  autoDropTimer: 0,
+  autoDropInterval: 0.4, // seconds between auto drops
+
   // Timing
   lastTime: 0,
   deltaTime: 0,
@@ -163,6 +168,8 @@ const Game = {
     this.isPaused = false;
     this.score = 0;
     this.currentExpansionIndex = 0;
+    this.autoDrop = false;
+    this.autoDropTimer = 0;
 
     if (this.ui) this.ui.reset();
     if (this.powerUps) this.powerUps.init();
@@ -275,6 +282,15 @@ const Game = {
 
     // Update power-up cooldowns
     if (this.powerUps) this.powerUps.updateCooldowns(deltaTime);
+
+    // Update auto-drop
+    if (this.autoDrop && this.coins && this.coins.coinQueue > 0) {
+      this.autoDropTimer += deltaTime;
+      if (this.autoDropTimer >= this.autoDropInterval) {
+        this.autoDropTimer = 0;
+        this.dropCoin();
+      }
+    }
 
     // Update particles
     this.updateParticles(deltaTime);
@@ -405,8 +421,17 @@ const Game = {
   // Game over
   gameOver: function () {
     this.isRunning = false;
+    this.autoDrop = false;
     if (this.ui) this.ui.showGameOver(this.score);
     if (this.sound) this.sound.stopMusic();
+  },
+
+  // Toggle auto-drop feature
+  toggleAutoDrop: function () {
+    this.autoDrop = !this.autoDrop;
+    this.autoDropTimer = 0;
+    if (this.ui) this.ui.updateAutoDropButton(this.autoDrop);
+    return this.autoDrop;
   },
 
   // Get save data

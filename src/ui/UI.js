@@ -46,6 +46,7 @@ const UI = {
       statsOverlay: document.getElementById("stats-overlay"),
       statsGrid: document.getElementById("stats-grid"),
       closeStats: document.getElementById("close-stats"),
+      autoDropButton: document.getElementById("auto-drop-button"),
       boardSelectionOverlay: null, // Created dynamically
     };
 
@@ -122,6 +123,27 @@ const UI = {
         e.preventDefault();
         self.hideStats();
       });
+    }
+
+    // Auto-drop button
+    if (this.elements.autoDropButton) {
+      this.elements.autoDropButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (self.game) self.game.toggleAutoDrop();
+      });
+
+      this.elements.autoDropButton.addEventListener("touchstart", function (e) {
+        e.preventDefault();
+        if (self.game) self.game.toggleAutoDrop();
+      });
+    }
+  },
+
+  // Update auto-drop button state
+  updateAutoDropButton: function (isEnabled) {
+    if (this.elements.autoDropButton) {
+      this.elements.autoDropButton.textContent = isEnabled ? "AUTO: ON" : "AUTO: OFF";
+      this.elements.autoDropButton.classList.toggle("active", isEnabled);
     }
   },
 
