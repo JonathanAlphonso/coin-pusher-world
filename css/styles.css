@@ -2459,3 +2459,194 @@ body {
     min-height: 56px;
   }
 }
+
+/* ==================== HIGH SCORES ==================== */
+
+/* High Score Info on Game Over */
+#high-score-info {
+  font-size: 24px;
+  font-weight: bold;
+  min-height: 32px;
+  margin-bottom: 10px;
+}
+
+#high-score-info .new-best {
+  color: #ffd700;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 100, 0, 0.5);
+  animation: newBestPulse 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes newBestPulse {
+  0% {
+    transform: scale(1);
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+  }
+  100% {
+    transform: scale(1.1);
+    text-shadow: 0 0 40px rgba(255, 215, 0, 1), 0 0 60px rgba(255, 100, 0, 0.8);
+  }
+}
+
+#high-score-info.celebration {
+  animation: celebrationBounce 0.6s ease-out;
+}
+
+@keyframes celebrationBounce {
+  0%, 100% { transform: translateY(0); }
+  20% { transform: translateY(-20px); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-15px); }
+  80% { transform: translateY(-5px); }
+}
+
+.best-score-display {
+  font-size: 16px !important;
+  color: rgba(255, 215, 0, 0.8) !important;
+  margin-bottom: 20px !important;
+}
+
+#view-scores-button {
+  background: linear-gradient(180deg, #6644aa 0%, #442266 100%);
+  color: #fff;
+  border: 2px solid rgba(150, 100, 255, 0.5);
+  padding: 15px 40px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 30px;
+  cursor: pointer;
+  margin-top: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 0 20px rgba(100, 50, 200, 0.4);
+  transition: all 0.3s ease;
+}
+
+#view-scores-button:hover {
+  background: linear-gradient(180deg, #7755bb 0%, #553377 100%);
+  box-shadow: 0 0 30px rgba(150, 100, 255, 0.6);
+  transform: scale(1.05);
+}
+
+/* High Scores Overlay */
+#high-scores-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(20, 10, 40, 0.95) 0%, rgba(5, 2, 10, 0.98) 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 110;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.high-scores-content {
+  background: linear-gradient(180deg, rgba(40, 20, 80, 0.9) 0%, rgba(20, 10, 40, 0.95) 100%);
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 450px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 0 40px rgba(100, 50, 200, 0.5);
+}
+
+.high-scores-header h2 {
+  font-size: 32px;
+  color: #ffd700;
+  text-align: center;
+  margin-bottom: 20px;
+  text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+}
+
+.high-scores-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.high-score-entry {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 15px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.high-score-entry.rank-1 {
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.2) 0%, rgba(0, 0, 0, 0.3) 100%);
+  border-color: rgba(255, 215, 0, 0.5);
+}
+
+.high-score-entry.rank-2 {
+  background: linear-gradient(90deg, rgba(192, 192, 192, 0.2) 0%, rgba(0, 0, 0, 0.3) 100%);
+  border-color: rgba(192, 192, 192, 0.4);
+}
+
+.high-score-entry.rank-3 {
+  background: linear-gradient(90deg, rgba(205, 127, 50, 0.2) 0%, rgba(0, 0, 0, 0.3) 100%);
+  border-color: rgba(205, 127, 50, 0.4);
+}
+
+.high-score-rank {
+  font-size: 20px;
+  min-width: 35px;
+  text-align: center;
+}
+
+.high-score-value {
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  flex: 1;
+}
+
+.high-score-tier {
+  font-size: 14px;
+  color: rgba(255, 215, 0, 0.8);
+  background: rgba(255, 215, 0, 0.1);
+  padding: 3px 8px;
+  border-radius: 10px;
+}
+
+.high-score-date {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.no-scores {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 40px;
+  font-size: 18px;
+}
+
+#close-high-scores {
+  display: block;
+  width: 100%;
+  background: linear-gradient(180deg, #ffd700 0%, #ff8800 100%);
+  color: #1a0a2e;
+  border: none;
+  padding: 15px 40px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 30px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+#close-high-scores:hover {
+  background: linear-gradient(180deg, #ffdd33 0%, #ffaa00 100%);
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+  transform: scale(1.05);
+}

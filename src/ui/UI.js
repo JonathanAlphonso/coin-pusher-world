@@ -24,6 +24,7 @@ const UI = {
 
   // References (set during init)
   game: null,
+  storage: null,
 
   // Initialize UI
   init: function (game = null) {
@@ -51,6 +52,10 @@ const UI = {
       tierProgressFill: document.getElementById("tier-progress-fill"),
       tierProgressLabel: document.getElementById("tier-progress-label"),
       boardSelectionOverlay: null, // Created dynamically
+      highScoresOverlay: document.getElementById("high-scores-overlay"),
+      highScoresList: document.getElementById("high-scores-list"),
+      viewScoresButton: document.getElementById("view-scores-button"),
+      closeHighScores: document.getElementById("close-high-scores"),
     };
 
     this.createBoardSelectionUI();
@@ -140,6 +145,22 @@ const UI = {
         if (self.game) self.game.toggleAutoDrop();
       });
     }
+
+    // View high scores button
+    if (this.elements.viewScoresButton) {
+      this.elements.viewScoresButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        self.showHighScores();
+      });
+    }
+
+    // Close high scores button
+    if (this.elements.closeHighScores) {
+      this.elements.closeHighScores.addEventListener("click", function (e) {
+        e.preventDefault();
+        self.hideHighScores();
+      });
+    }
   },
 
   // Update auto-drop button state
@@ -189,6 +210,51 @@ const UI = {
         this.game.resume();
       }
     }
+  },
+
+  // Show high scores overlay
+  showHighScores: function () {
+    if (this.elements.highScoresOverlay) {
+      this.populateHighScores();
+      this.elements.highScoresOverlay.classList.remove("hidden");
+    }
+  },
+
+  // Hide high scores overlay
+  hideHighScores: function () {
+    if (this.elements.highScoresOverlay) {
+      this.elements.highScoresOverlay.classList.add("hidden");
+    }
+  },
+
+  // Populate high scores list
+  populateHighScores: function () {
+    if (!this.elements.highScoresList || !this.storage) return;
+
+    const scores = this.storage.getHighScores();
+    let html = "";
+
+    if (scores.length === 0) {
+      html = '<div class="no-scores">No high scores yet!</div>';
+    } else {
+      scores.forEach((entry, index) => {
+        const date = new Date(entry.date);
+        const dateStr = date.toLocaleDateString();
+        const rankClass = index < 3 ? `rank-${index + 1}` : "";
+        const medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `#${index + 1}`;
+
+        html += `
+          <div class="high-score-entry ${rankClass}">
+            <span class="high-score-rank">${medal}</span>
+            <span class="high-score-value">${formatNumber(entry.score)}</span>
+            <span class="high-score-tier">Tier ${entry.tier || 1}</span>
+            <span class="high-score-date">${dateStr}</span>
+          </div>
+        `;
+      });
+    }
+
+    this.elements.highScoresList.innerHTML = html;
   },
 
   // Populate stats grid with current game data
@@ -458,10 +524,33 @@ const UI = {
   },
 
   // Show game over screen
-  showGameOver: function (finalScore) {
+  showGameOver: function (finalScore, highScoreResult = null) {
     if (this.elements.finalScore) {
       this.elements.finalScore.textContent = formatNumber(finalScore);
     }
+
+    // Update high score display
+    const highScoreInfo = document.getElementById("high-score-info");
+    if (highScoreInfo && highScoreResult) {
+      if (highScoreResult.isNewBest) {
+        highScoreInfo.innerHTML = '<span class="new-best">NEW HIGH SCORE!</span>';
+        highScoreInfo.classList.add("celebration");
+      } else if (highScoreResult.added && highScoreResult.rank > 0) {
+        highScoreInfo.innerHTML = `Rank #${highScoreResult.rank} on leaderboard!`;
+        highScoreInfo.classList.remove("celebration");
+      } else {
+        highScoreInfo.innerHTML = '';
+        highScoreInfo.classList.remove("celebration");
+      }
+    }
+
+    // Show best score
+    const bestScoreEl = document.getElementById("best-score");
+    if (bestScoreEl && this.storage) {
+      const bestScore = this.storage.getBestScore();
+      bestScoreEl.textContent = `Best: ${formatNumber(bestScore)}`;
+    }
+
     if (this.elements.gameoverScreen) {
       this.elements.gameoverScreen.classList.remove("hidden");
     }

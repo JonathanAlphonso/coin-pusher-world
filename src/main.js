@@ -6,6 +6,7 @@
 // Core modules
 import Game from './core/Game.js';
 import Physics from './core/Physics.js';
+import Storage from './core/Storage.js';
 import { random, randomInt, clamp, formatNumber } from './core/Utils.js';
 
 // UI and Audio
@@ -83,6 +84,14 @@ document.addEventListener('DOMContentLoaded', function () {
   // Initialize Sound
   Sound.init();
 
+  // Load and apply saved settings
+  const savedSettings = Storage.getSettings();
+  Sound.masterVolume = savedSettings.masterVolume;
+  Sound.musicVolume = savedSettings.musicVolume;
+  Sound.sfxVolume = savedSettings.sfxVolume;
+  Sound.musicEnabled = savedSettings.musicEnabled;
+  Sound.enabled = savedSettings.sfxEnabled;
+
   // Auto-mute sounds for tests (check URL parameter)
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.has('mute') || urlParams.has('test')) {
@@ -149,6 +158,10 @@ document.addEventListener('DOMContentLoaded', function () {
   // Wire Relics to Coins for drop checks
   Coins.relics = Relics;
 
+  // Wire Storage to Game and UI
+  Game.storage = Storage;
+  UI.storage = Storage;
+
   // Expose for console debugging and automated tests
   Object.assign(window, {
     Game,
@@ -163,6 +176,7 @@ document.addEventListener('DOMContentLoaded', function () {
     Jackpot,
     Collectibles,
     Relics,
+    Storage,
   });
 
   console.log('Game initialized successfully!');

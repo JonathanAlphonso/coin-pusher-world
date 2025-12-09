@@ -284,8 +284,24 @@
       <!-- Game Over Screen -->
       <div id="gameover-screen" class="hidden">
         <h1>Game Over</h1>
+        <div id="high-score-info"></div>
         <p>Final Score: <span id="final-score">0</span></p>
+        <p id="best-score" class="best-score-display"></p>
         <button id="restart-button">PLAY AGAIN</button>
+        <button id="view-scores-button">HIGH SCORES</button>
+      </div>
+
+      <!-- High Scores Overlay -->
+      <div id="high-scores-overlay" class="hidden">
+        <div class="high-scores-content">
+          <div class="high-scores-header">
+            <h2>High Scores</h2>
+          </div>
+          <div id="high-scores-list" class="high-scores-list">
+            <!-- Scores populated by JS -->
+          </div>
+          <button id="close-high-scores">CLOSE</button>
+        </div>
       </div>
 
       <!-- Tier Unlock Animation Overlay -->

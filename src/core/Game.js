@@ -51,6 +51,7 @@ const Game = {
   jackpot: null,
   collectibles: null,
   relics: null,
+  storage: null,
 
   // Initialize the game
   init: function (refs = {}) {
@@ -450,7 +451,15 @@ const Game = {
   gameOver: function () {
     this.isRunning = false;
     this.autoDrop = false;
-    if (this.ui) this.ui.showGameOver(this.score);
+
+    // Save high score
+    let highScoreResult = null;
+    if (this.storage && this.score > 0) {
+      const tier = this.board ? this.board.currentTierCount : 1;
+      highScoreResult = this.storage.addHighScore(this.score, tier);
+    }
+
+    if (this.ui) this.ui.showGameOver(this.score, highScoreResult);
     if (this.sound) this.sound.stopMusic();
   },
 
