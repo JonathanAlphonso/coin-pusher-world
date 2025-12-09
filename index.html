@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#0a0a1a" />
+    <title>Coin Pusher World</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div id="game-container">
+      <canvas id="game-canvas"></canvas>
+
+      <!-- UI Overlay -->
+      <div id="ui-overlay">
+        <!-- Score Display -->
+        <div id="score-display">
+          <span id="score-label">Score:</span>
+          <span id="score-value">0</span>
+        </div>
+
+        <!-- Coin Queue Display -->
+        <div id="queue-display">
+          <span id="queue-label">Queue:</span>
+          <span id="queue-value">0</span>
+        </div>
+
+        <!-- Tier Indicator -->
+        <div id="expansion-display">
+          <span id="expansion-label">Tier:</span>
+          <span id="expansion-value">1</span>
+        </div>
+      </div>
+
+      <!-- Stats Button -->
+      <button id="stats-button">STATS</button>
+
+      <!-- Drop Button -->
+      <button id="drop-button">DROP COIN</button>
+
+      <!-- Help Button -->
+      <button id="help-button">?</button>
+
+      <!-- Stats Overlay -->
+      <div id="stats-overlay" class="hidden">
+        <div class="stats-content">
+          <div class="stats-header">
+            <h2>Game Stats</h2>
+          </div>
+          <div class="stats-grid" id="stats-grid">
+            <!-- Stats will be populated by JS -->
+          </div>
+          <button id="close-stats">CLOSE</button>
+        </div>
+      </div>
+
+      <!-- Start Screen -->
+      <div id="start-screen">
+        <h1>Coin Pusher World</h1>
+        <p>Drop coins through pegs and pushers to score big!</p>
+
+        <div class="start-features">
+          <div class="start-feature">
+            <span class="start-feature-icon">🎰</span>
+            <span class="start-feature-text">Pachinko pegs + coin pushers</span>
+          </div>
+          <div class="start-feature">
+            <span class="start-feature-icon">🌈</span>
+            <span class="start-feature-text">8 unique themed worlds</span>
+          </div>
+          <div class="start-feature">
+            <span class="start-feature-icon">💎</span>
+            <span class="start-feature-text">Collect rare coins & power-ups</span>
+          </div>
+          <div class="start-feature">
+            <span class="start-feature-icon">🔥</span>
+            <span class="start-feature-text">Build combos for big multipliers</span>
+          </div>
+        </div>
+
+        <div class="start-controls">
+          <h3>How to Play</h3>
+          <p>Tap DROP COIN or press SPACE to drop coins</p>
+          <p>Push coins off the edge to score points!</p>
+        </div>
+
+        <button id="start-button">START GAME</button>
+      </div>
+
+      <!-- Help Overlay -->
+      <div id="help-overlay" class="hidden">
+        <div class="help-content">
+          <div class="help-header">
+            <h2>How to Play</h2>
+            <p>Master the coin pusher and unlock all worlds!</p>
+          </div>
+
+          <div class="help-section">
+            <h3><span class="section-icon">🎮</span> Basic Controls</h3>
+            <div class="help-item">
+              <div class="help-item-icon">👆</div>
+              <div class="help-item-text">
+                <h4>Drop Coins</h4>
+                <p>Tap the DROP COIN button or press SPACEBAR to release coins from above.</p>
+              </div>
+            </div>
+            <div class="help-item">
+              <div class="help-item-icon">📊</div>
+              <div class="help-item-text">
+                <h4>Queue System</h4>
+                <p>Your coin queue refills automatically. Watch the Queue counter in the top left!</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="help-section">
+            <h3><span class="section-icon">🎯</span> Scoring</h3>
+            <div class="help-item">
+              <div class="help-item-icon">🪙</div>
+              <div class="help-item-text">
+                <h4>Push Coins Off the Edge</h4>
+                <p>Coins fall through pegs, then get pushed by the moving pusher. When they fall off the front edge into scoring slots, you earn points!</p>
+              </div>
+            </div>
+            <div class="help-item">
+              <div class="help-item-icon">✨</div>
+              <div class="help-item-text">
+                <h4>Multiplier Slots</h4>
+                <p>Slots are labeled 2X, 3X, 5X, or 10X. Land coins in bonus slots for huge points and special rewards!</p>
+              </div>
+            </div>
+            <div class="help-item">
+              <div class="help-item-icon">🔥</div>
+              <div class="help-item-text">
+                <h4>Combos</h4>
+                <p>Score coins quickly in succession to build combos. Higher combos = bigger multipliers!</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="help-section">
+            <h3><span class="section-icon">🪙</span> Coin Types</h3>
+            <div class="help-item">
+              <div class="help-item-icon">🟡</div>
+              <div class="help-item-text">
+                <h4>Gold Coins</h4>
+                <p>Standard coins worth base value. Most common drop.</p>
+              </div>
+            </div>
+            <div class="help-item">
+              <div class="help-item-icon">⚪</div>
+              <div class="help-item-text">
+                <h4>Silver Coins</h4>
+                <p>Worth 50% of gold value. Common drop.</p>
+              </div>
+            </div>
+            <div class="help-item">
+              <div class="help-item-icon">🟤</div>
+              <div class="help-item-text">
+                <h4>Bronze Coins</h4>
+                <p>Worth 25% of gold value. Common drop.</p>
+              </div>
+            </div>
+            <div class="help-item">
+              <div class="help-item-icon">🟣</div>
+              <div class="help-item-text">
+                <h4>Special Coins</h4>
+                <p>Worth 5X gold value! Rare drop.</p>
+              </div>
+            </div>
+            <div class="help-item">
+              <div class="help-item-icon">🌈</div>
+              <div class="help-item-text">
+                <h4>Rainbow Coins</h4>
+                <p>Worth 10X gold value! Very rare - increases with Lucky Coins upgrade.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="help-section">
+            <h3><span class="section-icon">⚡</span> Power-Ups</h3>
+            <div class="help-item">
+              <div class="help-item-icon">⚡</div>
+              <div class="help-item-text">
+                <h4>Queue Speed</h4>
+                <p>Coins drop from your queue faster.</p>
+              </div>
+            </div>
+            <div class="help-item">
+              <div class="help-item-icon">📦</div>
+              <div class="help-item-text">
+                <h4>Queue Capacity</h4>
+                <p>Hold more coins in your queue.</p>
+              </div>
+            </div>
+            <div class="help-item">
+              <div class="help-item-icon">💰</div>
+              <div class="help-item-text">
+                <h4>Coin Value</h4>
+                <p>All coins are worth more points.</p>
+              </div>
+            </div>
+            <div class="help-item">
+              <div class="help-item-icon">🎯</div>
+              <div class="help-item-text">
+                <h4>Multi-Drop</h4>
+                <p>Drop multiple coins with each tap!</p>
+              </div>
+            </div>
+            <div class="help-item">
+              <div class="help-item-icon">🍀</div>
+              <div class="help-item-text">
+                <h4>Lucky Coins</h4>
+                <p>Higher chance of special and rainbow coins.</p>
+              </div>
+            </div>
+            <div class="help-tip">
+              <div class="help-tip-title">Pro Tip</div>
+              <p>You get to choose a power-up each time you unlock a new tier! Choose wisely based on your play style.</p>
+            </div>
+          </div>
+
+          <div class="help-section">
+            <h3><span class="section-icon">🌍</span> Themed Worlds</h3>
+            <div class="help-item">
+              <div class="help-item-icon">🏆</div>
+              <div class="help-item-text">
+                <h4>Unlock New Tiers</h4>
+                <p>Reach score milestones to expand the pyramid and unlock new themed worlds! Each world has unique elements like spinners, bumpers, and side pushers.</p>
+              </div>
+            </div>
+            <div class="help-tip">
+              <div class="help-tip-title">Worlds to Discover</div>
+              <p>Neon Arcade, Dino Land, Alien Invasion, Pirate Cove, Candy Kingdom, Space Station, Jungle Safari, Robot Factory</p>
+            </div>
+          </div>
+
+          <div class="help-section">
+            <h3><span class="section-icon">🎰</span> Special Features</h3>
+            <div class="help-item">
+              <div class="help-item-icon">💎</div>
+              <div class="help-item-text">
+                <h4>Jackpot Meter</h4>
+                <p>Every coin scored fills the jackpot meter. When full, coins rain down for massive bonus points!</p>
+              </div>
+            </div>
+            <div class="help-item">
+              <div class="help-item-icon">🌧️</div>
+              <div class="help-item-text">
+                <h4>Coin Rain</h4>
+                <p>Land in bonus slots to trigger coin rain rewards - instant coins, multipliers, and special bonuses!</p>
+              </div>
+            </div>
+            <div class="help-item">
+              <div class="help-item-icon">⭐</div>
+              <div class="help-item-text">
+                <h4>Bonus Zones</h4>
+                <p>Glowing circles on the shelf give bonus coins, multipliers, or trigger power-up selection!</p>
+              </div>
+            </div>
+          </div>
+
+          <button id="close-help">GOT IT!</button>
+        </div>
+      </div>
+
+      <!-- Game Over Screen -->
+      <div id="gameover-screen" class="hidden">
+        <h1>Game Over</h1>
+        <p>Final Score: <span id="final-score">0</span></p>
+        <button id="restart-button">PLAY AGAIN</button>
+      </div>
+
+      <!-- Tier Unlock Animation Overlay -->
+      <div id="tier-unlock-overlay" class="hidden">
+        <div class="tier-unlock-stars"></div>
+        <div class="tier-unlock-content">
+          <span class="tier-unlock-icon"></span>
+          <div class="tier-unlock-text"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vite entry point (Three.js bundled via npm) -->
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
