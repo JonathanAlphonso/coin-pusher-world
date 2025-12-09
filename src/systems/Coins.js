@@ -690,13 +690,13 @@ const Coins = {
     }
   },
 
-  // Drop a coin manually
+  // Drop a coin manually - returns true if coin was dropped
   dropCoin: function () {
     const dropZone = this.board?.getDropZone();
-    if (!dropZone) return;
+    if (!dropZone) return false;
 
     // Check queue
-    if (this.coinQueue <= 0) return;
+    if (this.coinQueue <= 0) return false;
     this.coinQueue--;
     if (this.ui) this.ui.updateQueue(this.coinQueue);
 
@@ -721,6 +721,7 @@ const Coins = {
     }
 
     this.spawnCoin(dropX, dropY, dropZ, type);
+    return true;
   },
 
   // Add coins to queue

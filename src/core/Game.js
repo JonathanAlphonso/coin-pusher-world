@@ -18,6 +18,16 @@ const Game = {
   isPaused: false,
   score: 0,
 
+  // Session stats
+  sessionStats: {
+    coinsDropped: 0,
+    coinsScored: 0,
+    bestCombo: 0,
+    jackpotBursts: 0,
+    collectiblesFound: 0,
+    powerUpsEarned: 0,
+  },
+
   // Auto-drop feature
   autoDrop: false,
   autoDropTimer: 0,
@@ -171,6 +181,16 @@ const Game = {
     this.currentExpansionIndex = 0;
     this.autoDrop = false;
     this.autoDropTimer = 0;
+
+    // Reset session stats
+    this.sessionStats = {
+      coinsDropped: 0,
+      coinsScored: 0,
+      bestCombo: 0,
+      jackpotBursts: 0,
+      collectiblesFound: 0,
+      powerUpsEarned: 0,
+    };
 
     if (this.ui) this.ui.reset();
     if (this.powerUps) this.powerUps.init();
@@ -386,7 +406,9 @@ const Game = {
 
     for (let i = 0; i < dropCount; i++) {
       setTimeout(() => {
-        if (this.coins) this.coins.dropCoin();
+        if (this.coins && this.coins.dropCoin()) {
+          this.sessionStats.coinsDropped++;
+        }
         if (this.sound) this.sound.play("drop");
       }, i * 80);
     }
@@ -397,6 +419,7 @@ const Game = {
     multiplier = multiplier || 1;
     const finalAmount = Math.floor(amount * multiplier);
     this.score += finalAmount;
+    this.sessionStats.coinsScored++;
     if (this.ui) this.ui.updateScore(this.score);
 
     // Spawn particles at score location
@@ -452,14 +475,29 @@ const Game = {
     this.isRunning = false;
     this.autoDrop = false;
 
+    const tier = this.board ? this.board.currentTierCount : 1;
+
+    // Update session stats with final values
+    if (this.combo) {
+      this.sessionStats.bestCombo = this.combo.bestCombo || 0;
+    }
+
+    // Build complete session stats
+    const completeSessionStats = {
+      ...this.sessionStats,
+      score: this.score,
+      tier: tier,
+    };
+
     // Save high score
     let highScoreResult = null;
     if (this.storage && this.score > 0) {
-      const tier = this.board ? this.board.currentTierCount : 1;
       highScoreResult = this.storage.addHighScore(this.score, tier);
+      // Update lifetime stats
+      this.storage.updateLifetimeStats(completeSessionStats);
     }
 
-    if (this.ui) this.ui.showGameOver(this.score, highScoreResult);
+    if (this.ui) this.ui.showGameOver(this.score, highScoreResult, completeSessionStats);
     if (this.sound) this.sound.stopMusic();
   },
 

@@ -337,10 +337,33 @@
       <div id="gameover-screen" class="hidden">
         <h1>Game Over</h1>
         <div id="high-score-info"></div>
-        <p>Final Score: <span id="final-score">0</span></p>
+        <p class="final-score-display">Final Score: <span id="final-score">0</span></p>
         <p id="best-score" class="best-score-display"></p>
-        <button id="restart-button">PLAY AGAIN</button>
-        <button id="view-scores-button">HIGH SCORES</button>
+
+        <!-- Session Stats -->
+        <div id="session-stats" class="session-stats-grid">
+          <div class="session-stat">
+            <span class="stat-label">Coins Dropped</span>
+            <span id="stat-coins-dropped" class="stat-value">0</span>
+          </div>
+          <div class="session-stat">
+            <span class="stat-label">Coins Scored</span>
+            <span id="stat-coins-scored" class="stat-value">0</span>
+          </div>
+          <div class="session-stat">
+            <span class="stat-label">Best Combo</span>
+            <span id="stat-best-combo" class="stat-value">0x</span>
+          </div>
+          <div class="session-stat">
+            <span class="stat-label">Tier Reached</span>
+            <span id="stat-tier" class="stat-value">1</span>
+          </div>
+        </div>
+
+        <div class="gameover-buttons">
+          <button id="restart-button">PLAY AGAIN</button>
+          <button id="view-scores-button">HIGH SCORES</button>
+        </div>
       </div>
 
       <!-- High Scores Overlay -->

@@ -6,6 +6,7 @@
 const STORAGE_KEY = 'coinPusherWorld';
 const HIGH_SCORES_KEY = 'coinPusherWorld_highScores';
 const SETTINGS_KEY = 'coinPusherWorld_settings';
+const LIFETIME_STATS_KEY = 'coinPusherWorld_lifetimeStats';
 const MAX_HIGH_SCORES = 10;
 
 const Storage = {
@@ -199,6 +200,74 @@ const Storage = {
       bestTier: scores.length > 0 ? Math.max(...scores.map((s) => s.tier || 1)) : 0,
       totalScore: scores.reduce((sum, s) => sum + s.score, 0),
     };
+  },
+
+  // Default lifetime stats
+  defaultLifetimeStats: {
+    gamesPlayed: 0,
+    totalScore: 0,
+    totalCoinsDropped: 0,
+    totalCoinsScored: 0,
+    bestScore: 0,
+    bestCombo: 0,
+    bestTier: 0,
+    jackpotBursts: 0,
+    collectiblesFound: 0,
+    powerUpsEarned: 0,
+  },
+
+  // Get lifetime stats
+  getLifetimeStats: function () {
+    if (!this.isAvailable()) return { ...this.defaultLifetimeStats };
+
+    try {
+      const data = localStorage.getItem(LIFETIME_STATS_KEY);
+      if (!data) return { ...this.defaultLifetimeStats };
+      return { ...this.defaultLifetimeStats, ...JSON.parse(data) };
+    } catch (e) {
+      console.warn('Failed to load lifetime stats:', e);
+      return { ...this.defaultLifetimeStats };
+    }
+  },
+
+  // Save lifetime stats
+  saveLifetimeStats: function (stats) {
+    if (!this.isAvailable()) return false;
+
+    try {
+      localStorage.setItem(LIFETIME_STATS_KEY, JSON.stringify(stats));
+      return true;
+    } catch (e) {
+      console.warn('Failed to save lifetime stats:', e);
+      return false;
+    }
+  },
+
+  // Update lifetime stats after a game session
+  updateLifetimeStats: function (sessionStats) {
+    const lifetime = this.getLifetimeStats();
+
+    lifetime.gamesPlayed++;
+    lifetime.totalScore += sessionStats.score || 0;
+    lifetime.totalCoinsDropped += sessionStats.coinsDropped || 0;
+    lifetime.totalCoinsScored += sessionStats.coinsScored || 0;
+    lifetime.jackpotBursts += sessionStats.jackpotBursts || 0;
+    lifetime.collectiblesFound += sessionStats.collectiblesFound || 0;
+    lifetime.powerUpsEarned += sessionStats.powerUpsEarned || 0;
+
+    // Update best records
+    if (sessionStats.score > lifetime.bestScore) {
+      lifetime.bestScore = sessionStats.score;
+    }
+    if (sessionStats.bestCombo > lifetime.bestCombo) {
+      lifetime.bestCombo = sessionStats.bestCombo;
+    }
+    if (sessionStats.tier > lifetime.bestTier) {
+      lifetime.bestTier = sessionStats.tier;
+    }
+
+    this.saveLifetimeStats(lifetime);
+    return lifetime;
   },
 };
 

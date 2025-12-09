@@ -761,7 +761,7 @@ const UI = {
   },
 
   // Show game over screen
-  showGameOver: function (finalScore, highScoreResult = null) {
+  showGameOver: function (finalScore, highScoreResult = null, sessionStats = null) {
     if (this.elements.finalScore) {
       this.elements.finalScore.textContent = formatNumber(finalScore);
     }
@@ -786,6 +786,19 @@ const UI = {
     if (bestScoreEl && this.storage) {
       const bestScore = this.storage.getBestScore();
       bestScoreEl.textContent = `Best: ${formatNumber(bestScore)}`;
+    }
+
+    // Show session stats
+    if (sessionStats) {
+      const coinsDropped = document.getElementById("stat-coins-dropped");
+      const coinsScored = document.getElementById("stat-coins-scored");
+      const bestCombo = document.getElementById("stat-best-combo");
+      const tierReached = document.getElementById("stat-tier");
+
+      if (coinsDropped) coinsDropped.textContent = formatNumber(sessionStats.coinsDropped || 0);
+      if (coinsScored) coinsScored.textContent = formatNumber(sessionStats.coinsScored || 0);
+      if (bestCombo) bestCombo.textContent = (sessionStats.bestCombo || 0) + "x";
+      if (tierReached) tierReached.textContent = sessionStats.tier || 1;
     }
 
     if (this.elements.gameoverScreen) {
