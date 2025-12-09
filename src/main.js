@@ -21,6 +21,7 @@ import CoinRain from './systems/CoinRain.js';
 import Collectibles from './systems/Collectibles.js';
 import Coins from './systems/Coins.js';
 import Relics from './systems/Relics.js';
+import DailyChallenges from './systems/DailyChallenges.js';
 
 // World
 import Board from './world/Board.js';
@@ -163,6 +164,15 @@ document.addEventListener('DOMContentLoaded', function () {
   UI.storage = Storage;
   UI.sound = Sound;
 
+  // Initialize Daily Challenges
+  DailyChallenges.init({
+    storage: Storage,
+    ui: UI,
+    sound: Sound,
+    game: Game,
+  });
+  Game.dailyChallenges = DailyChallenges;
+
   // Expose for console debugging and automated tests
   Object.assign(window, {
     Game,
@@ -178,6 +188,7 @@ document.addEventListener('DOMContentLoaded', function () {
     Collectibles,
     Relics,
     Storage,
+    DailyChallenges,
   });
 
   console.log('Game initialized successfully!');

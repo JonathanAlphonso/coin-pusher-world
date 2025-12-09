@@ -70,6 +70,7 @@ const Game = {
   collectibles: null,
   relics: null,
   storage: null,
+  dailyChallenges: null,
 
   // Initialize the game
   init: function (refs = {}) {
@@ -205,6 +206,19 @@ const Game = {
 
     // Give starting coins in queue
     if (this.coins) this.coins.addToQueue(15);
+
+    // Claim and apply bonus from completed daily challenges
+    if (this.dailyChallenges) {
+      const bonus = this.dailyChallenges.claimBonus();
+      if (bonus > 0) {
+        // Convert bonus to starting score
+        this.score = bonus;
+        if (this.ui) {
+          this.ui.updateScore(this.score);
+          this.ui.showMessage(`Challenge Bonus: +${bonus}!`);
+        }
+      }
+    }
 
     // Start game loop
     this.lastTime = performance.now();
@@ -551,6 +565,11 @@ const Game = {
       highScoreResult = this.storage.addHighScore(this.score, tier);
       // Update lifetime stats
       this.storage.updateLifetimeStats(completeSessionStats);
+    }
+
+    // Check daily challenges
+    if (this.dailyChallenges) {
+      this.dailyChallenges.updateProgress(completeSessionStats);
     }
 
     if (this.ui) this.ui.showGameOver(this.score, highScoreResult, completeSessionStats);

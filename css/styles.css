@@ -2938,3 +2938,168 @@ body {
     font-size: 16px;
   }
 }
+
+/* ============================================
+   DAILY CHALLENGES STYLES
+   ============================================ */
+#daily-challenges-container {
+  position: absolute;
+  bottom: 100px;
+  right: 10px;
+  background: linear-gradient(180deg, rgba(30, 15, 50, 0.95) 0%, rgba(15, 8, 25, 0.98) 100%);
+  border: 2px solid rgba(100, 200, 255, 0.4);
+  border-radius: 15px;
+  padding: 12px;
+  min-width: 180px;
+  max-width: 220px;
+  z-index: 15;
+  box-shadow:
+    0 0 25px rgba(100, 200, 255, 0.2),
+    inset 0 0 15px rgba(100, 200, 255, 0.05);
+}
+
+.challenges-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(100, 200, 255, 0.2);
+}
+
+.challenges-icon {
+  font-size: 20px;
+}
+
+.challenges-title {
+  color: #88ccff;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(100, 200, 255, 0.5);
+}
+
+.challenges-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.challenge-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  border: 1px solid rgba(100, 200, 255, 0.15);
+  transition: all 0.3s ease;
+}
+
+.challenge-item:hover {
+  background: rgba(100, 200, 255, 0.1);
+  border-color: rgba(100, 200, 255, 0.3);
+}
+
+.challenge-item.completed {
+  background: rgba(0, 200, 100, 0.15);
+  border-color: rgba(0, 200, 100, 0.4);
+}
+
+.challenge-icon {
+  font-size: 18px;
+  min-width: 24px;
+  text-align: center;
+}
+
+.challenge-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.challenge-name {
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.challenge-desc {
+  color: #aaa;
+  font-size: 9px;
+  line-height: 1.2;
+  margin-bottom: 3px;
+}
+
+.challenge-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+}
+
+.challenge-difficulty {
+  font-size: 8px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.challenge-reward {
+  font-size: 9px;
+  color: #ffd700;
+  font-weight: bold;
+}
+
+.challenge-status {
+  font-size: 16px;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Mobile adjustments for daily challenges */
+@media (max-width: 480px) {
+  #daily-challenges-container {
+    bottom: 80px;
+    right: 5px;
+    min-width: 150px;
+    max-width: 180px;
+    padding: 8px;
+  }
+
+  .challenges-title {
+    font-size: 12px;
+  }
+
+  .challenge-item {
+    padding: 6px;
+    gap: 6px;
+  }
+
+  .challenge-icon {
+    font-size: 14px;
+    min-width: 20px;
+  }
+
+  .challenge-name {
+    font-size: 10px;
+  }
+
+  .challenge-desc {
+    font-size: 8px;
+  }
+
+  .challenge-reward {
+    font-size: 8px;
+  }
+}
+
+/* Very small screens - hide daily challenges or make collapsible */
+@media (max-width: 360px) {
+  #daily-challenges-container {
+    display: none;
+  }
+}

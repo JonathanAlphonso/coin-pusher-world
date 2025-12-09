@@ -7,6 +7,8 @@ const STORAGE_KEY = 'coinPusherWorld';
 const HIGH_SCORES_KEY = 'coinPusherWorld_highScores';
 const SETTINGS_KEY = 'coinPusherWorld_settings';
 const LIFETIME_STATS_KEY = 'coinPusherWorld_lifetimeStats';
+const DAILY_CHALLENGES_KEY = 'coinPusherWorld_dailyChallenges';
+const CHALLENGE_BONUS_KEY = 'coinPusherWorld_challengeBonus';
 const MAX_HIGH_SCORES = 10;
 
 const Storage = {
@@ -268,6 +270,57 @@ const Storage = {
 
     this.saveLifetimeStats(lifetime);
     return lifetime;
+  },
+
+  // Get daily challenges data
+  getDailyChallenges: function () {
+    if (!this.isAvailable()) return null;
+
+    try {
+      const data = localStorage.getItem(DAILY_CHALLENGES_KEY);
+      if (!data) return null;
+      return JSON.parse(data);
+    } catch (e) {
+      console.warn('Failed to load daily challenges:', e);
+      return null;
+    }
+  },
+
+  // Save daily challenges data
+  saveDailyChallenges: function (data) {
+    if (!this.isAvailable()) return false;
+
+    try {
+      localStorage.setItem(DAILY_CHALLENGES_KEY, JSON.stringify(data));
+      return true;
+    } catch (e) {
+      console.warn('Failed to save daily challenges:', e);
+      return false;
+    }
+  },
+
+  // Get challenge bonus coins (rewards from completed challenges)
+  getChallengeBonus: function () {
+    if (!this.isAvailable()) return 0;
+
+    try {
+      const data = localStorage.getItem(CHALLENGE_BONUS_KEY);
+      return data ? parseInt(data, 10) : 0;
+    } catch (e) {
+      return 0;
+    }
+  },
+
+  // Set challenge bonus coins
+  setChallengeBonus: function (amount) {
+    if (!this.isAvailable()) return false;
+
+    try {
+      localStorage.setItem(CHALLENGE_BONUS_KEY, String(amount));
+      return true;
+    } catch (e) {
+      return false;
+    }
   },
 };
 
