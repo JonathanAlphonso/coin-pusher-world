@@ -28,6 +28,11 @@ const Coins = {
   queueSpeed: 3,
   queueTimer: 0,
 
+  // Queue regeneration (passive income)
+  regenTimer: 0,
+  regenInterval: 2.0, // Seconds between regen ticks
+  regenAmount: 1, // Coins added per tick
+
   // Coin settings
   coinRadius: 0.35,
   coinHeight: 0.12,
@@ -65,6 +70,7 @@ const Coins = {
     this.activeCoins = [];
     this.coinQueue = 0;
     this.queueTimer = 0;
+    this.regenTimer = 0;
 
     // Create enhanced coin geometry with beveled edge
     this.geometry = new THREE.CylinderGeometry(
@@ -723,25 +729,19 @@ const Coins = {
     if (this.ui) this.ui.updateQueue(this.coinQueue);
   },
 
-  // Update coin queue (automatic dropping)
+  // Update coin queue regeneration (passive income)
   updateQueue: function (deltaTime) {
-    if (this.coinQueue > 0) {
-      this.queueTimer += deltaTime * this.queueSpeed;
+    // Always regenerate coins over time (passive income)
+    this.regenTimer += deltaTime;
 
-      if (this.queueTimer >= 1) {
-        this.queueTimer = 0;
+    if (this.regenTimer >= this.regenInterval) {
+      this.regenTimer = 0;
 
-        // Auto-add coins periodically
-        if (this.coinQueue < this.maxQueueSize / 2) {
-          this.addToQueue(2);
-        }
-      }
-    } else {
-      // Auto-regenerate queue faster
-      this.queueTimer += deltaTime * 1.5;
-      if (this.queueTimer >= 1) {
-        this.queueTimer = 0;
-        this.addToQueue(3);
+      // Add coins if not at max
+      if (this.coinQueue < this.maxQueueSize) {
+        // Regen faster when queue is low
+        const bonusRegen = this.coinQueue < 5 ? 2 : 0;
+        this.addToQueue(this.regenAmount + bonusRegen);
       }
     }
   },
