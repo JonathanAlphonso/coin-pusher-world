@@ -47,6 +47,9 @@ const UI = {
       statsGrid: document.getElementById("stats-grid"),
       closeStats: document.getElementById("close-stats"),
       autoDropButton: document.getElementById("auto-drop-button"),
+      tierProgressContainer: document.getElementById("tier-progress-container"),
+      tierProgressFill: document.getElementById("tier-progress-fill"),
+      tierProgressLabel: document.getElementById("tier-progress-label"),
       boardSelectionOverlay: null, // Created dynamically
     };
 
@@ -349,6 +352,36 @@ const UI = {
   updateExpansion: function (boardCount) {
     if (this.elements.expansionValue) {
       this.elements.expansionValue.textContent = boardCount;
+    }
+  },
+
+  // Update tier progress bar
+  updateTierProgress: function (progress) {
+    if (this.elements.tierProgressFill) {
+      const percent = Math.floor(progress * 100);
+      this.elements.tierProgressFill.style.width = percent + '%';
+
+      // Change color as progress increases
+      if (progress >= 0.9) {
+        this.elements.tierProgressFill.style.background = 'linear-gradient(90deg, #00ff88, #88ff00)';
+      } else if (progress >= 0.7) {
+        this.elements.tierProgressFill.style.background = 'linear-gradient(90deg, #ffaa00, #00ff88)';
+      } else {
+        this.elements.tierProgressFill.style.background = 'linear-gradient(90deg, #ffd700, #ffaa00)';
+      }
+    }
+
+    // Update the label with next threshold
+    if (this.elements.tierProgressLabel && this.game) {
+      const nextThreshold = this.game.getNextTierThreshold();
+      if (nextThreshold) {
+        this.elements.tierProgressLabel.textContent = 'Next: ' + formatNumber(nextThreshold);
+      } else {
+        this.elements.tierProgressLabel.textContent = 'MAX TIER!';
+        if (this.elements.tierProgressContainer) {
+          this.elements.tierProgressContainer.classList.add('max-tier');
+        }
+      }
     }
   },
 

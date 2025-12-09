@@ -416,6 +416,34 @@ const Game = {
       if (this.board) this.board.expandPyramid();
       if (this.sound) this.sound.play("levelup");
     }
+
+    // Update progress bar
+    if (this.ui) this.ui.updateTierProgress(this.getTierProgress());
+  },
+
+  // Get progress towards next tier (0-1)
+  getTierProgress: function () {
+    if (this.currentExpansionIndex >= this.expansionThresholds.length) {
+      return 1; // Max tier reached
+    }
+
+    const currentThreshold = this.expansionThresholds[this.currentExpansionIndex];
+    const previousThreshold = this.currentExpansionIndex > 0
+      ? this.expansionThresholds[this.currentExpansionIndex - 1]
+      : 0;
+
+    const progressInTier = this.score - previousThreshold;
+    const tierRange = currentThreshold - previousThreshold;
+
+    return Math.min(1, Math.max(0, progressInTier / tierRange));
+  },
+
+  // Get next tier threshold for display
+  getNextTierThreshold: function () {
+    if (this.currentExpansionIndex >= this.expansionThresholds.length) {
+      return null; // Max tier reached
+    }
+    return this.expansionThresholds[this.currentExpansionIndex];
   },
 
   // Game over
