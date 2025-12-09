@@ -2650,3 +2650,221 @@ body {
   box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
   transform: scale(1.05);
 }
+
+/* ==================== SETTINGS ==================== */
+
+#settings-button {
+  position: absolute;
+  top: 10px;
+  right: 130px;
+  background: linear-gradient(180deg, rgba(40, 20, 80, 0.9) 0%, rgba(20, 10, 40, 0.95) 100%);
+  color: #fff;
+  border: 2px solid rgba(150, 100, 255, 0.4);
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 20px;
+  cursor: pointer;
+  z-index: 30;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+#settings-button:hover {
+  background: linear-gradient(180deg, rgba(60, 30, 100, 0.95) 0%, rgba(30, 15, 60, 0.98) 100%);
+  box-shadow: 0 0 15px rgba(150, 100, 255, 0.5);
+  transform: scale(1.05);
+}
+
+/* Settings Overlay */
+#settings-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(20, 10, 40, 0.95) 0%, rgba(5, 2, 10, 0.98) 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 110;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.settings-content {
+  background: linear-gradient(180deg, rgba(40, 20, 80, 0.9) 0%, rgba(20, 10, 40, 0.95) 100%);
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 400px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 0 40px rgba(100, 50, 200, 0.5);
+}
+
+.settings-header h2 {
+  font-size: 32px;
+  color: #ffd700;
+  text-align: center;
+  margin-bottom: 25px;
+  text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+}
+
+.settings-section {
+  margin-bottom: 25px;
+}
+
+.settings-section h3 {
+  font-size: 18px;
+  color: rgba(255, 215, 0, 0.9);
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.setting-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.setting-row label {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+
+.setting-row.toggle-row {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.slider-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.volume-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.4);
+  outline: none;
+  cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #ffd700 0%, #ff8800 100%);
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  transition: transform 0.2s ease;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #ffd700 0%, #ff8800 100%);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.volume-value {
+  min-width: 45px;
+  text-align: right;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: bold;
+}
+
+.toggle-button {
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 20px;
+  cursor: pointer;
+  border: 2px solid rgba(255, 100, 100, 0.5);
+  background: rgba(100, 30, 30, 0.5);
+  color: rgba(255, 150, 150, 0.9);
+  transition: all 0.3s ease;
+  min-width: 70px;
+}
+
+.toggle-button.active {
+  border-color: rgba(100, 255, 100, 0.5);
+  background: rgba(30, 100, 30, 0.5);
+  color: rgba(150, 255, 150, 0.9);
+}
+
+.toggle-button:hover {
+  transform: scale(1.05);
+}
+
+#close-settings {
+  display: block;
+  width: 100%;
+  background: linear-gradient(180deg, #ffd700 0%, #ff8800 100%);
+  color: #1a0a2e;
+  border: none;
+  padding: 15px 40px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 30px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+#close-settings:hover {
+  background: linear-gradient(180deg, #ffdd33 0%, #ffaa00 100%);
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+  transform: scale(1.05);
+}
+
+/* Mobile adjustments for settings */
+@media (max-width: 480px) {
+  #settings-button {
+    right: 100px;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .settings-content {
+    padding: 20px;
+  }
+
+  .settings-header h2 {
+    font-size: 26px;
+  }
+
+  .volume-slider::-webkit-slider-thumb {
+    width: 24px;
+    height: 24px;
+  }
+
+  .volume-slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+  }
+}

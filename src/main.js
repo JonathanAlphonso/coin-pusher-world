@@ -158,9 +158,10 @@ document.addEventListener('DOMContentLoaded', function () {
   // Wire Relics to Coins for drop checks
   Coins.relics = Relics;
 
-  // Wire Storage to Game and UI
+  // Wire Storage and Sound to Game and UI
   Game.storage = Storage;
   UI.storage = Storage;
+  UI.sound = Sound;
 
   // Expose for console debugging and automated tests
   Object.assign(window, {

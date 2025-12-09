@@ -25,6 +25,7 @@ const UI = {
   // References (set during init)
   game: null,
   storage: null,
+  sound: null,
 
   // Initialize UI
   init: function (game = null) {
@@ -56,6 +57,17 @@ const UI = {
       highScoresList: document.getElementById("high-scores-list"),
       viewScoresButton: document.getElementById("view-scores-button"),
       closeHighScores: document.getElementById("close-high-scores"),
+      settingsButton: document.getElementById("settings-button"),
+      settingsOverlay: document.getElementById("settings-overlay"),
+      closeSettings: document.getElementById("close-settings"),
+      masterVolumeSlider: document.getElementById("master-volume"),
+      masterVolumeValue: document.getElementById("master-volume-value"),
+      musicVolumeSlider: document.getElementById("music-volume"),
+      musicVolumeValue: document.getElementById("music-volume-value"),
+      sfxVolumeSlider: document.getElementById("sfx-volume"),
+      sfxVolumeValue: document.getElementById("sfx-volume-value"),
+      musicToggle: document.getElementById("music-toggle"),
+      sfxToggle: document.getElementById("sfx-toggle"),
     };
 
     this.createBoardSelectionUI();
@@ -161,6 +173,70 @@ const UI = {
         self.hideHighScores();
       });
     }
+
+    // Settings button
+    if (this.elements.settingsButton) {
+      this.elements.settingsButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        self.showSettings();
+      });
+    }
+
+    // Close settings button
+    if (this.elements.closeSettings) {
+      this.elements.closeSettings.addEventListener("click", function (e) {
+        e.preventDefault();
+        self.hideSettings();
+      });
+    }
+
+    // Volume sliders
+    this.setupVolumeSliders();
+  },
+
+  // Setup volume slider event listeners
+  setupVolumeSliders: function () {
+    const self = this;
+
+    // Master volume
+    if (this.elements.masterVolumeSlider) {
+      this.elements.masterVolumeSlider.addEventListener("input", function (e) {
+        const value = parseInt(e.target.value);
+        self.updateMasterVolume(value);
+      });
+    }
+
+    // Music volume
+    if (this.elements.musicVolumeSlider) {
+      this.elements.musicVolumeSlider.addEventListener("input", function (e) {
+        const value = parseInt(e.target.value);
+        self.updateMusicVolume(value);
+      });
+    }
+
+    // SFX volume
+    if (this.elements.sfxVolumeSlider) {
+      this.elements.sfxVolumeSlider.addEventListener("input", function (e) {
+        const value = parseInt(e.target.value);
+        self.updateSfxVolume(value);
+      });
+    }
+
+    // Music toggle
+    if (this.elements.musicToggle) {
+      this.elements.musicToggle.addEventListener("click", function (e) {
+        e.preventDefault();
+        self.toggleMusic();
+      });
+    }
+
+    // SFX toggle
+    if (this.elements.sfxToggle) {
+      this.elements.sfxToggle.addEventListener("click", function (e) {
+        e.preventDefault();
+        self.toggleSfx();
+      });
+    }
   },
 
   // Update auto-drop button state
@@ -255,6 +331,167 @@ const UI = {
     }
 
     this.elements.highScoresList.innerHTML = html;
+  },
+
+  // Show settings overlay
+  showSettings: function () {
+    if (this.elements.settingsOverlay) {
+      this.loadSettingsUI();
+      this.elements.settingsOverlay.classList.remove("hidden");
+      if (this.game && this.game.isRunning) {
+        this.game.pause();
+      }
+    }
+  },
+
+  // Hide settings overlay
+  hideSettings: function () {
+    if (this.elements.settingsOverlay) {
+      this.elements.settingsOverlay.classList.add("hidden");
+      if (this.game && this.game.isPaused) {
+        this.game.resume();
+      }
+    }
+  },
+
+  // Load current settings into UI
+  loadSettingsUI: function () {
+    if (!this.sound) return;
+
+    // Set slider values
+    if (this.elements.masterVolumeSlider) {
+      const masterVal = Math.round(this.sound.masterVolume * 100);
+      this.elements.masterVolumeSlider.value = masterVal;
+      if (this.elements.masterVolumeValue) {
+        this.elements.masterVolumeValue.textContent = masterVal + "%";
+      }
+    }
+
+    if (this.elements.musicVolumeSlider) {
+      const musicVal = Math.round(this.sound.musicVolume * 100);
+      this.elements.musicVolumeSlider.value = musicVal;
+      if (this.elements.musicVolumeValue) {
+        this.elements.musicVolumeValue.textContent = musicVal + "%";
+      }
+    }
+
+    if (this.elements.sfxVolumeSlider) {
+      const sfxVal = Math.round(this.sound.sfxVolume * 100);
+      this.elements.sfxVolumeSlider.value = sfxVal;
+      if (this.elements.sfxVolumeValue) {
+        this.elements.sfxVolumeValue.textContent = sfxVal + "%";
+      }
+    }
+
+    // Set toggle states
+    if (this.elements.musicToggle) {
+      this.elements.musicToggle.textContent = this.sound.musicEnabled ? "ON" : "OFF";
+      this.elements.musicToggle.classList.toggle("active", this.sound.musicEnabled);
+    }
+
+    if (this.elements.sfxToggle) {
+      this.elements.sfxToggle.textContent = this.sound.enabled ? "ON" : "OFF";
+      this.elements.sfxToggle.classList.toggle("active", this.sound.enabled);
+    }
+  },
+
+  // Update master volume
+  updateMasterVolume: function (value) {
+    if (!this.sound) return;
+
+    const volume = value / 100;
+    this.sound.masterVolume = volume;
+    this.sound.setVolume(volume);
+
+    if (this.elements.masterVolumeValue) {
+      this.elements.masterVolumeValue.textContent = value + "%";
+    }
+
+    // Save to storage
+    if (this.storage) {
+      this.storage.updateSetting("masterVolume", volume);
+    }
+  },
+
+  // Update music volume
+  updateMusicVolume: function (value) {
+    if (!this.sound) return;
+
+    const volume = value / 100;
+    this.sound.musicVolume = volume;
+
+    // Update master gain if available
+    if (this.sound.masterGain) {
+      this.sound.masterGain.gain.value = this.sound.musicVolume * this.sound.masterVolume;
+    }
+
+    if (this.elements.musicVolumeValue) {
+      this.elements.musicVolumeValue.textContent = value + "%";
+    }
+
+    // Save to storage
+    if (this.storage) {
+      this.storage.updateSetting("musicVolume", volume);
+    }
+  },
+
+  // Update SFX volume
+  updateSfxVolume: function (value) {
+    if (!this.sound) return;
+
+    const volume = value / 100;
+    this.sound.sfxVolume = volume;
+
+    if (this.elements.sfxVolumeValue) {
+      this.elements.sfxVolumeValue.textContent = value + "%";
+    }
+
+    // Save to storage
+    if (this.storage) {
+      this.storage.updateSetting("sfxVolume", volume);
+    }
+  },
+
+  // Toggle music
+  toggleMusic: function () {
+    if (!this.sound) return;
+
+    this.sound.musicEnabled = !this.sound.musicEnabled;
+
+    if (this.sound.musicEnabled) {
+      if (this.game && this.game.isRunning) {
+        this.sound.playMusic();
+      }
+    } else {
+      this.sound.stopMusic();
+    }
+
+    if (this.elements.musicToggle) {
+      this.elements.musicToggle.textContent = this.sound.musicEnabled ? "ON" : "OFF";
+      this.elements.musicToggle.classList.toggle("active", this.sound.musicEnabled);
+    }
+
+    // Save to storage
+    if (this.storage) {
+      this.storage.updateSetting("musicEnabled", this.sound.musicEnabled);
+    }
+  },
+
+  // Toggle SFX
+  toggleSfx: function () {
+    if (!this.sound) return;
+
+    this.sound.enabled = !this.sound.enabled;
+
+    if (this.elements.sfxToggle) {
+      this.elements.sfxToggle.textContent = this.sound.enabled ? "ON" : "OFF";
+      this.elements.sfxToggle.classList.toggle("active", this.sound.enabled);
+    }
+
+    // Save to storage
+    if (this.storage) {
+      this.storage.updateSetting("sfxEnabled", this.sound.enabled);
+    }
   },
 
   // Populate stats grid with current game data
