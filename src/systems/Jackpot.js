@@ -230,7 +230,7 @@ const Jackpot = {
       this.mesh.material.emissiveIntensity = intensity;
     }
 
-    if (this.ring) {
+    if (this.ring && this.mesh) {
       this.ring.rotation.z += deltaTime * 2;
       this.ring.position.y = this.mesh.position.y;
     }
