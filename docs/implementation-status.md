@@ -265,7 +265,17 @@ All low-priority items complete! ✅
 
 ## Recent Changes
 
-### 2025-12-10 (Latest - Visual Polish Enhancements)
+### 2025-12-10 (Latest - Big Cascade Celebration)
+- ✅ Added big-cascade celebration effects for high combos (Phase 8 - Design Spec Section 8, Phase 8)
+  - Screen shake effects scale with combo tier (AWESOME 10+, INCREDIBLE 15+, LEGENDARY 20+, GODLIKE 30+)
+  - Shake intensity increases progressively: 0.5→0.8→1.2→1.5
+  - Rewards skilled players who achieve high combo chains
+  - Graceful fallback if game reference unavailable
+  - No performance impact, all 50 tests still passing
+- ✅ Fulfills final Phase 8 requirement: "big-cascade celebration" visual feedback
+- ✅ All 50/50 tests passing after enhancement
+
+### 2025-12-10 (Earlier - Visual Polish Enhancements)
 - ✅ Added visual feedback for multi-board coin paths (Design Spec 7.1)
   - Coins that visit multiple boards gain subtle emissive glow
   - Glow intensity increases with each board visited (caps at 3 boards)
