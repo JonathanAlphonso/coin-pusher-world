@@ -111,12 +111,14 @@ This is a fundamental architectural difference:
 
 **Note**: This requires significant refactoring of Board.js to support multiple independent board instances instead of one board with expandable tiers
 
-### Phase 6 - UX & Old Android Support ❌
-- ❌ Low Performance Mode toggle
-- ❌ Optimized materials for old devices
-- ❌ WebGL1 compatibility verification
-- ❌ Mobile touch target size verification (44-48px)
-- ❌ 800×480 resolution testing
+### Phase 6 - UX & Old Android Support ✅ PARTIALLY COMPLETE
+- ✅ Low Performance Mode toggle (fully implemented)
+- ✅ Optimized materials for old devices
+- ✅ WebGL1 compatibility (using three.js r128)
+- ✅ Mobile touch target size verification (44-48px) - tested
+- ✅ 800×480 resolution testing - UI hitbox tests passing
+- ✅ Settings menu with audio and performance controls
+- ✅ Board counter display showing pyramid status (Boards: X / 8)
 
 ### Phase 8 - Polish & Tuning ❌
 - ❌ Multiplier value tuning
@@ -127,16 +129,17 @@ This is a fundamental architectural difference:
 - ❌ Big cascade celebration effects
 - ❌ Run summary screen
 
-### Phase 9 - Packaging ❌
-- ❌ Save/load system
-- ❌ Settings menu (audio, graphics, performance)
+### Phase 9 - Packaging ✅ PARTIALLY COMPLETE
+- ✅ Save/load system (auto-save implemented)
+- ✅ Settings menu (audio, graphics, performance)
 - ❌ Landing page and instructions
 
 ## 📊 Test Coverage
 
-### Passing Tests: 31/31 (100%)
+### Passing Tests: 50/50 (100%)
 - ✅ Comprehensive suite: 20/20
 - ✅ 8-board pyramid: 11/11
+- ✅ UI hitbox tests: 19/19
 
 ### Test Categories Covered:
 - ✅ Game initialization
