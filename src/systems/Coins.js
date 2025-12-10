@@ -674,6 +674,12 @@ const Coins = {
             // Apply exit type bonuses
             if (exitTarget.exitType === 'jackpot') {
               this.recordPathEvent(coin, currentBoard.boardId, currentBoard.powerupFocus, 'jackpot_slot');
+              // Track jackpot trigger for board statistics (Design Spec 2.2)
+              if (this.boardManager && this.boardManager.updateBoardStats) {
+                this.boardManager.updateBoardStats(currentBoard.boardId, {
+                  jackpotTriggered: true
+                });
+              }
             } else if (exitTarget.exitType === 'bonus') {
               this.recordPathEvent(coin, currentBoard.boardId, currentBoard.powerupFocus, 'lucky_exit');
             }
@@ -691,8 +697,21 @@ const Coins = {
 
     // SCORING LOGIC (for bottom row boards or single-board mode)
     // Register with combo system
+    const prevComboCount = this.combo ? this.combo.count : 0;
     if (this.combo) {
       this.combo.registerFall();
+    }
+    const newComboCount = this.combo ? this.combo.count : 0;
+
+    // Track combo contributions per board (Design Spec 2.2)
+    // If combo count is >= 2, this coin contributed to an active combo chain
+    if (newComboCount >= 2 && coin.pathBoards && coin.pathBoards.length > 0 && this.boardManager && this.boardManager.updateBoardStats) {
+      // Attribute combo contribution to all boards in the path
+      coin.pathBoards.forEach(boardId => {
+        this.boardManager.updateBoardStats(boardId, {
+          comboStarted: true
+        });
+      });
     }
 
     // Get combo multiplier
