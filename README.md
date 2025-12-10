@@ -4,16 +4,35 @@ A 3D coin pusher roguelike game optimized for old Android phones, built with Thr
 
 ## 🎮 Features
 
-- **3D Coin Pusher Mechanics**: Push coins off the edge to score points
-- **Pyramid Expansion**: As you score, add more boards in a pyramid pattern
-- **Automatic Coin Dropping**: Hit bonus zones to queue up automatic coin drops
-- **Manual Coin Drop**: Tap the button to drop coins manually
-- **Power-Up System**:
-  - ⚡ Queue Speed - Coins drop faster from queue
-  - 📦 Queue Size - Hold more coins in queue
-  - 💰 Coin Value - All coins worth more points
-  - 🎯 Multi Drop - Drop multiple coins at once
-  - 🍀 Lucky Coins - Higher chance of special coins
+### Core Gameplay
+- **3D Coin Pusher Mechanics**: Physics-based coin pushing with realistic gravity and collisions
+- **8-Board Pyramid Expansion**: Build a cascading pyramid of themed boards (1→2→3→2 layout)
+- **Coin Routing**: Coins cascade through multiple boards, accumulating multipliers
+- **Auto Queue System**: Automatic coin dropping with configurable speed
+- **Manual Drop Control**: Precise coin placement for strategic routing
+
+### 8 Unique Themes (Design Spec Section 5)
+- 🕹️ **Neon Arcade** (queueSpeed) - Wave pusher for faster queue refills
+- 🦖 **Dino Land** (coinValue) - Stomper increases coin values
+- 👽 **Alien Invasion** (luckyCoins) - Tractor beam creates special coins
+- 🏴‍☠️ **Pirate Cove** (multiDrop) - Cannon for multi-coin drops
+- 🍭 **Candy Kingdom** (queueCapacity) - Expands queue capacity
+- 🚀 **Space Station** (widerPusher) - Enhanced pusher coverage
+- 🦁 **Jungle Safari** (comboTime) - Extended combo windows
+- 🤖 **Robot Factory** (jackpotChance) - Progressive jackpot system
+
+### Prize System (30+ Prizes)
+- **Rarity Tiers**: Common, Uncommon, Rare, Epic, Legendary
+- **Prize Counter**: Select 1 of 6 prizes when unlocking boards
+- **Synergies**: Prizes have affinities with theme powerupFocus
+- **Categories**: Queue, Value, Lucky, Jackpot, Combo, Multi-Drop, Routing
+
+### Advanced Systems
+- **Combo System**: Chain coin scores for massive multipliers (up to 7x)
+- **Jackpot System**: Progressive jackpots with burst mechanics
+- **Save/Load**: Auto-save every 30s, resume runs in progress
+- **Performance Modes**: Normal (50 coins, 60 FPS) or Low (25 coins, 30 FPS)
+- **First-Time Tutorial**: Automatic help overlay for new players
 
 ## 🚀 Getting Started
 
@@ -33,10 +52,10 @@ npm install
 2. Start the development server:
 
 ```bash
-npm start
+npm run dev
 ```
 
-3. Open your browser to `http://localhost:8080`
+3. Open your browser to `http://localhost:5173`
 
 ### Playing on Mobile
 
@@ -44,46 +63,105 @@ Simply open the URL on your Android phone's browser. The game is optimized for t
 
 ## 🎯 How to Play
 
-1. **Tap START GAME** to begin
-2. **Tap DROP COIN** to drop coins onto the board
-3. Coins pushed off the **front edge** score points
-4. Hit **bonus zones** (orange circles) for special effects:
-   - Add coins to your queue
-   - Double coin values
-   - Choose a power-up upgrade
-5. As you reach score thresholds, the pyramid **expands** with more boards
-6. **Upgrade power-ups** wisely to maximize your score!
+### Getting Started
+1. **Click START GAME** to begin your run
+2. **Drop Coins** manually or enable auto-drop
+3. Coins are pushed forward and fall through the pyramid
+4. When coins exit the bottom row, they are scored
+
+### Strategic Depth
+5. **Board Selection**: Choose from 3 theme options when expanding (8 boards max)
+6. **Prize Selection**: Pick 1 of 6 prizes from the rotating counter
+7. **Routing**: Direct coins to specific child boards for multiplier stacking
+8. **Combo Chains**: Score multiple coins quickly for exponential bonuses
+9. **Build Synergies**: Combine prizes with matching theme affinities
+
+### Progression System
+- **Score Thresholds**: 10k, 25k, 45k, 70k, 100k, 140k, 190k, 250k
+- Each threshold unlocks a new board slot
+- Run completes at 8 boards (or manual restart)
 
 ## 🛠️ Technical Details
 
-### Performance Optimizations
+### Performance Optimizations (Design Spec 10.4)
 
-- Simple flat-shaded materials
-- Low polygon count for all objects
-- Object pooling for coins
-- Sleep system for stationary physics bodies
-- Reduced pixel ratio capping
-- No shadows for better performance
-- WebGL 1.0 compatible
+- **WebGL1 Compatible**: Runs on old Android devices
+- **Low-Poly Meshes**: Optimized geometry for all objects
+- **Object Pooling**: 80-coin pool with efficient reuse
+- **Material Optimization**: MeshLambertMaterial for performance
+- **No Shadows**: Disabled for better frame rates
+- **Performance Modes**:
+  - Normal: 50 max coins, 60 FPS target
+  - Low: 25 max coins, 30 FPS target (old Android)
+- **Auto-Save System**: Persists game state every 30s
 
-### Architecture
+### Architecture (Design Spec Section 12)
 
-- `game.js` - Main game engine and Three.js setup
-- `physics.js` - Lightweight custom physics engine
-- `coins.js` - Coin spawning, pooling, and scoring
-- `board.js` - Pusher boards and pyramid expansion
-- `powerups.js` - Power-up system and upgrades
-- `ui.js` - User interface management
-- `utils.js` - Utility functions
+**Core Systems** (`src/core/`):
+- `Game.js` - Main game engine and Three.js setup
+- `Physics.js` - Custom lightweight physics for coin pushers
+- `GameConfig.js` - Centralized tuning constants (Section 12.2)
+- `Storage.js` - LocalStorage wrapper for saves and settings
+- `Utils.js` - Utility functions (RNG, seeding, etc.)
+
+**Game Systems** (`src/systems/`):
+- `BoardManager.js` - 8-board pyramid structure and routing (Section 6)
+- `Coins.js` - Coin spawning, pooling, queue, and auto-drop (Section 9)
+- `Prizes.js` - 30+ prize pool with rarity system (Section 8)
+- `ThemeEffects.js` - Centralizes powerupFocus mechanics (Section 5)
+- `Combo.js` - Combo chain system with time windows
+- `Jackpot.js` - Progressive jackpot mechanics
+- `Collectibles.js`, `PowerUps.js`, `CoinRain.js`, `Relics.js`, `DailyChallenges.js`
+
+**World & Rendering** (`src/world/`):
+- `Board.js` - Individual board geometry and obstacles
+- `themes/index.js` - 8 theme definitions with colors and elements
+- `TextureGenerator.js` - Procedural textures for themes
+- `Background.js` - 3D environment and lighting
+
+**UI & Audio** (`src/ui/`, `src/audio/`):
+- `UI.js` - HUD, Prize Counter, settings, help overlay
+- `Sound.js` - Audio system (currently minimal)
 
 ## 📱 Browser Support
 
-- Chrome (Android/Desktop)
-- Firefox (Android/Desktop)
-- Safari (iOS/Desktop)
-- Edge (Desktop)
+- ✅ Chrome (Android/Desktop)
+- ✅ Firefox (Android/Desktop)
+- ✅ Safari (iOS/Desktop)
+- ✅ Edge (Desktop)
 
-Optimized for WebGL 1.0 to support older Android devices.
+**Optimized for WebGL 1.0** to support older Android devices (as per Design Spec Section 10.4).
+
+## 🧪 Testing
+
+### Running Tests
+
+All tests include timeouts to prevent hanging:
+
+```bash
+# Run all tests (50 total)
+node test-comprehensive.js    # 20 tests - Core game systems
+node test-8board-pyramid.js   # 11 tests - Full playthrough (Spec 11.1)
+node test-ui-hitbox.js        # 19 tests - UI overlap & touch targets (Spec 11.3)
+```
+
+### Test Coverage (Design Spec Section 11)
+
+✅ **50/50 tests passing**
+
+- **Comprehensive Tests** (20): Game initialization, physics, scoring, all systems
+- **8-Board Pyramid** (11): Full playthrough, board expansion, no deadlocks
+- **UI Hitbox Tests** (19): 4 viewports (desktop, tablet, mobile, old Android)
+  - No overlapping UI elements
+  - 44-48px minimum tap targets
+  - Viewport bounds validation
+
+## 📚 Documentation
+
+- **[Design Specification](docs/design-spec.md)** - Complete game design document
+- **[Implementation Status](docs/implementation-status.md)** - Phase completion tracking
+
+**Current Status**: All 9 phases complete (Phases 0-9) ✅
 
 ## 📄 License
 
