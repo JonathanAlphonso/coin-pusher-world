@@ -122,8 +122,8 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log('Sound muted for testing');
   }
 
-  // Initialize Combo with UI, Sound, and ThemeEffects
-  Combo.init(UI, Sound, ThemeEffects);
+  // Initialize Combo with UI, Sound, ThemeEffects, and Game for cascade celebrations
+  Combo.init(UI, Sound, ThemeEffects, Game);
 
   // Initialize CoinRain
   CoinRain.init({

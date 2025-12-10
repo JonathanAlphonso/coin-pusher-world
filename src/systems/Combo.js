@@ -33,12 +33,14 @@ const Combo = {
   ui: null,
   sound: null,
   themeEffects: null,
+  game: null,
 
   // Initialize
-  init: function (ui = null, sound = null, themeEffects = null) {
+  init: function (ui = null, sound = null, themeEffects = null, game = null) {
     this.ui = ui;
     this.sound = sound;
     this.themeEffects = themeEffects;
+    this.game = game;
     this.count = 0;
     this.timer = 0;
     this.bestCombo = 0;
@@ -87,9 +89,29 @@ const Combo = {
     const tier = this.getCurrentTier();
     const prevTier = this.getTierForCount(this.count - 1);
 
+    // Phase 8 - Big cascade celebration (Design Spec 8, Phase 8)
+    // Celebrate when player reaches higher combo tiers
     if (tier.min > prevTier.min && tier.name) {
       if (this.ui) this.ui.showMessage(tier.name + " x" + tier.mult);
       if (this.sound) this.sound.play("combo");
+
+      // Add screen shake for big cascades (10+ combo = AWESOME and above)
+      if (this.game && this.count >= 10) {
+        // Shake intensity scales with tier
+        if (this.count >= 30) {
+          // GODLIKE cascade - massive shake
+          this.game.shake(1.5, 0.6);
+        } else if (this.count >= 20) {
+          // LEGENDARY cascade - strong shake
+          this.game.shake(1.2, 0.5);
+        } else if (this.count >= 15) {
+          // INCREDIBLE cascade - medium shake
+          this.game.shake(0.8, 0.4);
+        } else {
+          // AWESOME cascade - gentle shake
+          this.game.shake(0.5, 0.3);
+        }
+      }
     }
   },
 
