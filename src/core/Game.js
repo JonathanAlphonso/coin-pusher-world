@@ -213,8 +213,69 @@ const Game = {
   setupInputHandlers: function () {
     // Keyboard support
     window.addEventListener("keydown", (e) => {
+      // Ignore keyboard shortcuts when typing in overlays or if game not running
+      const isTyping = document.activeElement.tagName === 'INPUT' ||
+                       document.activeElement.tagName === 'TEXTAREA';
+      if (isTyping) return;
+
+      // Space - Drop coin
       if (e.code === "Space" && this.isRunning && !this.isPaused) {
+        e.preventDefault();
         this.dropCoin();
+      }
+
+      // A - Toggle auto-drop
+      if (e.key === "a" || e.key === "A") {
+        if (this.isRunning && !this.isPaused) {
+          e.preventDefault();
+          this.toggleAutoDrop();
+          this.ui.showMessage(this.autoDrop ? "Auto-Drop: ON" : "Auto-Drop: OFF");
+        }
+      }
+
+      // H - Toggle help overlay
+      if (e.key === "h" || e.key === "H") {
+        e.preventDefault();
+        const helpOverlay = document.getElementById("help-overlay");
+        if (helpOverlay) {
+          if (helpOverlay.style.display === "flex") {
+            helpOverlay.style.display = "none";
+          } else {
+            helpOverlay.style.display = "flex";
+          }
+        }
+      }
+
+      // S - Toggle settings
+      if (e.key === "s" || e.key === "S") {
+        if (this.isRunning) { // Only during game, not on start screen
+          e.preventDefault();
+          const settingsOverlay = document.getElementById("settings-overlay");
+          if (settingsOverlay) {
+            if (settingsOverlay.style.display === "flex") {
+              settingsOverlay.style.display = "none";
+            } else {
+              settingsOverlay.style.display = "flex";
+            }
+          }
+        }
+      }
+
+      // Escape - Close any open overlay
+      if (e.key === "Escape") {
+        e.preventDefault();
+        const overlays = [
+          "help-overlay",
+          "settings-overlay",
+          "stats-overlay",
+          "high-scores-overlay"
+        ];
+        overlays.forEach(id => {
+          const overlay = document.getElementById(id);
+          if (overlay && overlay.style.display === "flex") {
+            overlay.style.display = "none";
+          }
+        });
       }
     });
   },
