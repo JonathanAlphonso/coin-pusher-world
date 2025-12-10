@@ -110,6 +110,9 @@ const Game = {
   dropPreviewIndicator: null,
   dropPreviewPulseTimer: 0,
 
+  // Haptic feedback support (Phase 8 Polish - Mobile UX enhancement)
+  hapticEnabled: true,
+
   // System references
   physics: null,
   ui: null,
@@ -707,6 +710,8 @@ const Game = {
       setTimeout(() => {
         if (this.coins && this.coins.dropCoin()) {
           this.sessionStats.coinsDropped++;
+          // Haptic feedback on coin drop (Design Spec 10.4 - Mobile UX)
+          this.triggerHaptic('light');
         }
         if (this.sound) this.sound.play("drop");
       }, i * 80);
@@ -727,6 +732,13 @@ const Game = {
     this.score += finalAmount;
     this.sessionStats.coinsScored++;
     if (this.ui) this.ui.updateScore(this.score);
+
+    // Haptic feedback for big scores (Design Spec 10.4 - Mobile UX)
+    if (multiplier >= 5 || finalAmount >= 1000) {
+      this.triggerHaptic('heavy');
+    } else if (multiplier >= 2 || finalAmount >= 500) {
+      this.triggerHaptic('medium');
+    }
 
     // Spawn particles at score location
     if (x !== undefined) {
@@ -1112,6 +1124,30 @@ const Game = {
 
       // Update FPS display
       this.updateFPSDisplay();
+    }
+  },
+
+  /**
+   * Trigger haptic feedback on supported devices
+   * Design Spec 10.4 - Mobile UX enhancement (Phase 8 Polish)
+   * @param {string} type - 'light', 'medium', 'heavy' for different intensities
+   */
+  triggerHaptic: function (type = 'light') {
+    if (!this.hapticEnabled) return;
+
+    // Check if Vibration API is available (mobile devices)
+    if (navigator.vibrate) {
+      const patterns = {
+        light: 10,      // Quick tap (coin drop)
+        medium: 20,     // Score event
+        heavy: [15, 10, 15],  // Big score/jackpot
+      };
+      navigator.vibrate(patterns[type] || patterns.light);
+    }
+
+    // Check if modern Haptic Feedback API is available (iOS Safari 13+, Android Chrome)
+    if (window.navigator && window.navigator.vibrate) {
+      // Already handled above
     }
   },
 
