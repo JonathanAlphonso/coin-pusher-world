@@ -24,6 +24,7 @@ import Relics from './systems/Relics.js';
 import DailyChallenges from './systems/DailyChallenges.js';
 import Prizes from './systems/Prizes.js';
 import BoardManager from './systems/BoardManager.js';
+import ThemeEffects from './systems/ThemeEffects.js';
 
 // World
 import Board from './world/Board.js';
@@ -183,8 +184,12 @@ document.addEventListener('DOMContentLoaded', function () {
   });
   Game.prizes = Prizes;
 
-  // Initialize BoardManager
-  BoardManager.init(scene, Board);
+  // Initialize ThemeEffects first
+  ThemeEffects.init();
+  Game.themeEffects = ThemeEffects;
+
+  // Initialize BoardManager with ThemeEffects reference
+  BoardManager.init(scene, Board, ThemeEffects);
   Game.boardManager = BoardManager;
 
   // Expose for console debugging and automated tests
@@ -205,6 +210,7 @@ document.addEventListener('DOMContentLoaded', function () {
     DailyChallenges,
     Prizes,
     BoardManager,
+    ThemeEffects,
   });
 
   console.log('Game initialized successfully!');

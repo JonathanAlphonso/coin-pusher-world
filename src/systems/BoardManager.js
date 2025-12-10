@@ -4,7 +4,7 @@
  * According to design spec section 6
  */
 
-import { getThemeOptions } from '../world/themes/index.js';
+import { getThemeOptions, tierThemes } from '../world/themes/index.js';
 
 const BoardManager = {
   // Pyramid of boards
@@ -35,13 +35,15 @@ const BoardManager = {
   // References (set during init)
   scene: null,
   board: null,  // Reference to Board system for creating actual 3D boards
+  themeEffects: null,  // Reference to ThemeEffects system
 
   /**
    * Initialize the Board Manager
    */
-  init: function(scene, boardSystem) {
+  init: function(scene, boardSystem, themeEffects = null) {
     this.scene = scene;
     this.board = boardSystem;
+    this.themeEffects = themeEffects;
     this.boards = [];
     this.boardsById = {};
     this.currentBoardCount = 0;
@@ -66,10 +68,17 @@ const BoardManager = {
 
     const boardId = `board_${this.nextBoardId++}`;
 
+    // Get theme data
+    const theme = tierThemes[themeIndex];
+    const themeName = theme ? theme.name : 'Unknown';
+    const powerupFocus = theme ? theme.powerupFocus : 'none';
+
     // Create board object
     const newBoard = {
       boardId: boardId,
       themeIndex: themeIndex,
+      themeName: themeName,
+      powerupFocus: powerupFocus,
       row: position.row,
       col: position.col,
 
@@ -103,6 +112,11 @@ const BoardManager = {
     // Link to parent if this is not the top board
     if (position.row > 0) {
       this.linkToParent(newBoard);
+    }
+
+    // Update theme effects if available
+    if (this.themeEffects) {
+      this.themeEffects.updateEffects(this.boards);
     }
 
     return newBoard;
