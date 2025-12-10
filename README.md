@@ -148,7 +148,7 @@ Simply open the URL on your Android phone's browser. The game is optimized for t
 All tests include timeouts to prevent hanging:
 
 ```bash
-# Run all tests (50 total)
+# Run all tests with nice summary (50 total)
 npm test
 
 # Or run individual test suites
@@ -156,6 +156,8 @@ npm run test:comprehensive  # 20 tests - Core game systems
 npm run test:pyramid        # 11 tests - Full playthrough (Spec 11.1)
 npm run test:ui             # 19 tests - UI overlap & touch targets (Spec 11.3)
 ```
+
+The main `npm test` command runs all three test suites sequentially and provides a comprehensive summary with pass/fail counts and timing for each suite.
 
 ### Test Coverage (Design Spec Section 11)
 
