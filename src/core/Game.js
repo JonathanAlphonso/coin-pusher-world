@@ -5,6 +5,7 @@
 
 import * as THREE from 'three';
 import Background from '../world/Background.js';
+import { tierThemes } from '../world/themes/index.js';
 
 const Game = {
   // Three.js components
@@ -507,12 +508,69 @@ const Game = {
 
     if (this.score >= this.expansionThresholds[this.currentExpansionIndex]) {
       this.currentExpansionIndex++;
-      if (this.board) this.board.expandPyramid();
+
+      // Use BoardManager if available, otherwise fall back to old system
+      if (this.boardManager) {
+        this.unlockNewBoard();
+      } else if (this.board) {
+        this.board.expandPyramid();
+      }
+
       if (this.sound) this.sound.play("levelup");
     }
 
     // Update progress bar
     if (this.ui) this.ui.updateTierProgress(this.getTierProgress());
+  },
+
+  // Unlock a new board in the pyramid (design spec section 6.2)
+  unlockNewBoard: function () {
+    if (!this.boardManager) return;
+
+    // Check if pyramid is full
+    const status = this.boardManager.getStatus();
+    if (status.isFull) {
+      console.log('Pyramid is full (8 boards reached)');
+      return;
+    }
+
+    // Pause game for board selection
+    this.pause();
+
+    // Get excluded theme indices (already in use)
+    const excludedThemes = this.boardManager.getExcludedThemes();
+
+    if (this.ui) {
+      this.ui.showBoardSelection(excludedThemes, (selectedThemeIndex) => {
+        // Add the new board
+        const newBoard = this.boardManager.addBoard(selectedThemeIndex);
+
+        if (newBoard) {
+          console.log(`New board added: ${newBoard.boardId} at row ${newBoard.row}, col ${newBoard.col}`);
+
+          // Update the physical board visualization (optional, can be implemented later)
+          // if (this.board) {
+          //   this.board.visualizeBoard(newBoard);
+          // }
+
+          // Show prize counter after board selection (design spec section 8.2)
+          if (this.prizes) {
+            // Get the theme for affinity bonuses
+            const theme = tierThemes[selectedThemeIndex] || null;
+
+            this.prizes.openPrizeCounter(theme, (selectedPrize) => {
+              console.log(`Prize selected: ${selectedPrize.name}`);
+              this.resume();
+            });
+          } else {
+            this.resume();
+          }
+        } else {
+          console.error('Failed to add board');
+          this.resume();
+        }
+      });
+    }
   },
 
   // Get progress towards next tier (0-1)
