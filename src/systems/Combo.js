@@ -32,11 +32,13 @@ const Combo = {
   // References (set during init)
   ui: null,
   sound: null,
+  themeEffects: null,
 
   // Initialize
-  init: function (ui = null, sound = null) {
+  init: function (ui = null, sound = null, themeEffects = null) {
     this.ui = ui;
     this.sound = sound;
+    this.themeEffects = themeEffects;
     this.count = 0;
     this.timer = 0;
     this.bestCombo = 0;
@@ -67,7 +69,14 @@ const Combo = {
   // Register a coin fall (call this when a coin scores)
   registerFall: function () {
     this.count++;
-    this.timer = this.comboWindow;
+
+    // Apply combo window multiplier from ThemeEffects (design spec section 5.7)
+    const baseWindow = this.comboWindow;
+    const effectiveWindow = this.themeEffects
+      ? baseWindow * this.themeEffects.getComboWindowMultiplier()
+      : baseWindow;
+
+    this.timer = effectiveWindow;
 
     if (this.count > this.bestCombo) {
       this.bestCombo = this.count;

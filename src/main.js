@@ -117,8 +117,8 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log('Sound muted for testing');
   }
 
-  // Initialize Combo with UI and Sound
-  Combo.init(UI, Sound);
+  // Initialize Combo with UI, Sound, and ThemeEffects
+  Combo.init(UI, Sound, ThemeEffects);
 
   // Initialize CoinRain
   CoinRain.init({
@@ -137,6 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
     sound: Sound,
     coins: Coins,
     board: Board,
+    themeEffects: ThemeEffects,
   });
 
   // Initialize Collectibles

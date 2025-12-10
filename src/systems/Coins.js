@@ -737,8 +737,13 @@ const Coins = {
     const dropY = dropZone.y;
     const dropZ = dropZone.z;
 
-    // Determine coin type with luck factor
-    const luckyChance = this.powerUps ? this.powerUps.getLuckyChance() : 0.05;
+    // Determine coin type with luck factor (design spec section 5.3)
+    // Base chance from powerUps, enhanced by ThemeEffects luckyCoins boards
+    const baseLuckyChance = this.powerUps ? this.powerUps.getLuckyChance() : 0.05;
+    const luckyChance = this.themeEffects
+      ? this.themeEffects.getLuckyChance(baseLuckyChance)
+      : baseLuckyChance;
+
     let type = "gold";
     const rand = Math.random();
 

@@ -37,6 +37,7 @@ const Jackpot = {
   sound: null,
   coins: null,
   board: null,
+  themeEffects: null,
 
   // Initialize
   init: function (scene, refs = {}) {
@@ -46,6 +47,7 @@ const Jackpot = {
     this.sound = refs.sound;
     this.coins = refs.coins;
     this.board = refs.board;
+    this.themeEffects = refs.themeEffects;
     this.value = 100;
     this.createUI();
     this.create3DMeter();
@@ -133,8 +135,12 @@ const Jackpot = {
   tryBurst: function () {
     if (this.value < this.minBurst || this.isBursting) return false;
 
+    // Apply jackpot chance bonus from ThemeEffects (design spec section 5.8)
     const fillPercent = this.value / this.maxValue;
-    const chance = this.burstChancePerItem + fillPercent * 0.2;
+    const baseChance = this.burstChancePerItem + fillPercent * 0.2;
+    const chance = this.themeEffects
+      ? this.themeEffects.getJackpotChance(baseChance)
+      : baseChance;
 
     if (Math.random() < chance) {
       this.burst();
