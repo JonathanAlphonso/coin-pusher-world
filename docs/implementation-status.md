@@ -265,7 +265,25 @@ All low-priority items complete! ✅
 
 ## Recent Changes
 
-### 2025-12-10 (Latest - Multi-Drop Gauge System)
+### 2025-12-10 (Latest - Save Data Management Enhancements)
+- ✅ Added Reset High Scores button to settings menu
+  - Implemented in Data Management section with danger-button styling
+  - Red-themed button with warning text for destructive actions
+  - Confirmation dialog prevents accidental deletion
+  - Auto-refreshes high scores display if open when reset
+  - Uses Storage.clearHighScores() method
+- ✅ Added Clear Saved Game button to settings menu
+  - Allows players to manually clear in-progress game state
+  - Preserves high scores when clearing (only removes run state)
+  - Danger-button styling with confirmation dialog
+  - Helps players start fresh without waiting for save expiration
+- ✅ Enhanced user control over save data
+  - Export, Import, Reset High Scores, Clear Saved Game all in one place
+  - Consistent danger-button styling for destructive actions
+  - Clear warning messages about permanent actions
+- ✅ All 50/50 tests passing after implementation
+
+### 2025-12-10 (Earlier - Multi-Drop Gauge System)
 - ✅ Implemented complete Multi-Drop feature (Design Spec 5.4)
   - Multi-Drop button and gauge UI with purple gradient styling
   - Gauge charges automatically when coins are scored (1 charge per coin)
