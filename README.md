@@ -21,11 +21,12 @@ A 3D coin pusher roguelike game optimized for old Android phones, built with Thr
 - 🦁 **Jungle Safari** (comboTime) - Extended combo windows
 - 🤖 **Robot Factory** (jackpotChance) - Progressive jackpot system
 
-### Prize System (30+ Prizes)
+### Prize System (30 Prizes) ✨
 - **Rarity Tiers**: Common, Uncommon, Rare, Epic, Legendary
 - **Prize Counter**: Select 1 of 6 prizes when unlocking boards
-- **Synergies**: Prizes have affinities with theme powerupFocus
-- **Categories**: Queue, Value, Lucky, Jackpot, Combo, Multi-Drop, Routing
+- **Synergies**: Prizes have affinities with theme powerupFocus (highlighted in green)
+- **Categories**: Queue, Value, Lucky, Jackpot, Combo, Multi-Drop, Routing, Pusher, Hybrid
+- **Strategic Depth**: Build synergistic engines by matching prize affinities with board themes
 
 ### Advanced Systems
 - **Combo System**: Chain coin scores for massive multipliers (up to 7x)
@@ -71,10 +72,11 @@ Simply open the URL on your Android phone's browser. The game is optimized for t
 
 ### Strategic Depth
 5. **Board Selection**: Choose from 3 theme options when expanding (8 boards max)
-6. **Prize Selection**: Pick 1 of 6 prizes from the rotating counter
-7. **Routing**: Direct coins to specific child boards for multiplier stacking
-8. **Combo Chains**: Score multiple coins quickly for exponential bonuses
-9. **Build Synergies**: Combine prizes with matching theme affinities
+6. **Prize Selection**: Pick 1 of 6 prizes from 30-prize pool (up to 8 active)
+7. **Build Synergies**: Match prize affinities with board themes (green highlights = synergy!)
+8. **Routing**: Direct coins through boards to stack multipliers
+9. **Combo Chains**: Score rapidly for exponential bonuses (up to 7x!)
+10. **Engine Building**: Create powerful combos like "Queue King" (queueSpeed boards + queue prizes)
 
 ### Progression System
 - **Score Thresholds**: 10k, 25k, 45k, 70k, 100k, 140k, 190k, 250k
