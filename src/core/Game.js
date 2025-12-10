@@ -710,7 +710,12 @@ const Game = {
 
           // Adjust camera to fit the growing pyramid
           const status = this.boardManager.getStatus();
-          this.adjustCameraForPyramid(status.boardCount);
+          this.adjustCameraForPyramid(status.totalBoards);
+
+          // Update board counter display (Design Spec 10.1)
+          if (this.ui) {
+            this.ui.updateBoardCounter(status.totalBoards, status.maxBoards);
+          }
 
           // Update the physical board visualization (optional, can be implemented later)
           // if (this.board) {

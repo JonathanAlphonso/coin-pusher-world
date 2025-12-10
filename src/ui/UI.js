@@ -34,6 +34,7 @@ const UI = {
       scoreValue: document.getElementById("score-value"),
       queueValue: document.getElementById("queue-value"),
       expansionValue: document.getElementById("expansion-value"),
+      boardCounterValue: document.getElementById("board-counter-value"),
       dropButton: document.getElementById("drop-button"),
       startScreen: document.getElementById("start-screen"),
       startButton: document.getElementById("start-button"),
@@ -701,6 +702,13 @@ const UI = {
     }
   },
 
+  // Update board counter display (pyramid status per Design Spec 10.1)
+  updateBoardCounter: function (currentBoards, maxBoards = 8) {
+    if (this.elements.boardCounterValue) {
+      this.elements.boardCounterValue.textContent = `${currentBoards} / ${maxBoards}`;
+    }
+  },
+
   // Update tier progress bar
   updateTierProgress: function (progress) {
     if (this.elements.tierProgressFill) {
@@ -873,6 +881,9 @@ const UI = {
     }
     if (this.elements.expansionValue) {
       this.elements.expansionValue.textContent = "1";
+    }
+    if (this.elements.boardCounterValue) {
+      this.elements.boardCounterValue.textContent = "1 / 8";
     }
   },
 
