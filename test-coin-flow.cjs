@@ -11,8 +11,8 @@
 const { chromium } = require('playwright');
 const fs = require('fs');
 
-// Server port - defaults to 3009, can be overridden with PORT env var
-const SERVER_PORT = process.env.PORT || 3009;
+// Server port - defaults to 3002, can be overridden with PORT env var
+const SERVER_PORT = process.env.PORT || 3002;
 
 async function runCoinFlowTest() {
   console.log('='.repeat(70));

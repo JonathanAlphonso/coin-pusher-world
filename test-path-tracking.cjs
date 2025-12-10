@@ -12,7 +12,7 @@
 
 const { chromium } = require('playwright');
 
-const SERVER_PORT = process.env.PORT || 3003;
+const SERVER_PORT = process.env.PORT || 3002;
 const TEST_TIMEOUT = 120000; // 2 minutes
 
 async function runPathTrackingTest() {

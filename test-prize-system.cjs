@@ -13,7 +13,7 @@
 const { chromium } = require('playwright');
 
 // Server port
-const SERVER_PORT = process.env.PORT || 3003;
+const SERVER_PORT = process.env.PORT || 3002;
 
 // Test timeout - 3 minutes max
 const TEST_TIMEOUT = 180000;
