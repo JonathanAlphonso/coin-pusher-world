@@ -77,6 +77,7 @@ const Prizes = {
     {
       id: 'luckyStreak',
       name: 'Lucky Streak',
+      icon: '🍀',
       summary: '+10% special coin chance',
       tags: ['lucky'],
       affinities: ['luckyCoins'],
@@ -86,6 +87,7 @@ const Prizes = {
     {
       id: 'rainbowLuck',
       name: 'Rainbow Fortune',
+      icon: '🌈',
       summary: 'Rainbow coins worth 2x more',
       tags: ['lucky', 'value'],
       affinities: ['luckyCoins'],
@@ -95,6 +97,7 @@ const Prizes = {
     {
       id: 'luckyBurst',
       name: 'Lucky Burst',
+      icon: '✨',
       summary: 'Every 10th coin is rainbow',
       tags: ['lucky'],
       affinities: ['luckyCoins'],
@@ -106,6 +109,7 @@ const Prizes = {
     {
       id: 'jackpotFill',
       name: 'Jackpot Charger',
+      icon: '🔋',
       summary: 'Jackpot fills 30% faster',
       tags: ['jackpot'],
       affinities: ['jackpotChance'],
@@ -115,6 +119,7 @@ const Prizes = {
     {
       id: 'bigJackpot',
       name: 'Mega Jackpot',
+      icon: '🎰',
       summary: '+50% jackpot payout',
       tags: ['jackpot', 'value'],
       affinities: ['jackpotChance'],
@@ -124,6 +129,7 @@ const Prizes = {
     {
       id: 'miniJackpots',
       name: 'Mini Jackpots',
+      icon: '🎲',
       summary: 'Small jackpot every 20 coins',
       tags: ['jackpot'],
       affinities: ['jackpotChance'],
@@ -135,6 +141,7 @@ const Prizes = {
     {
       id: 'comboExtender',
       name: 'Combo Timer',
+      icon: '⏱️',
       summary: '+50% combo window time',
       tags: ['combo'],
       affinities: ['comboTime'],
@@ -144,6 +151,7 @@ const Prizes = {
     {
       id: 'comboBooster',
       name: 'Combo Master',
+      icon: '🔥',
       summary: '+100% combo multiplier',
       tags: ['combo', 'value'],
       affinities: ['comboTime'],
@@ -153,6 +161,7 @@ const Prizes = {
     {
       id: 'comboStarter',
       name: 'Instant Combo',
+      icon: '⚡',
       summary: 'Start at 5x combo',
       tags: ['combo'],
       affinities: ['comboTime'],
@@ -164,6 +173,7 @@ const Prizes = {
     {
       id: 'doubleDrop',
       name: 'Double Drop',
+      icon: '2️⃣',
       summary: 'Drop 2 coins at once',
       tags: ['multi'],
       affinities: ['multiDrop'],
@@ -173,6 +183,7 @@ const Prizes = {
     {
       id: 'tripleDrop',
       name: 'Triple Drop',
+      icon: '3️⃣',
       summary: 'Drop 3 coins at once',
       tags: ['multi'],
       affinities: ['multiDrop'],
@@ -182,6 +193,7 @@ const Prizes = {
     {
       id: 'spreadDrop',
       name: 'Spread Shot',
+      icon: '🎯',
       summary: 'Multi-drop covers full width',
       tags: ['multi', 'routing'],
       affinities: ['multiDrop'],
@@ -193,6 +205,7 @@ const Prizes = {
     {
       id: 'centerBias',
       name: 'Center Magnet',
+      icon: '🧲',
       summary: 'Coins drift to center slots',
       tags: ['routing'],
       affinities: ['widerPusher'],
@@ -202,6 +215,7 @@ const Prizes = {
     {
       id: 'edgeBias',
       name: 'Edge Router',
+      icon: '↔️',
       summary: 'More coins hit edge obstacles',
       tags: ['routing'],
       affinities: [],
@@ -211,6 +225,7 @@ const Prizes = {
     {
       id: 'smartRouting',
       name: 'Smart Router',
+      icon: '🧠',
       summary: 'Coins favor best child boards',
       tags: ['routing'],
       affinities: [],
@@ -222,6 +237,7 @@ const Prizes = {
     {
       id: 'pyramidPower',
       name: 'Pyramid Power',
+      icon: '🔺',
       summary: '+10% all bonuses per tier',
       tags: ['value', 'combo', 'jackpot'],
       affinities: [],
@@ -231,6 +247,7 @@ const Prizes = {
     {
       id: 'themeSync',
       name: 'Theme Synergy',
+      icon: '🔗',
       summary: 'Matching boards give 2x bonus',
       tags: ['value'],
       affinities: [],
@@ -240,6 +257,7 @@ const Prizes = {
     {
       id: 'allAround',
       name: 'All-Rounder',
+      icon: '🌟',
       summary: '+20% to everything',
       tags: ['value', 'queue', 'combo'],
       affinities: [],
