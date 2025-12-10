@@ -273,6 +273,13 @@ body {
   -webkit-tap-highlight-color: transparent;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   letter-spacing: 2px;
+  z-index: 20;
+}
+
+/* Hide game controls when start screen is visible */
+#game-container:has(#start-screen:not(.hidden)) #drop-button,
+#game-container:has(#start-screen:not(.hidden)) #auto-drop-button {
+  display: none;
 }
 
 #drop-button:hover {
@@ -328,6 +335,7 @@ body {
 #auto-drop-button.active:hover {
   box-shadow: 0 0 35px rgba(0, 255, 136, 0.7);
 }
+
 
 /* Screens */
 #start-screen,
