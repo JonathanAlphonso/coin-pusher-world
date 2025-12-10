@@ -54,6 +54,7 @@ const UI = {
       multiDropGauge: document.getElementById("multi-drop-gauge"),
       multiDropFill: document.getElementById("multi-drop-fill"),
       multiDropCount: document.getElementById("multi-drop-count"),
+      multiDropReadyIndicator: document.getElementById("multi-drop-ready-indicator"),
       tierProgressContainer: document.getElementById("tier-progress-container"),
       tierProgressFill: document.getElementById("tier-progress-fill"),
       tierProgressLabel: document.getElementById("tier-progress-label"),
@@ -942,6 +943,15 @@ const UI = {
         this.elements.multiDropButton.disabled = false;
       } else {
         this.elements.multiDropButton.disabled = true;
+      }
+    }
+
+    // Show/hide ready indicator when gauge is full
+    if (this.elements.multiDropReadyIndicator) {
+      if (gaugeData.isFull && gaugeData.available) {
+        this.elements.multiDropReadyIndicator.classList.remove('hidden');
+      } else {
+        this.elements.multiDropReadyIndicator.classList.add('hidden');
       }
     }
   },

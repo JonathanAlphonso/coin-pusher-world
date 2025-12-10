@@ -514,6 +514,36 @@ body {
   box-shadow: 0 0 35px rgba(0, 255, 136, 0.7);
 }
 
+/* Multi-Drop Ready Indicator */
+#multi-drop-ready-indicator {
+  position: absolute;
+  bottom: 165px;
+  right: 20px;
+  background: linear-gradient(135deg, #00ff88 0%, #00ddff 100%);
+  color: #0a0a1a;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 8px 24px;
+  border-radius: 25px;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  box-shadow:
+    0 0 20px rgba(0, 255, 136, 0.8),
+    0 0 40px rgba(0, 255, 136, 0.4);
+  z-index: 21;
+  letter-spacing: 2px;
+  animation: ready-bounce 0.6s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes ready-bounce {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    transform: translateY(-8px) scale(1.05);
+  }
+}
+
 /* Multi-Drop Button (Design Spec 5.4) */
 #multi-drop-button {
   position: absolute;
@@ -656,7 +686,8 @@ body {
 
 /* Hide multi-drop controls when start screen is visible */
 #game-container:has(#start-screen:not(.hidden)) #multi-drop-button,
-#game-container:has(#start-screen:not(.hidden)) #multi-drop-gauge {
+#game-container:has(#start-screen:not(.hidden)) #multi-drop-gauge,
+#game-container:has(#start-screen:not(.hidden)) #multi-drop-ready-indicator {
   display: none;
 }
 
