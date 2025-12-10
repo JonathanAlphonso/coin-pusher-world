@@ -1039,12 +1039,33 @@ const UI = {
       };
       const rarityColor = rarityColors[prize.rarity] || '#ffffff';
 
+      // Build affinity display
+      let affinityHTML = '';
+      if (prize.affinities && prize.affinities.length > 0) {
+        const affinityNames = {
+          queueSpeed: 'Neon',
+          coinValue: 'Dino',
+          luckyCoins: 'Alien',
+          multiDrop: 'Pirate',
+          queueCapacity: 'Candy',
+          widerPusher: 'Space',
+          comboTime: 'Jungle',
+          jackpotChance: 'Robot'
+        };
+        const affinityIcons = prize.affinities
+          .map(a => affinityNames[a] || a)
+          .join(', ');
+        affinityHTML = `<div class="prize-affinity">⚡ ${affinityIcons}</div>`;
+      }
+
       optionEl.innerHTML = `
+        <div class="prize-option-icon">${prize.icon || '🎁'}</div>
         <div class="prize-option-header" style="border-color: ${rarityColor}">
           <div class="prize-option-name" style="color: ${rarityColor}">${prize.name}</div>
           <div class="prize-option-rarity" style="color: ${rarityColor}">${prize.rarity.toUpperCase()}</div>
         </div>
         <div class="prize-option-summary">${prize.summary}</div>
+        ${affinityHTML}
         <div class="prize-option-tags">${prize.tags.map(t => `<span class="prize-tag">${t}</span>`).join('')}</div>
       `;
 

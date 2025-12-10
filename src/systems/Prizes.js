@@ -13,6 +13,7 @@ const Prizes = {
     {
       id: 'fastQueue',
       name: 'Rapid Dropper',
+      icon: '⚡',
       summary: 'Queue refills 50% faster',
       tags: ['queue'],
       affinities: ['queueSpeed'],
@@ -22,6 +23,7 @@ const Prizes = {
     {
       id: 'bigQueue',
       name: 'Coin Vault',
+      icon: '🏦',
       summary: 'Max queue +10 coins',
       tags: ['queue'],
       affinities: ['queueCapacity'],
@@ -31,6 +33,7 @@ const Prizes = {
     {
       id: 'queueOnHit',
       name: 'Bounce Refund',
+      icon: '🔄',
       summary: '+1 queue per obstacle hit',
       tags: ['queue'],
       affinities: ['queueCapacity'],
@@ -42,6 +45,7 @@ const Prizes = {
     {
       id: 'goldenTouch',
       name: 'Golden Touch',
+      icon: '✨',
       summary: '+25% coin value',
       tags: ['value'],
       affinities: ['coinValue'],
@@ -51,6 +55,7 @@ const Prizes = {
     {
       id: 'compoundValue',
       name: 'Compound Interest',
+      icon: '📈',
       summary: '+5% value per board visited',
       tags: ['value'],
       affinities: ['coinValue'],
@@ -60,6 +65,7 @@ const Prizes = {
     {
       id: 'megaCoins',
       name: 'Mega Minter',
+      icon: '💰',
       summary: '+100% base coin value',
       tags: ['value'],
       affinities: ['coinValue'],

@@ -202,10 +202,11 @@ None - all core features implemented!
    - ✅ Particle effect scaling (100% normal, 50% low)
    - ✅ Setting persists via localStorage
 
-3. **Prize Counter UI Enhancement** (Section 8.1)
-   - Visual carousel/rotating bar
-   - Better prize preview with icons
-   - Affinity highlighting
+3. **Prize Counter UI Enhancement** (Section 8.1) ✅ DONE
+   - ✅ Prize icons added to all 24+ prizes
+   - ✅ Large animated icons in prize display
+   - ✅ Affinity highlighting showing compatible boards/themes
+   - ✅ Visual improvements with floating animations
 
 ### Priority: Low 🟢
 1. **Camera Improvements** (Section 10.1)
@@ -255,10 +256,19 @@ None - all core features implemented!
 - ✅ 8-board pyramid progression verified working
 - ✅ Implemented UI hitbox overlap tests (test-ui-hitbox.js)
 - ✅ Improved button sizing for mobile tap targets (44-48px minimum)
+- ✅ Fixed UI button positioning and spacing for all viewports
+  - Resolved drop/auto-drop button overlap
+  - Fixed start button viewport positioning
+  - Improved stats/help/settings button layout
 - ✅ Implemented performance mode toggle in settings
   - Normal mode: 50 coins, 60 FPS, full particles
   - Low mode: 25 coins, 30 FPS, 50% particles
   - Persists via localStorage
+- ✅ Enhanced Prize Counter UI
+  - Added unique icons to all 24+ prizes
+  - Implemented affinity highlighting for theme synergies
+  - Large animated prize icons with floating effect
+  - Improved visual hierarchy and readability
 
 ---
 
