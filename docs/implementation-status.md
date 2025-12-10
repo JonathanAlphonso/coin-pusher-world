@@ -265,7 +265,22 @@ All low-priority items complete! ✅
 
 ## Recent Changes
 
-### 2025-12-10 (Latest - Comprehensive Verification & Stability Confirmation)
+### 2025-12-10 (Latest - Queue Regeneration Progress Indicator)
+- ✅ Added visual progress bar for queue regeneration (Design Spec 9.1)
+  - Shows players when next free coin will arrive
+  - Green gradient fill below queue counter
+  - Smooth animation fills over 2-second regeneration interval
+  - Non-intrusive visual feedback improves mechanic understanding
+  - Updates in real-time via UI.updateQueueRegenProgress()
+- ✅ Technical implementation:
+  - HTML: queue-regen-bar container with queue-regen-fill element
+  - CSS: 3px height bar with linear gradient and glow effect
+  - UI.js: updateQueueRegenProgress() method added
+  - Coins.js: Progress tracking in updateQueue() method
+- ✅ All 50/50 tests passing after implementation
+- ✅ Verified hot-reload works correctly in dev mode
+
+### 2025-12-10 (Earlier - Comprehensive Verification & Stability Confirmation)
 - ✅ Verified all 50/50 tests passing (20+11+19)
   - Comprehensive Tests: 20/20 ✅
   - 8-Board Pyramid Tests: 11/11 ✅
