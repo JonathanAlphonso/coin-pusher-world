@@ -237,6 +237,19 @@ const UI = {
         self.toggleSfx();
       });
     }
+
+    // Performance toggle
+    const performanceToggle = document.getElementById('performance-toggle');
+    if (performanceToggle) {
+      performanceToggle.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (self.game) {
+          const newMode = self.game.togglePerformanceMode();
+          performanceToggle.textContent = newMode ? "ON" : "OFF";
+          performanceToggle.classList.toggle("active", newMode);
+        }
+      });
+    }
   },
 
   // Update auto-drop button state
@@ -244,6 +257,15 @@ const UI = {
     if (this.elements.autoDropButton) {
       this.elements.autoDropButton.textContent = isEnabled ? "AUTO: ON" : "AUTO: OFF";
       this.elements.autoDropButton.classList.toggle("active", isEnabled);
+    }
+  },
+
+  // Update performance mode button state
+  updatePerformanceMode: function (isLowPerf) {
+    const performanceToggle = document.getElementById('performance-toggle');
+    if (performanceToggle) {
+      performanceToggle.textContent = isLowPerf ? "ON" : "OFF";
+      performanceToggle.classList.toggle("active", isLowPerf);
     }
   },
 

@@ -34,6 +34,23 @@ const Game = {
   autoDropTimer: 0,
   autoDropInterval: 0.4, // seconds between auto drops
 
+  // Performance mode (for old Android devices per design spec 10.4)
+  lowPerformanceMode: false,
+  performanceSettings: {
+    normal: {
+      maxCoins: 50,
+      particleScale: 1.0,
+      shadowsEnabled: false, // Already disabled for performance
+      targetFPS: 60,
+    },
+    low: {
+      maxCoins: 25,
+      particleScale: 0.5,
+      shadowsEnabled: false,
+      targetFPS: 30,
+    },
+  },
+
   // Timing
   lastTime: 0,
   deltaTime: 0,
@@ -646,6 +663,52 @@ const Game = {
     this.autoDropTimer = 0;
     if (this.ui) this.ui.updateAutoDropButton(this.autoDrop);
     return this.autoDrop;
+  },
+
+  // Toggle performance mode (design spec 10.4)
+  togglePerformanceMode: function () {
+    this.lowPerformanceMode = !this.lowPerformanceMode;
+    console.log(`Performance mode: ${this.lowPerformanceMode ? 'LOW' : 'NORMAL'}`);
+
+    // Apply performance settings immediately
+    if (this.coins) {
+      const settings = this.getPerformanceSettings();
+      this.coins.maxActiveCoins = settings.maxCoins;
+
+      // Clean up excess coins if in low performance mode
+      if (this.lowPerformanceMode && this.coins.activeCoins.length > settings.maxCoins) {
+        console.log(`Cleaning up excess coins (${this.coins.activeCoins.length} -> ${settings.maxCoins})`);
+        // Remove oldest coins beyond the limit
+        const excessCount = this.coins.activeCoins.length - settings.maxCoins;
+        for (let i = 0; i < excessCount; i++) {
+          const coin = this.coins.activeCoins[0];
+          if (coin) {
+            this.coins.removeCoin(coin);
+          }
+        }
+      }
+    }
+
+    // Update UI
+    if (this.ui) {
+      this.ui.updatePerformanceMode(this.lowPerformanceMode);
+    }
+
+    // Save to storage
+    if (this.storage) {
+      const settings = this.storage.getSettings();
+      settings.lowPerformanceMode = this.lowPerformanceMode;
+      this.storage.saveSettings(settings);
+    }
+
+    return this.lowPerformanceMode;
+  },
+
+  // Get current performance settings
+  getPerformanceSettings: function () {
+    return this.lowPerformanceMode
+      ? this.performanceSettings.low
+      : this.performanceSettings.normal;
   },
 
   // Get save data

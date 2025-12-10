@@ -2757,6 +2757,21 @@ body {
   align-items: center;
 }
 
+.setting-info {
+  margin: 10px 0;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border-left: 3px solid rgba(100, 150, 255, 0.5);
+  border-radius: 4px;
+}
+
+.setting-info p {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.4;
+}
+
 .slider-container {
   display: flex;
   align-items: center;

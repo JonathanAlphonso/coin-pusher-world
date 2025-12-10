@@ -19,6 +19,7 @@ const Storage = {
     sfxVolume: 0.7,
     musicEnabled: true,
     sfxEnabled: true,
+    lowPerformanceMode: false, // Design spec 10.4 - performance mode for old devices
   },
 
   // Check if localStorage is available

@@ -93,6 +93,9 @@ document.addEventListener('DOMContentLoaded', function () {
   // Initialize Sound
   Sound.init();
 
+  // Connect Storage to Game
+  Game.storage = Storage;
+
   // Load and apply saved settings
   const savedSettings = Storage.getSettings();
   Sound.masterVolume = savedSettings.masterVolume;
@@ -100,6 +103,12 @@ document.addEventListener('DOMContentLoaded', function () {
   Sound.sfxVolume = savedSettings.sfxVolume;
   Sound.musicEnabled = savedSettings.musicEnabled;
   Sound.enabled = savedSettings.sfxEnabled;
+
+  // Apply performance mode setting (design spec 10.4)
+  if (savedSettings.lowPerformanceMode) {
+    Game.lowPerformanceMode = true;
+    console.log('Low performance mode enabled from saved settings');
+  }
 
   // Auto-mute sounds for tests (check URL parameter)
   const urlParams = new URLSearchParams(window.location.search);
