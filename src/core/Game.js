@@ -273,6 +273,23 @@ const Game = {
         }
       }
 
+      // B - Toggle board statistics (Design Spec 2.2 - Skill Expression)
+      if (e.key === "b" || e.key === "B") {
+        if (this.isRunning && !this.isPaused) {
+          e.preventDefault();
+          if (this.ui && this.ui.showBoardStats && this.ui.hideBoardStats) {
+            const boardStatsOverlay = document.getElementById("board-stats-overlay");
+            if (boardStatsOverlay) {
+              if (boardStatsOverlay.classList.contains("hidden")) {
+                this.ui.showBoardStats();
+              } else {
+                this.ui.hideBoardStats();
+              }
+            }
+          }
+        }
+      }
+
       // Escape - Close any open overlay
       if (e.key === "Escape") {
         e.preventDefault();
@@ -280,7 +297,8 @@ const Game = {
           "help-overlay",
           "settings-overlay",
           "stats-overlay",
-          "high-scores-overlay"
+          "high-scores-overlay",
+          "board-stats-overlay"
         ];
         overlays.forEach(id => {
           const overlay = document.getElementById(id);

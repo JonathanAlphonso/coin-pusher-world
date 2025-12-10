@@ -167,6 +167,20 @@
         </div>
       </div>
 
+      <!-- Board Stats Overlay (Design Spec 2.2 - Skill Expression) -->
+      <div id="board-stats-overlay" class="hidden">
+        <div class="board-stats-content">
+          <div class="board-stats-header">
+            <h2>Board Performance</h2>
+            <p>Strategic insights for better board placement</p>
+          </div>
+          <div class="board-stats-list" id="board-stats-list">
+            <!-- Board stats will be populated by JS -->
+          </div>
+          <button id="close-board-stats">CLOSE</button>
+        </div>
+      </div>
+
       <!-- Start Screen -->
       <div id="start-screen">
         <h1>Coin Pusher World</h1>
@@ -258,6 +272,13 @@
               <div class="help-item-text">
                 <h4>S</h4>
                 <p>Open Settings menu</p>
+              </div>
+            </div>
+            <div class="help-item">
+              <div class="help-item-icon">🅱</div>
+              <div class="help-item-text">
+                <h4>B</h4>
+                <p>View Board Performance statistics (strategic insights)</p>
               </div>
             </div>
             <div class="help-item">

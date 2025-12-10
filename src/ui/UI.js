@@ -72,6 +72,9 @@ const UI = {
       exportSaveButton: document.getElementById("export-save-button"),
       importSaveFile: document.getElementById("import-save-file"),
       autosaveIndicator: document.getElementById("autosave-indicator"),
+      boardStatsOverlay: document.getElementById("board-stats-overlay"),
+      boardStatsList: document.getElementById("board-stats-list"),
+      closeBoardStats: document.getElementById("close-board-stats"),
     };
 
     this.createBoardSelectionUI();
@@ -175,6 +178,14 @@ const UI = {
       this.elements.closeHighScores.addEventListener("click", function (e) {
         e.preventDefault();
         self.hideHighScores();
+      });
+    }
+
+    // Close board stats button
+    if (this.elements.closeBoardStats) {
+      this.elements.closeBoardStats.addEventListener("click", function (e) {
+        e.preventDefault();
+        self.hideBoardStats();
       });
     }
 
@@ -379,6 +390,68 @@ const UI = {
     if (this.elements.highScoresOverlay) {
       this.elements.highScoresOverlay.classList.add("hidden");
     }
+  },
+
+  // Show board statistics overlay (Design Spec 2.2 - Skill Expression)
+  showBoardStats: function () {
+    if (this.elements.boardStatsOverlay) {
+      this.populateBoardStats();
+      this.elements.boardStatsOverlay.classList.remove("hidden");
+    }
+  },
+
+  // Hide board statistics overlay
+  hideBoardStats: function () {
+    if (this.elements.boardStatsOverlay) {
+      this.elements.boardStatsOverlay.classList.add("hidden");
+    }
+  },
+
+  // Populate board statistics list
+  populateBoardStats: function () {
+    if (!this.elements.boardStatsList || !this.game || !this.game.boardManager) return;
+
+    const boardStats = this.game.boardManager.getAllBoardStats();
+    let html = "";
+
+    if (boardStats.length === 0) {
+      html = '<div style="text-align: center; color: #888; padding: 20px;">No boards created yet!</div>';
+    } else {
+      boardStats.forEach(board => {
+        const stats = board.stats;
+        html += `
+          <div class="board-stat-card">
+            <div class="board-stat-card-header">
+              <div class="board-stat-card-title">
+                <span class="theme-name">${board.themeName}</span>
+                <span class="board-position">Row ${board.row + 1}</span>
+              </div>
+              <div class="board-stat-card-focus">${board.powerupFocus}</div>
+            </div>
+            <div class="board-stat-card-stats">
+              <div class="board-stat-item">
+                <span class="board-stat-item-label">Coins</span>
+                <span class="board-stat-item-value">${formatNumber(stats.coinsProcessed)}</span>
+              </div>
+              <div class="board-stat-item">
+                <span class="board-stat-item-label">Value</span>
+                <span class="board-stat-item-value">${formatNumber(stats.valueGenerated)}</span>
+              </div>
+              <div class="board-stat-item">
+                <span class="board-stat-item-label">Queue</span>
+                <span class="board-stat-item-value">+${formatNumber(stats.queueGenerated)}</span>
+              </div>
+              <div class="board-stat-item">
+                <span class="board-stat-item-label">Jackpots</span>
+                <span class="board-stat-item-value">${stats.jackpotsTriggered}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    this.elements.boardStatsList.innerHTML = html;
   },
 
   // Populate high scores list

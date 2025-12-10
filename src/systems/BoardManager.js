@@ -100,6 +100,15 @@ const BoardManager = {
         jackpots: 0,
       },
 
+      // Board statistics (for player insight and strategic decisions - Design Spec 2.2)
+      stats: {
+        coinsProcessed: 0,    // Total coins that passed through this board
+        valueGenerated: 0,     // Total score value attributed to this board
+        queueGenerated: 0,     // Total queue added by this board
+        jackpotsTriggered: 0,  // Number of jackpots from this board
+        combosStarted: 0,      // Number of combo chains this board contributed to
+      },
+
       // 3D position in world
       worldPosition: this.calculateWorldPosition(position.row, position.col),
     };
@@ -320,6 +329,7 @@ const BoardManager = {
     this.boardsById = {};
     this.currentBoardCount = 0;
     this.nextBoardId = 1;
+    // Note: Stats are reset automatically when boards array is cleared
   },
 
   /**
@@ -337,6 +347,74 @@ const BoardManager = {
   offerThemeSelection: function() {
     const excluded = this.getExcludedThemes();
     return getThemeOptions(excluded);
+  },
+
+  /**
+   * Update board statistics when a coin passes through
+   * @param {string} boardId - Board ID
+   * @param {object} coinData - Coin data with value and effects
+   */
+  updateBoardStats: function(boardId, coinData = {}) {
+    const board = this.getBoard(boardId);
+    if (!board) return;
+
+    // Increment coins processed
+    board.stats.coinsProcessed++;
+
+    // Add value generated (if provided)
+    if (coinData.valueAdded) {
+      board.stats.valueGenerated += coinData.valueAdded;
+    }
+
+    // Add queue generated (if provided)
+    if (coinData.queueAdded) {
+      board.stats.queueGenerated += coinData.queueAdded;
+    }
+
+    // Track jackpots
+    if (coinData.jackpotTriggered) {
+      board.stats.jackpotsTriggered++;
+    }
+
+    // Track combos
+    if (coinData.comboStarted) {
+      board.stats.combosStarted++;
+    }
+  },
+
+  /**
+   * Get statistics for all boards (for UI display)
+   * @returns {array} Array of board stats sorted by row/col
+   */
+  getAllBoardStats: function() {
+    return this.boards
+      .sort((a, b) => {
+        if (a.row !== b.row) return a.row - b.row;
+        return a.col - b.col;
+      })
+      .map(board => ({
+        boardId: board.boardId,
+        themeName: board.themeName,
+        powerupFocus: board.powerupFocus,
+        row: board.row,
+        col: board.col,
+        stats: { ...board.stats },
+      }));
+  },
+
+  /**
+   * Reset all board statistics (for new game)
+   */
+  resetAllStats: function() {
+    this.boards.forEach(board => {
+      board.stats = {
+        coinsProcessed: 0,
+        valueGenerated: 0,
+        queueGenerated: 0,
+        jackpotsTriggered: 0,
+        combosStarted: 0,
+      };
+    });
   },
 
   /**
