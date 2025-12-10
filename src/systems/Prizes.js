@@ -550,7 +550,7 @@ const Prizes = {
     // Multi-drop effects
     if (effects.multiDropCount) {
       const powerUps = this.game.powerUps;
-      if (powerUps && powerUps.upgrades.multiDrop) {
+      if (powerUps && powerUps.upgrades && powerUps.upgrades.multiDrop) {
         powerUps.upgrades.multiDrop.level += effects.multiDropCount;
       }
     }
