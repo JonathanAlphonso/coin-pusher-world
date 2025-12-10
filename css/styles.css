@@ -210,7 +210,7 @@ body {
 #stats-button {
   position: absolute;
   top: 12px;
-  right: 10px;
+  right: 70px;
   background: linear-gradient(180deg, rgba(40, 20, 80, 0.9) 0%, rgba(20, 10, 40, 0.95) 100%);
   border: 2px solid rgba(255, 215, 0, 0.5);
   border-radius: 20px;
@@ -1010,6 +1010,7 @@ body {
     min-width: 60px;
     font-size: 11px;
     top: 8px;
+    right: 60px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1710,11 +1711,11 @@ body {
 
   #stats-button {
     top: 5px;
-    right: 5px;
+    right: 60px;
     padding: 6px 8px;
     font-size: 9px;
     min-height: 32px;
-    min-width: 45px;
+    min-width: 40px;
   }
 
   #drop-button {
@@ -3156,7 +3157,7 @@ body {
 #settings-button {
   position: absolute;
   top: 12px;
-  right: 100px;
+  right: 160px;
   background: linear-gradient(180deg, rgba(40, 20, 80, 0.9) 0%, rgba(20, 10, 40, 0.95) 100%);
   color: #fff;
   border: 2px solid rgba(150, 100, 255, 0.4);
@@ -3435,7 +3436,7 @@ body {
 /* Mobile adjustments for settings */
 @media (max-width: 480px) {
   #settings-button {
-    right: 70px;
+    right: 120px;
     padding: 14px 16px;
     min-height: 48px;
     font-size: 11px;

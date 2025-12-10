@@ -113,6 +113,8 @@ const Jackpot = {
 
   // Update UI display
   updateUI: function () {
+    if (!this.maxValue) return; // Guard against uninitialized state
+
     if (this.meterElement) {
       const percent = (this.value / this.maxValue) * 100;
       this.meterElement.style.width = percent + "%";
