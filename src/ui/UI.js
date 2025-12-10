@@ -922,6 +922,13 @@ const UI = {
     if (this.elements.multiDropFill) {
       const percent = (gaugeData.current / gaugeData.max) * 100;
       this.elements.multiDropFill.style.width = percent + '%';
+
+      // Add pulsing animation when full (visual feedback enhancement)
+      if (gaugeData.isFull) {
+        this.elements.multiDropFill.classList.add('full');
+      } else {
+        this.elements.multiDropFill.classList.remove('full');
+      }
     }
 
     // Update count text

@@ -540,6 +540,29 @@ body {
   z-index: 20;
 }
 
+/* Pulsing animation when multi-drop is ready */
+@keyframes multi-drop-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow:
+      0 5px 30px rgba(157, 0, 255, 0.5),
+      inset 0 2px 0 rgba(255, 255, 255, 0.3),
+      inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow:
+      0 8px 45px rgba(157, 0, 255, 0.9),
+      0 0 20px rgba(200, 100, 255, 0.6),
+      inset 0 2px 0 rgba(255, 255, 255, 0.4),
+      inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+  }
+}
+
+#multi-drop-button:not(:disabled) {
+  animation: multi-drop-pulse 2s ease-in-out infinite;
+}
+
 #multi-drop-button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
@@ -606,6 +629,20 @@ body {
   border-radius: 10px;
   transition: width 0.3s ease;
   box-shadow: 0 0 15px rgba(157, 0, 255, 0.8);
+}
+
+/* Pulsing glow when gauge is full */
+@keyframes gauge-full-pulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(157, 0, 255, 0.8);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(157, 0, 255, 1), 0 0 15px rgba(255, 0, 255, 0.8);
+  }
+}
+
+.gauge-fill.full {
+  animation: gauge-full-pulse 1.5s ease-in-out infinite;
 }
 
 .gauge-count {
