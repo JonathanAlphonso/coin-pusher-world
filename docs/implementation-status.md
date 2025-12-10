@@ -265,7 +265,19 @@ All low-priority items complete! ✅
 
 ## Recent Changes
 
-### 2025-12-10 (Latest - Build Optimization & Test Infrastructure)
+### 2025-12-10 (Latest - FPS Performance Monitor)
+- ✅ Added FPS counter for performance monitoring (Design Spec 10.4)
+  - Tracks FPS with 60-frame rolling average for accurate measurement
+  - Displays in debug mode via URL parameter (?debug=true)
+  - Color-coded performance indicator: green (good), yellow (warning), red (poor)
+  - Shows current FPS vs target FPS (60 normal mode, 30 low-performance mode)
+  - Automatic initialization on game start, cleanup on game over
+  - Non-intrusive overlay positioned in top-right corner
+  - Helps developers identify performance issues on low-end devices
+  - Essential tool for ensuring 30 FPS target on old Android devices
+- ✅ All 50/50 tests passing after addition
+
+### 2025-12-10 (Earlier - Build Optimization & Test Infrastructure)
 - ✅ Optimized production build configuration
   - Implemented manual chunking to separate three.js (510KB) from game code (213KB)
   - Reduced main bundle size from 724KB to 213KB for better caching
