@@ -1182,6 +1182,13 @@ const Coins = {
     return this.activeCoins.length;
   },
 
+  // Get effective max queue size (including theme effects)
+  getEffectiveMaxQueue: function () {
+    return this.themeEffects
+      ? this.themeEffects.getMaxQueueSize(this.maxQueueSize)
+      : this.maxQueueSize;
+  },
+
   // Set power-up effects
   setQueueSpeed: function (speed) {
     this.queueSpeed = speed;

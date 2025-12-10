@@ -746,7 +746,7 @@ const UI = {
     stats.push({ icon: "QUEUE", label: "Coins in Queue", value: queueValue });
 
     // Jackpot info
-    if (this.game.jackpot) {
+    if (this.game.jackpot && this.game.jackpot.value !== undefined) {
       const jackpotPercent = Math.floor((this.game.jackpot.value / this.game.jackpot.maxValue) * 100);
       stats.push({ icon: "JACKPOT", label: "Jackpot Meter", value: jackpotPercent + "%" });
       stats.push({ icon: "VALUE", label: "Jackpot Prize", value: formatNumber(this.game.jackpot.value) });
