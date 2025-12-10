@@ -106,6 +106,10 @@ const Game = {
     smoothing: 0.05, // Smoothing factor for camera movement
   },
 
+  // Drop zone preview indicator (Phase 8 Polish - Design Spec 2.2)
+  dropPreviewIndicator: null,
+  dropPreviewPulseTimer: 0,
+
   // System references
   physics: null,
   ui: null,
@@ -206,6 +210,9 @@ const Game = {
 
     // Add fog for depth (extended range to keep all tiers visible)
     this.scene.fog = new THREE.Fog(0x1a0b2e, 60, 180);
+
+    // Create drop zone preview indicator (Design Spec 2.2 - Physical Play skill expression)
+    this.createDropPreviewIndicator();
 
     // Handle window resize
     window.addEventListener("resize", this.onResize.bind(this));
@@ -507,6 +514,9 @@ const Game = {
 
     // Update camera position (smooth zoom for pyramid growth)
     this.updateCameraPosition(deltaTime);
+
+    // Update drop zone preview indicator (Design Spec 2.2 - Physical Play)
+    this.updateDropPreviewIndicator(deltaTime);
 
     // Auto-save game state periodically (Phase 9 - run state persistence)
     this.autoSaveTimer += deltaTime;
@@ -862,6 +872,11 @@ const Game = {
     // Remove FPS display on game over
     this.removeFPSDisplay();
 
+    // Hide drop preview indicator
+    if (this.dropPreviewIndicator) {
+      this.dropPreviewIndicator.visible = false;
+    }
+
     const tier = this.board ? this.board.currentTierCount : 1;
 
     // Update session stats with final values
@@ -1097,6 +1112,76 @@ const Game = {
 
       // Update FPS display
       this.updateFPSDisplay();
+    }
+  },
+
+  /**
+   * Create drop zone preview indicator
+   * Design Spec 2.2 - Physical Play skill expression
+   * Shows where coins will drop to help players aim better
+   */
+  createDropPreviewIndicator: function () {
+    // Create a glowing ring indicator at the drop zone
+    const geometry = new THREE.RingGeometry(0.8, 1.0, 32);
+    const material = new THREE.MeshBasicMaterial({
+      color: 0x00ffff,
+      transparent: true,
+      opacity: 0.4,
+      side: THREE.DoubleSide,
+    });
+
+    this.dropPreviewIndicator = new THREE.Mesh(geometry, material);
+    this.dropPreviewIndicator.rotation.x = -Math.PI / 2; // Lay flat
+    this.dropPreviewIndicator.visible = false; // Hidden until game starts
+    this.scene.add(this.dropPreviewIndicator);
+
+    // Add a subtle emissive glow
+    material.emissive = new THREE.Color(0x00aaff);
+    material.emissiveIntensity = 0.3;
+  },
+
+  /**
+   * Update drop zone preview indicator position and animation
+   * Called each frame during gameplay
+   */
+  updateDropPreviewIndicator: function (deltaTime) {
+    if (!this.dropPreviewIndicator || !this.isRunning) return;
+
+    // Show indicator only when game is running
+    if (!this.dropPreviewIndicator.visible && this.isRunning && !this.isPaused) {
+      this.dropPreviewIndicator.visible = true;
+    }
+
+    // Get current drop zone from board
+    const dropZone = this.board?.getDropZone();
+    if (!dropZone) {
+      this.dropPreviewIndicator.visible = false;
+      return;
+    }
+
+    // Position at drop zone
+    const centerX = (dropZone.minX + dropZone.maxX) / 2;
+    this.dropPreviewIndicator.position.set(centerX, dropZone.y + 0.1, dropZone.z);
+
+    // Gentle pulsing animation (Design Spec 8 - Visual feedback)
+    this.dropPreviewPulseTimer += deltaTime;
+    const pulseScale = 1.0 + Math.sin(this.dropPreviewPulseTimer * 3.0) * 0.1;
+    this.dropPreviewIndicator.scale.set(pulseScale, 1, pulseScale);
+
+    // Gentle opacity pulse
+    const pulseOpacity = 0.3 + Math.sin(this.dropPreviewPulseTimer * 2.5) * 0.15;
+    this.dropPreviewIndicator.material.opacity = pulseOpacity;
+
+    // Color shift based on queue status (green when full, cyan when medium, blue when low)
+    if (this.coins) {
+      const queueRatio = this.coins.coinQueue / this.coins.maxQueueSize;
+      if (queueRatio > 0.7) {
+        this.dropPreviewIndicator.material.color.setHex(0x00ff88); // Greenish
+      } else if (queueRatio > 0.3) {
+        this.dropPreviewIndicator.material.color.setHex(0x00ffff); // Cyan
+      } else {
+        this.dropPreviewIndicator.material.color.setHex(0x4488ff); // Bluish
+      }
     }
   },
 
