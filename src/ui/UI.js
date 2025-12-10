@@ -754,6 +754,31 @@ const UI = {
     scoreEl.style.left = "50%";
     scoreEl.style.top = "60%";
 
+    // Phase 8 - Big Score Events (Design Spec 7.3)
+    // Larger text and special styling for mega scores
+    if (value >= 10000) {
+      // Mega score (10k+) - massive text with gold color
+      scoreEl.style.fontSize = "48px";
+      scoreEl.style.color = "#FFD700";
+      scoreEl.style.textShadow = "0 0 20px #FF8C00, 0 0 40px #FFA500";
+      scoreEl.style.fontWeight = "bold";
+    } else if (value >= 5000) {
+      // Huge score (5k+) - large text with orange
+      scoreEl.style.fontSize = "36px";
+      scoreEl.style.color = "#FFA500";
+      scoreEl.style.textShadow = "0 0 15px #FF6B00";
+      scoreEl.style.fontWeight = "bold";
+    } else if (value >= 2000) {
+      // Big score (2k+) - larger text with yellow
+      scoreEl.style.fontSize = "28px";
+      scoreEl.style.color = "#FFE44D";
+      scoreEl.style.textShadow = "0 0 10px #FFD700";
+    } else if (value >= 1000) {
+      // Good score (1k+) - slightly larger
+      scoreEl.style.fontSize = "24px";
+      scoreEl.style.color = "#90EE90";
+    }
+
     container.appendChild(scoreEl);
 
     setTimeout(() => {
