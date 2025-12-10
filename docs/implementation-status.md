@@ -265,7 +265,26 @@ All low-priority items complete! ✅
 
 ## Recent Changes
 
-### 2025-12-10 (Latest - Active Prizes Display Panel)
+### 2025-12-10 (Latest - Bug Fixes & Polish Features)
+- ✅ Fixed runtime errors in Coins and UI systems
+  - Added missing `getEffectiveMaxQueue()` method to Coins.js
+  - Added defensive check for jackpot.value in UI.js
+  - Eliminated all console errors during gameplay
+- ✅ Added pyramid completion celebration (Phase 8 Polish)
+  - Visual: Golden "🎉 PYRAMID COMPLETE! 🎉" message
+  - Audio: Powerup sound effect
+  - Visual: Epic screen shake (intensity 2.0)
+  - Reward: +10 bonus coins added to queue
+  - Triggers when 8th board is placed
+- ✅ Added board unlock helpful tips (Phase 8 Polish)
+  - Contextual tips explain each board's powerupFocus
+  - Color-coded using theme colors
+  - Helps players understand board synergies
+  - Tips for all 8 theme types (queueSpeed, coinValue, etc.)
+- ✅ All 50/50 tests passing after all changes
+- ✅ 3 commits: bug fixes, pyramid celebration, board tips
+
+### 2025-12-10 (Earlier - Active Prizes Display Panel)
 - ✅ Added active prizes display panel (Phase 8 Polish - Design Spec 8.1)
   - Real-time visual feedback panel showing all active prize bonuses
   - Located in bottom-left corner with icon, name, and effect summary
