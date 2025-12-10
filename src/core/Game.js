@@ -113,6 +113,10 @@ const Game = {
   // Haptic feedback support (Phase 8 Polish - Mobile UX enhancement)
   hapticEnabled: true,
 
+  // Score milestone celebrations (Phase 8 Polish)
+  scoreMilestones: [10000, 25000, 50000, 100000, 250000, 500000, 1000000],
+  reachedMilestones: [],
+
   // System references
   physics: null,
   ui: null,
@@ -350,6 +354,9 @@ const Game = {
     // Reset milestone notifications
     this.milestoneNotifications.milestone75shown = false;
     this.milestoneNotifications.milestone90shown = false;
+
+    // Reset score milestones (Phase 8 Polish)
+    this.reachedMilestones = [];
 
     // Reset session stats
     this.sessionStats = {
@@ -734,9 +741,13 @@ const Game = {
       return;
     }
 
+    const oldScore = this.score;
     this.score += finalAmount;
     this.sessionStats.coinsScored++;
     if (this.ui) this.ui.updateScore(this.score);
+
+    // Check for score milestone celebrations (Phase 8 Polish)
+    this.checkScoreMilestones(oldScore, this.score);
 
     // Haptic feedback for big scores (Design Spec 10.4 - Mobile UX)
     if (multiplier >= 5 || finalAmount >= 1000) {
@@ -752,6 +763,59 @@ const Game = {
     }
 
     if (this.sound) this.sound.play("score");
+  },
+
+  // Check for score milestone celebrations (Phase 8 Polish)
+  checkScoreMilestones: function(oldScore, newScore) {
+    // Check each milestone to see if we just crossed it
+    for (let i = 0; i < this.scoreMilestones.length; i++) {
+      const milestone = this.scoreMilestones[i];
+
+      // If we just crossed this milestone and haven't celebrated it yet
+      if (oldScore < milestone && newScore >= milestone && !this.reachedMilestones.includes(milestone)) {
+        this.reachedMilestones.push(milestone);
+        this.celebrateScoreMilestone(milestone);
+      }
+    }
+  },
+
+  // Celebrate reaching a score milestone (Phase 8 Polish)
+  celebrateScoreMilestone: function(milestone) {
+    // Format the milestone (10k, 100k, 1M, etc.)
+    let formattedMilestone;
+    if (milestone >= 1000000) {
+      formattedMilestone = (milestone / 1000000) + 'M';
+    } else if (milestone >= 1000) {
+      formattedMilestone = (milestone / 1000) + 'K';
+    } else {
+      formattedMilestone = milestone.toString();
+    }
+
+    // Celebration intensity scales with milestone size
+    const intensity = milestone >= 100000 ? 1.5 : milestone >= 50000 ? 1.2 : 0.8;
+
+    // Visual celebration
+    if (this.ui) {
+      this.ui.showMessage(`🎊 ${formattedMilestone} POINTS! 🎊\nKeep Going!`, '#FFD700', 4000);
+    }
+
+    // Screen shake
+    this.screenShake(intensity);
+
+    // Sound celebration
+    if (this.sound) {
+      this.sound.play(milestone >= 100000 ? 'jackpot' : 'levelup');
+    }
+
+    // Bonus reward for major milestones
+    if (milestone >= 50000 && this.coins) {
+      this.coins.addToQueue(5);
+    }
+
+    // Haptic feedback for mobile
+    this.triggerHaptic('heavy');
+
+    console.log(`🎊 Score milestone reached: ${formattedMilestone}`);
   },
 
   // Check if we should expand
