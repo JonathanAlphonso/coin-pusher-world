@@ -748,7 +748,7 @@ const Coins = {
         }
       } else {
         // Regular bonus zone
-        this.triggerBonus(bonusResult, body.x, body.y);
+        this.triggerBonus(bonusResult, body.x, body.y, coin);
         if (this.game) this.game.addScore(coin.value, body.x, body.y, body.z, comboMult);
         if (this.ui) this.ui.showCoinScore(Math.floor(coin.value * comboMult), { x: body.x, y: body.y, z: body.z });
       }
@@ -841,11 +841,16 @@ const Coins = {
   },
 
   // Trigger a bonus effect
-  triggerBonus: function (zone, x, y) {
+  // coin parameter is optional - used to track which board generated the queue (Design Spec 2.2)
+  triggerBonus: function (zone, x, y, coin = null) {
     switch (zone.type) {
       case "queue":
         const addAmount = randomInt(3, 8);
-        this.addToQueue(addAmount);
+        // Attribute queue gain to the last board the coin visited
+        const lastBoard = coin && coin.pathBoards && coin.pathBoards.length > 0
+          ? coin.pathBoards[coin.pathBoards.length - 1]
+          : null;
+        this.addToQueue(addAmount, lastBoard);
         if (this.ui) this.ui.showMessage("+" + addAmount + " Coins!", x, y);
         if (this.sound) this.sound.play("bonus");
         break;
@@ -941,7 +946,8 @@ const Coins = {
   },
 
   // Add coins to queue
-  addToQueue: function (amount) {
+  // boardId is optional - tracks which board generated the queue for statistics (Design Spec 2.2)
+  addToQueue: function (amount, boardId = null) {
     // Get dynamic max queue size from ThemeEffects
     const effectiveMaxQueue = this.themeEffects
       ? this.themeEffects.getMaxQueueSize(this.maxQueueSize)
@@ -956,6 +962,13 @@ const Coins = {
 
     this.coinQueue = Math.min(this.coinQueue + adjustedAmount, effectiveMaxQueue);
     if (this.ui) this.ui.updateQueue(this.coinQueue);
+
+    // Track queue generation per board (Design Spec 2.2 - Board Performance)
+    if (boardId && this.boardManager && this.boardManager.updateBoardStats) {
+      this.boardManager.updateBoardStats(boardId, {
+        queueAdded: adjustedAmount
+      });
+    }
   },
 
   // Update coin queue regeneration (passive income)
