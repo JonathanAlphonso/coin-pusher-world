@@ -23,6 +23,7 @@ import Coins from './systems/Coins.js';
 import Relics from './systems/Relics.js';
 import DailyChallenges from './systems/DailyChallenges.js';
 import Prizes from './systems/Prizes.js';
+import BoardManager from './systems/BoardManager.js';
 
 // World
 import Board from './world/Board.js';
@@ -182,6 +183,10 @@ document.addEventListener('DOMContentLoaded', function () {
   });
   Game.prizes = Prizes;
 
+  // Initialize BoardManager
+  BoardManager.init(scene, Board);
+  Game.boardManager = BoardManager;
+
   // Expose for console debugging and automated tests
   Object.assign(window, {
     Game,
@@ -199,6 +204,7 @@ document.addEventListener('DOMContentLoaded', function () {
     Storage,
     DailyChallenges,
     Prizes,
+    BoardManager,
   });
 
   console.log('Game initialized successfully!');
