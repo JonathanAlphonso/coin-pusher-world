@@ -281,8 +281,15 @@ All low-priority items complete! ✅
   - Color-coded using theme colors
   - Helps players understand board synergies
   - Tips for all 8 theme types (queueSpeed, coinValue, etc.)
+- ✅ Added score milestone celebrations (Phase 8 Polish)
+  - Automatic celebrations at 10K, 25K, 50K, 100K, 250K, 500K, 1M
+  - Golden celebration messages with screen shake
+  - Sound effects scale with milestone (levelup → jackpot)
+  - Major milestones (50K+) reward +5 bonus coins
+  - Haptic feedback on mobile devices
+  - Each milestone only celebrates once per session
 - ✅ All 50/50 tests passing after all changes
-- ✅ 3 commits: bug fixes, pyramid celebration, board tips
+- ✅ 5 commits: bug fixes, pyramid celebration, board tips, score milestones, documentation
 
 ### 2025-12-10 (Earlier - Active Prizes Display Panel)
 - ✅ Added active prizes display panel (Phase 8 Polish - Design Spec 8.1)
