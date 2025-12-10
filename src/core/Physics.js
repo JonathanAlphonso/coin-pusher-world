@@ -100,6 +100,19 @@ const Physics = {
     return body;
   },
 
+  // Add a body (alias for backwards compatibility)
+  addBody: function (body) {
+    if (body.isStatic) {
+      if (!this.staticBodies.includes(body)) {
+        this.staticBodies.push(body);
+      }
+    } else {
+      if (!this.bodies.includes(body)) {
+        this.bodies.push(body);
+      }
+    }
+  },
+
   // Remove a body
   removeBody: function (body) {
     const index = this.bodies.indexOf(body);
@@ -561,6 +574,11 @@ const Physics = {
       if (!this.bodies[i].isSleeping) count++;
     }
     return count;
+  },
+
+  // Alias for update (for test compatibility)
+  step: function (deltaTime) {
+    return this.update(deltaTime);
   },
 };
 
