@@ -75,6 +75,15 @@ const Game = {
   },
   originalCameraPosition: null,
 
+  // Camera adjustment for pyramid growth
+  cameraAdjustment: {
+    targetZ: 22,
+    targetY: 14,
+    currentZ: 22,
+    currentY: 14,
+    smoothing: 0.05, // Smoothing factor for camera movement
+  },
+
   // System references
   physics: null,
   ui: null,
@@ -124,6 +133,12 @@ const Game = {
     const mobileYOffset = aspect < 1 ? 4 : 0;
     this.camera.position.set(0, 14 + mobileYOffset, 22 + mobileZOffset);
     this.camera.lookAt(0, 0, 0);
+
+    // Initialize camera adjustment state to match initial position
+    this.cameraAdjustment.currentZ = 22;
+    this.cameraAdjustment.currentY = 14;
+    this.cameraAdjustment.targetZ = 22;
+    this.cameraAdjustment.targetY = 14;
 
     // Create renderer with optimizations
     const isTinyScreen = Math.min(window.innerWidth, window.innerHeight) < 420;
@@ -365,6 +380,9 @@ const Game = {
     // Update screen shake
     this.updateScreenShake(deltaTime);
 
+    // Update camera position (smooth zoom for pyramid growth)
+    this.updateCameraPosition(deltaTime);
+
     // Update UI
     if (this.ui) this.ui.update(deltaTime);
 
@@ -415,6 +433,45 @@ const Game = {
       this.camera.position.x = this.originalCameraPosition.x + offsetX;
       this.camera.position.y = this.originalCameraPosition.y + offsetY;
     }
+  },
+
+  // Adjust camera based on pyramid size (smooth transition)
+  updateCameraPosition: function (deltaTime) {
+    // Only adjust if targets have changed (i.e., not at default position)
+    const hasAdjustment = this.cameraAdjustment.targetZ !== 22 || this.cameraAdjustment.targetY !== 14;
+    if (!hasAdjustment) return;
+
+    // Smoothly interpolate current position towards target
+    const smoothing = this.cameraAdjustment.smoothing;
+
+    this.cameraAdjustment.currentZ += (this.cameraAdjustment.targetZ - this.cameraAdjustment.currentZ) * smoothing;
+    this.cameraAdjustment.currentY += (this.cameraAdjustment.targetY - this.cameraAdjustment.currentY) * smoothing;
+
+    // Only update if not in screen shake
+    if (!this.originalCameraPosition && this.screenShake.timer <= 0) {
+      const aspect = window.innerWidth / window.innerHeight;
+      const mobileZOffset = aspect < 1 ? 6 : 0;
+      const mobileYOffset = aspect < 1 ? 4 : 0;
+
+      this.camera.position.z = this.cameraAdjustment.currentZ + mobileZOffset;
+      this.camera.position.y = this.cameraAdjustment.currentY + mobileYOffset;
+    }
+  },
+
+  // Adjust camera for pyramid growth (called when boards are added)
+  adjustCameraForPyramid: function (boardCount) {
+    // Zoom out gradually as more boards are added
+    // Starts at z=22, y=14 and zooms out to z=32, y=18 at 8 boards
+    const baseZ = 22;
+    const baseY = 14;
+    const maxZ = 32;
+    const maxY = 18;
+
+    // Linear interpolation based on board count (1-8 boards)
+    const progress = Math.min(boardCount / 8, 1.0);
+
+    this.cameraAdjustment.targetZ = baseZ + (maxZ - baseZ) * progress;
+    this.cameraAdjustment.targetY = baseY + (maxY - baseY) * progress;
   },
 
   // Update particle effects
@@ -570,6 +627,10 @@ const Game = {
 
         if (newBoard) {
           console.log(`New board added: ${newBoard.boardId} at row ${newBoard.row}, col ${newBoard.col}`);
+
+          // Adjust camera to fit the growing pyramid
+          const status = this.boardManager.getStatus();
+          this.adjustCameraForPyramid(status.boardCount);
 
           // Update the physical board visualization (optional, can be implemented later)
           // if (this.board) {
