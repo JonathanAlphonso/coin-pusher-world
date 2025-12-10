@@ -69,6 +69,8 @@ const UI = {
       sfxVolumeValue: document.getElementById("sfx-volume-value"),
       musicToggle: document.getElementById("music-toggle"),
       sfxToggle: document.getElementById("sfx-toggle"),
+      exportSaveButton: document.getElementById("export-save-button"),
+      importSaveFile: document.getElementById("import-save-file"),
     };
 
     this.createBoardSelectionUI();
@@ -188,6 +190,37 @@ const UI = {
       this.elements.closeSettings.addEventListener("click", function (e) {
         e.preventDefault();
         self.hideSettings();
+      });
+    }
+
+    // Export save data button
+    if (this.elements.exportSaveButton && self.storage) {
+      this.elements.exportSaveButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        const success = self.storage.downloadSaveData();
+        if (success) {
+          self.showMessage("Save data exported successfully!");
+        } else {
+          self.showMessage("Failed to export save data");
+        }
+      });
+    }
+
+    // Import save data file input
+    if (this.elements.importSaveFile && self.storage) {
+      this.elements.importSaveFile.addEventListener("change", function (e) {
+        const file = e.target.files[0];
+        if (file) {
+          self.storage.uploadSaveData(file, function (success) {
+            if (success) {
+              self.showMessage("Save data imported! Reload page to apply changes.");
+            } else {
+              self.showMessage("Failed to import save data");
+            }
+          });
+          // Reset file input
+          e.target.value = '';
+        }
       });
     }
 

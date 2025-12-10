@@ -348,6 +348,129 @@ const Storage = {
       return false;
     }
   },
+
+  // Export all save data as a JSON string for backup
+  exportSaveData: function () {
+    if (!this.isAvailable()) return null;
+
+    try {
+      const exportData = {
+        game: this.loadGame(),
+        highScores: this.getHighScores(),
+        settings: this.getSettings(),
+        lifetimeStats: this.getLifetimeStats(),
+        dailyChallenges: this.getDailyChallenges(),
+        exportDate: new Date().toISOString(),
+        version: 1,
+      };
+
+      return JSON.stringify(exportData, null, 2);
+    } catch (e) {
+      console.error('Failed to export save data:', e);
+      return null;
+    }
+  },
+
+  // Import save data from a JSON string
+  importSaveData: function (jsonString) {
+    if (!this.isAvailable()) return false;
+
+    try {
+      const importData = JSON.parse(jsonString);
+
+      // Validate import data structure
+      if (!importData || typeof importData !== 'object') {
+        console.error('Invalid import data format');
+        return false;
+      }
+
+      // Import each data type if present
+      let importedCount = 0;
+
+      if (importData.game) {
+        this.saveGame(importData.game);
+        importedCount++;
+      }
+
+      if (importData.highScores && Array.isArray(importData.highScores)) {
+        localStorage.setItem(HIGH_SCORES_KEY, JSON.stringify(importData.highScores));
+        importedCount++;
+      }
+
+      if (importData.settings) {
+        this.saveSettings(importData.settings);
+        importedCount++;
+      }
+
+      if (importData.lifetimeStats) {
+        this.saveLifetimeStats(importData.lifetimeStats);
+        importedCount++;
+      }
+
+      if (importData.dailyChallenges) {
+        localStorage.setItem(DAILY_CHALLENGES_KEY, JSON.stringify(importData.dailyChallenges));
+        importedCount++;
+      }
+
+      console.log(`Successfully imported ${importedCount} data categories`);
+      return true;
+    } catch (e) {
+      console.error('Failed to import save data:', e);
+      return false;
+    }
+  },
+
+  // Download save data as a file
+  downloadSaveData: function () {
+    const saveData = this.exportSaveData();
+    if (!saveData) {
+      console.error('No save data to export');
+      return false;
+    }
+
+    try {
+      const blob = new Blob([saveData], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `coin-pusher-save-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      return true;
+    } catch (e) {
+      console.error('Failed to download save data:', e);
+      return false;
+    }
+  },
+
+  // Upload and import save data from a file
+  uploadSaveData: function (file, callback) {
+    if (!file) {
+      console.error('No file provided');
+      if (callback) callback(false);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const success = this.importSaveData(e.target.result);
+        if (callback) callback(success);
+      } catch (error) {
+        console.error('Failed to read save file:', error);
+        if (callback) callback(false);
+      }
+    };
+
+    reader.onerror = (error) => {
+      console.error('File reading error:', error);
+      if (callback) callback(false);
+    };
+
+    reader.readAsText(file);
+  },
 };
 
 export default Storage;

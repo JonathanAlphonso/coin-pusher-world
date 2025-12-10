@@ -2932,6 +2932,31 @@ body {
   transform: scale(1.05);
 }
 
+.action-button {
+  display: inline-block;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 2px solid rgba(100, 150, 255, 0.5);
+  background: rgba(30, 60, 100, 0.5);
+  color: rgba(150, 200, 255, 0.9);
+  transition: all 0.3s ease;
+  text-align: center;
+  width: 100%;
+}
+
+.action-button:hover {
+  transform: scale(1.05);
+  background: rgba(40, 80, 130, 0.6);
+  border-color: rgba(120, 180, 255, 0.7);
+}
+
+.action-button:active {
+  transform: scale(0.98);
+}
+
 #close-settings {
   display: block;
   width: 100%;
