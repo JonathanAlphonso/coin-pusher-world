@@ -950,6 +950,26 @@ const Coins = {
     const time = performance.now() * 0.0002; // Very slow animation
     for (let i = 0; i < this.activeCoins.length; i++) {
       const coin = this.activeCoins[i];
+
+      // Update visual feedback for multi-board path (Design Spec 7.1 - Path Tracking)
+      // Coins that have visited multiple boards get a subtle glow to show progression
+      if (coin.pathBoards && coin.pathBoards.length > 0) {
+        const parts = coin.mesh.userData;
+        if (parts && parts.body && parts.body.material) {
+          // Subtle emissive boost based on board visits (caps at 3 boards for visual clarity)
+          const pathBoost = Math.min(coin.pathBoards.length, 3) * 0.05;
+          const baseEmissive = coin.type === "rainbow" ? 0.15 : 0.05;
+
+          // Only update if material supports emissive (avoid errors on pooled coins)
+          if (parts.body.material.emissive) {
+            const currentEmissive = parts.body.material.emissive.getHSL({});
+            const targetL = Math.min(baseEmissive + pathBoost, 0.3);
+            // Smooth interpolation to avoid sudden changes
+            parts.body.material.emissive.setHSL(currentEmissive.h, currentEmissive.s, targetL);
+          }
+        }
+      }
+
       if (coin.type === "rainbow" && coin.rainbowHue !== undefined) {
         const parts = coin.mesh.userData;
         if (parts && parts.body && parts.body.material) {
