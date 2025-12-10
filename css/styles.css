@@ -127,8 +127,9 @@ body {
   background: linear-gradient(180deg, rgba(40, 20, 80, 0.9) 0%, rgba(20, 10, 40, 0.95) 100%);
   border: 2px solid rgba(255, 215, 0, 0.5);
   border-radius: 20px;
-  padding: 12px 18px;
-  min-height: 44px;
+  padding: 14px 20px;
+  min-height: 48px;
+  min-width: 80px;
   font-size: 12px;
   font-weight: bold;
   color: #ffd700;
@@ -252,14 +253,15 @@ body {
 /* Drop Button */
 #drop-button {
   position: absolute;
-  bottom: 30px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   background: linear-gradient(180deg, #ff8800 0%, #ff4400 50%, #cc2200 100%);
   border: 3px solid rgba(255, 200, 100, 0.5);
   border-radius: 50px;
-  padding: 20px 60px;
-  font-size: 24px;
+  padding: 18px 60px;
+  min-height: 48px;
+  font-size: 22px;
   font-weight: bold;
   color: #fff;
   cursor: pointer;
@@ -340,9 +342,9 @@ body {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  padding: calc(env(safe-area-inset-top) + 20px) 15px calc(env(safe-area-inset-bottom) + 20px);
+  padding: calc(env(safe-area-inset-top) + 10px) 15px calc(env(safe-area-inset-bottom) + 30px);
   overflow-y: auto;
-  gap: 15px;
+  gap: 8px;
   color: #fff;
   z-index: 100;
   backdrop-filter: blur(10px);
@@ -492,9 +494,9 @@ body {
   background: linear-gradient(180deg, #00cc66 0%, #009944 50%, #006633 100%);
   border: 3px solid rgba(100, 255, 150, 0.4);
   border-radius: 35px;
-  padding: 18px 50px;
-  min-height: 60px;
-  font-size: 24px;
+  padding: 14px 50px;
+  min-height: 52px;
+  font-size: 20px;
   font-weight: bold;
   color: #fff;
   cursor: pointer;
@@ -505,6 +507,8 @@ body {
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   letter-spacing: 2px;
   transition: all 0.2s ease;
+  margin-bottom: 10px;
+  margin-top: 5px;
 }
 
 #start-button:hover,
@@ -588,10 +592,14 @@ body {
   }
 
   #stats-button {
-    padding: 14px 16px;
-    min-height: 48px;
+    padding: 12px 18px;
+    height: 48px;
+    min-width: 60px;
     font-size: 11px;
     top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   #drop-button {
@@ -977,8 +985,8 @@ body {
    ============================================ */
 #help-button {
   position: absolute;
-  top: 12px;
-  right: 270px;
+  top: 70px;
+  right: 10px;
   width: 48px;
   height: 48px;
   min-width: 48px;
@@ -1138,9 +1146,9 @@ body {
 .start-features {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
+  gap: 10px;
   max-width: 400px;
-  margin: 0 auto 30px;
+  margin: 0 auto 15px;
   padding: 0 20px;
 }
 
@@ -1166,7 +1174,7 @@ body {
 
 .start-controls {
   text-align: center;
-  margin-bottom: 25px;
+  margin-bottom: 10px;
   padding: 15px 20px;
   background: rgba(0, 0, 0, 0.3);
   border-radius: 15px;
@@ -1319,10 +1327,10 @@ body {
   }
 
   #help-button {
-    top: 5px;
-    right: 105px;
-    width: 40px;
-    height: 40px;
+    top: 130px;
+    right: 10px;
+    width: 48px;
+    height: 48px;
     font-size: 20px;
     min-width: 40px;
     min-height: 40px;
@@ -2469,6 +2477,53 @@ body {
 
   .board-option {
     min-height: 56px;
+  }
+}
+
+/* Old Android / wide short screens */
+@media (max-width: 800px) and (max-height: 500px) {
+  #help-button {
+    top: 128px;
+    right: 10px;
+  }
+
+  #start-screen,
+  #gameover-screen {
+    gap: 5px;
+    padding: 5px 15px 20px;
+  }
+
+  #start-screen h1,
+  #gameover-screen h1 {
+    font-size: 32px;
+    margin-bottom: 5px;
+  }
+
+  #start-screen p {
+    font-size: 13px;
+    margin-bottom: 5px;
+  }
+
+  .start-features {
+    margin: 0 auto 10px;
+    gap: 8px;
+  }
+
+  .start-feature {
+    padding: 10px;
+  }
+
+  .start-controls {
+    margin-bottom: 5px;
+    padding: 10px 15px;
+  }
+
+  #start-button,
+  #restart-button {
+    padding: 10px 40px;
+    min-height: 44px;
+    font-size: 18px;
+    margin-bottom: 5px;
   }
 }
 
