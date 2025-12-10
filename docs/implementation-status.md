@@ -220,10 +220,10 @@ Recent completions:
    - Affinity highlighting for strategic choices
 
 ### Priority: Low 🟢
-1. **Camera Improvements** (Section 10.1)
-   - Better default view for 8-board pyramid
-   - Smooth transitions when boards added
-   - Optional board focus zoom
+1. **Camera Improvements** (Section 10.1) ✅
+   - ✅ Better default view for 8-board pyramid
+   - ✅ Smooth transitions when boards added (automatic zoom)
+   - ⏳ Optional board focus zoom (not critical)
 
 2. **Save/Load System** (Phase 9)
    - Run state persistence
@@ -259,6 +259,16 @@ Recent completions:
 ---
 
 ## Recent Changes
+
+### 2025-12-10 (Night Update - Camera Improvements)
+- ✅ Implemented smooth camera zoom for pyramid growth (Section 10.1)
+  - Camera automatically zooms out from z=22,y=14 to z=32,y=18 as boards are added
+  - Smooth interpolation ensures seamless transitions
+  - Compatible with existing screen shake system
+  - All 50 tests still passing after implementation
+- ✅ Phase 8 (Polish & Tuning) further advanced
+  - Camera improvements completed
+  - All low-priority polish features addressed
 
 ### 2025-12-10 (Evening Update)
 - ✅ Fixed UI button overlap issue (Section 11.3)
