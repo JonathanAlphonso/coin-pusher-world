@@ -29,9 +29,12 @@ import ThemeEffects from './systems/ThemeEffects.js';
 // World
 import Board from './world/Board.js';
 
+// Debug configuration (can be enabled via URL: ?debug=true)
+const DEBUG = new URLSearchParams(window.location.search).get('debug') === 'true';
+
 // Initialize the game when DOM is ready
 document.addEventListener('DOMContentLoaded', function () {
-  console.log('Coin Pusher World - Vite Build');
+  if (DEBUG) console.log('Coin Pusher World - Vite Build');
 
   // Initialize Game first to get the scene
   const scene = Game.init({
@@ -112,14 +115,14 @@ document.addEventListener('DOMContentLoaded', function () {
   // Apply performance mode setting (design spec 10.4)
   if (savedSettings.lowPerformanceMode) {
     Game.lowPerformanceMode = true;
-    console.log('Low performance mode enabled from saved settings');
+    if (Game.DEBUG) console.log('Low performance mode enabled from saved settings');
   }
 
   // Auto-mute sounds for tests (check URL parameter)
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.has('mute') || urlParams.has('test')) {
     Sound.mute();
-    console.log('Sound muted for testing');
+    if (Game.DEBUG) console.log('Sound muted for testing');
   }
 
   // Initialize Combo with UI, Sound, ThemeEffects, and Game for cascade celebrations
@@ -225,5 +228,5 @@ document.addEventListener('DOMContentLoaded', function () {
     ThemeEffects,
   });
 
-  console.log('Game initialized successfully!');
+  if (Game.DEBUG) console.log('Game initialized successfully!');
 });

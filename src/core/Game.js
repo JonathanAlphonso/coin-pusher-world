@@ -7,7 +7,13 @@ import * as THREE from 'three';
 import Background from '../world/Background.js';
 import { tierThemes } from '../world/themes/index.js';
 
+// Debug configuration - set to false for production builds
+// Can be overridden via URL parameter: ?debug=true
+const DEBUG = new URLSearchParams(window.location.search).get('debug') === 'true' || false;
+
 const Game = {
+  // Debug flag (can be toggled for development)
+  DEBUG: DEBUG,
   // Three.js components
   scene: null,
   camera: null,
