@@ -1,0 +1,119 @@
+Browser: [vite] connecting...
+Browser: [vite] connected.
+Browser: Coin Pusher World - Vite Build
+Browser: Initializing Coin Pusher World...
+Browser: Background system initialized
+Browser: Game initialized!
+Browser: Added background decoration for Neon Arcade
+Browser: Epic Sound System initialized!
+Browser: Game initialized successfully!
+Browser: [GroupMarkerNotSet(crbug.com/242999)!:A84017003C1D0000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+Browser: [Coins] Spawned coin with currentBoard: null
+Browser: [Coins] Spawned coin with currentBoard: null
+Browser: [.WebGL-0x1d9c007eff00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+Browser: [Coins] Spawned coin with currentBoard: null
+Browser: [Coins] Spawned coin with currentBoard: null
+Browser: [Coins] Spawned coin with currentBoard: null
+Browser: [Coins] Spawned coin with currentBoard: null
+Browser: Epic music started!
+Browser: Game started!
+Browser: [Coins] Dropping coin on top board: board_1
+Browser: [Coins] Spawned coin with currentBoard: board_1
+Browser: [Coins] Spawned coin with currentBoard: null
+Browser: [Coins] Spawned coin with currentBoard: null
+Browser: [Coins] Spawned coin with currentBoard: null
+Browser: [.WebGL-0x1d9c007eff00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+Browser: [Coins] Spawned coin with currentBoard: null
+Browser: [Coins] Spawned coin with currentBoard: null
+Browser: [Coins] Spawned coin with currentBoard: null
+Browser: [Coins] Spawned coin with currentBoard: null
+Browser: [Coins] Spawned coin with currentBoard: null
+Debug results: {
+  "initialState": {
+    "hasBoardManager": true,
+    "coinsBoardManagerSet": true,
+    "boardManagerRef": true,
+    "currentBoards": 0
+  },
+  "afterCreation": {
+    "boards": 1,
+    "coinsBoardManagerSet": true,
+    "topBoardExists": true
+  },
+  "boardDetails": {
+    "boardCount": 1,
+    "boards": [
+      {
+        "id": "board_1",
+        "row": 0,
+        "col": 0
+      }
+    ],
+    "topBoard": {
+      "boardId": "board_1",
+      "themeIndex": 0,
+      "themeName": "Neon Arcade",
+      "powerupFocus": "queueSpeed",
+      "row": 0,
+      "col": 0,
+      "childLeft": null,
+      "childRight": null,
+      "parent": null,
+      "exits": [
+        {
+          "zone": "left",
+          "target": "child_left",
+          "type": "normal"
+        },
+        {
+          "zone": "center-left",
+          "target": "child_left",
+          "type": "bonus"
+        },
+        {
+          "zone": "center-right",
+          "target": "child_right",
+          "type": "bonus"
+        },
+        {
+          "zone": "right",
+          "target": "child_right",
+          "type": "jackpot"
+        }
+      ],
+      "gauges": {},
+      "counters": {
+        "stomps": 0,
+        "lasers": 0,
+        "jackpots": 0
+      },
+      "worldPosition": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  },
+  "beforeDrop": {
+    "coinsQueueBefore": 16,
+    "coinsActiveBefore": 0
+  },
+  "coinDropped": true,
+  "coinCurrentBoard": "board_1",
+  "coinPathBoards": [],
+  "topBoardId": "board_1",
+  "coinsQueueAfter": 15,
+  "coinsActiveAfter": 9
+}
+Browser: [Coins] Spawned coin with currentBoard: null
+Browser: [Coins] Spawned coin with currentBoard: null
+Browser: [Coins] Spawned coin with currentBoard: null
+Browser: [Coins] Spawned coin with currentBoard: null
+Browser: [Coins] Spawned coin with currentBoard: null
+Browser: [Coins] Spawned coin with currentBoard: null
+Browser: [Coins] Spawned coin with currentBoard: null
+Browser: [Coins] Spawned coin with currentBoard: null
+Browser: [Coins] Spawned coin with currentBoard: null
+Browser: [Coins] Spawned coin with currentBoard: null
+Browser: [Coins] Spawned coin with currentBoard: null
+Browser: [Coins] Spawned coin with currentBoard: null
