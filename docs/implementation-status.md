@@ -225,10 +225,13 @@ Recent completions:
    - ✅ Smooth transitions when boards added (automatic zoom)
    - ⏳ Optional board focus zoom (not critical)
 
-2. **Save/Load System** (Phase 9)
-   - Run state persistence
-   - High score tracking
-   - Settings storage (partially done)
+2. **Save/Load System** (Phase 9) ✅
+   - ✅ Run state persistence (auto-save every 30s)
+   - ✅ Save/resume game in progress
+   - ✅ Automatic save clearing on game over
+   - ✅ 24-hour save expiration
+   - ✅ High score tracking (already implemented)
+   - ✅ Settings storage (already implemented)
 
 3. **Landing Page** (Phase 9)
    - Instructions and tutorial
@@ -259,6 +262,25 @@ Recent completions:
 ---
 
 ## Recent Changes
+
+### 2025-12-10 (Late Night Update - Run State Persistence)
+- ✅ Implemented complete run state persistence system (Phase 9)
+  - Auto-save every 30 seconds during active gameplay
+  - Full game state capture: score, queue, prizes, boards, combos, jackpot
+  - Automatic save clearing when game ends
+  - 24-hour save expiration to prevent stale saves
+  - Graceful handling when subsystems don't have save methods
+  - Integration with existing Storage system
+- ✅ Enhanced Game.js with comprehensive save/load methods
+  - `getSaveData()` - captures complete game state
+  - `loadSaveData()` - restores game state with dependency order
+  - `saveGameState()` - persists to localStorage
+  - `loadGameState()` - loads from localStorage with validation
+  - `clearGameState()` - removes saved state
+- ✅ All 50 tests still passing after implementation
+  - Comprehensive tests: 20/20 ✅
+  - 8-board pyramid tests: 11/11 ✅
+  - UI hitbox tests: 19/19 ✅
 
 ### 2025-12-10 (Night Update - Camera Improvements)
 - ✅ Implemented smooth camera zoom for pyramid growth (Section 10.1)

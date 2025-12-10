@@ -58,6 +58,18 @@ async function main() {
     // Set timeout for page operations
     page.setDefaultTimeout(SINGLE_TEST_TIMEOUT);
 
+    // Listen for console errors
+    page.on('console', msg => {
+      if (msg.type() === 'error') {
+        console.error('Browser console error:', msg.text());
+      }
+    });
+
+    // Listen for page errors
+    page.on('pageerror', error => {
+      console.error('Page error:', error.message);
+    });
+
     // Navigate to game
     console.log('🌐 Loading game...');
     await page.goto('http://localhost:3002', { waitUntil: 'networkidle' });

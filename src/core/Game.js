@@ -34,6 +34,10 @@ const Game = {
   autoDropTimer: 0,
   autoDropInterval: 0.4, // seconds between auto drops
 
+  // Auto-save feature (Phase 9 - run state persistence)
+  autoSaveTimer: 0,
+  autoSaveInterval: 30, // seconds between auto-saves
+
   // Performance mode (for old Android devices per design spec 10.4)
   lowPerformanceMode: false,
   performanceSettings: {
@@ -223,6 +227,7 @@ const Game = {
     this.currentExpansionIndex = 0;
     this.autoDrop = false;
     this.autoDropTimer = 0;
+    this.autoSaveTimer = 0; // Reset auto-save timer
 
     // Reset session stats
     this.sessionStats = {
@@ -382,6 +387,13 @@ const Game = {
 
     // Update camera position (smooth zoom for pyramid growth)
     this.updateCameraPosition(deltaTime);
+
+    // Auto-save game state periodically (Phase 9 - run state persistence)
+    this.autoSaveTimer += deltaTime;
+    if (this.autoSaveTimer >= this.autoSaveInterval) {
+      this.autoSaveTimer = 0;
+      this.saveGameState();
+    }
 
     // Update UI
     if (this.ui) this.ui.update(deltaTime);
@@ -714,6 +726,9 @@ const Game = {
       this.dailyChallenges.updateProgress(completeSessionStats);
     }
 
+    // Clear saved game state since run is complete (Phase 9)
+    this.clearGameState();
+
     if (this.ui) this.ui.showGameOver(this.score, highScoreResult, completeSessionStats);
     if (this.sound) this.sound.stopMusic();
   },
@@ -772,26 +787,128 @@ const Game = {
       : this.performanceSettings.normal;
   },
 
-  // Get save data
+  // Get complete save data for run persistence (Phase 9 - Section 2.2)
   getSaveData: function () {
-    return {
+    if (!this.isRunning) return null; // Only save active games
+
+    const saveData = {
+      // Core game state
       score: this.score,
       expansionIndex: this.currentExpansionIndex,
-      powerUps: this.powerUps ? this.powerUps.getSaveData() : null,
+      autoDrop: this.autoDrop,
+
+      // Session stats
+      sessionStats: { ...this.sessionStats },
+
+      // System save data (only if systems exist and have save methods)
+      powerUps: this.powerUps && this.powerUps.getSaveData ? this.powerUps.getSaveData() : null,
+      coins: this.coins && this.coins.getSaveData ? this.coins.getSaveData() : null,
+      combo: this.combo && this.combo.getSaveData ? this.combo.getSaveData() : null,
+      jackpot: this.jackpot && this.jackpot.getSaveData ? this.jackpot.getSaveData() : null,
+      boardManager: this.boardManager && this.boardManager.getSaveData ? this.boardManager.getSaveData() : null,
+      prizes: this.prizes && this.prizes.getSaveData ? this.prizes.getSaveData() : null,
+
+      // Timestamp for save validity
+      timestamp: Date.now(),
+      version: 1, // For future migration support
     };
+
+    return saveData;
   },
 
-  // Load save data
+  // Load save data and restore game state (Phase 9 - Section 2.2)
   loadSaveData: function (data) {
-    if (!data) return;
+    if (!data) return false;
 
-    this.score = data.score || 0;
-    this.currentExpansionIndex = data.expansionIndex || 0;
-    if (this.ui) this.ui.updateScore(this.score);
+    try {
+      // Restore core game state
+      this.score = data.score || 0;
+      this.currentExpansionIndex = data.expansionIndex || 0;
+      this.autoDrop = data.autoDrop || false;
 
-    if (data.powerUps && this.powerUps) {
-      this.powerUps.loadSaveData(data.powerUps);
+      // Restore session stats
+      if (data.sessionStats) {
+        this.sessionStats = { ...this.sessionStats, ...data.sessionStats };
+      }
+
+      // Update UI
+      if (this.ui) {
+        this.ui.updateScore(this.score);
+        this.ui.updateAutoDropButton(this.autoDrop);
+      }
+
+      // Restore system states (in dependency order)
+      if (data.powerUps && this.powerUps && this.powerUps.loadSaveData) {
+        this.powerUps.loadSaveData(data.powerUps);
+      }
+
+      if (data.boardManager && this.boardManager && this.boardManager.loadSaveData) {
+        this.boardManager.loadSaveData(data.boardManager);
+      }
+
+      if (data.prizes && this.prizes && this.prizes.loadSaveData) {
+        this.prizes.loadSaveData(data.prizes);
+      }
+
+      if (data.coins && this.coins && this.coins.loadSaveData) {
+        this.coins.loadSaveData(data.coins);
+      }
+
+      if (data.combo && this.combo && this.combo.loadSaveData) {
+        this.combo.loadSaveData(data.combo);
+      }
+
+      if (data.jackpot && this.jackpot && this.jackpot.loadSaveData) {
+        this.jackpot.loadSaveData(data.jackpot);
+      }
+
+      console.log('Game state restored from save');
+      return true;
+    } catch (error) {
+      console.error('Failed to load save data:', error);
+      return false;
     }
+  },
+
+  // Save current game state to persistent storage
+  saveGameState: function () {
+    if (!this.storage || !this.isRunning) return false;
+
+    const saveData = this.getSaveData();
+    if (!saveData) return false;
+
+    const success = this.storage.saveGame(saveData);
+    if (success) {
+      console.log('Game state saved');
+    }
+    return success;
+  },
+
+  // Load and restore game state from persistent storage
+  loadGameState: function () {
+    if (!this.storage) return false;
+
+    const saveData = this.storage.loadGame();
+    if (!saveData) {
+      console.log('No saved game found');
+      return false;
+    }
+
+    // Check if save is too old (optional - could expire after 24h)
+    const MAX_SAVE_AGE = 24 * 60 * 60 * 1000; // 24 hours
+    if (saveData.timestamp && Date.now() - saveData.timestamp > MAX_SAVE_AGE) {
+      console.log('Save data too old, starting fresh');
+      this.storage.clearGame();
+      return false;
+    }
+
+    return this.loadSaveData(saveData);
+  },
+
+  // Clear saved game state
+  clearGameState: function () {
+    if (!this.storage) return false;
+    return this.storage.clearGame();
   },
 };
 
