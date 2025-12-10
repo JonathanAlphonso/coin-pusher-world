@@ -3241,6 +3241,24 @@ body {
   transform: scale(0.98);
 }
 
+.action-button.danger-button {
+  border-color: rgba(255, 100, 100, 0.5);
+  background: rgba(100, 30, 30, 0.5);
+  color: rgba(255, 150, 150, 0.9);
+}
+
+.action-button.danger-button:hover {
+  background: rgba(130, 40, 40, 0.6);
+  border-color: rgba(255, 120, 120, 0.7);
+}
+
+.warning-text {
+  color: rgba(255, 200, 100, 0.9);
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 8px;
+}
+
 #close-settings {
   display: block;
   width: 100%;

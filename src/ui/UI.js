@@ -75,6 +75,7 @@ const UI = {
       sfxToggle: document.getElementById("sfx-toggle"),
       exportSaveButton: document.getElementById("export-save-button"),
       importSaveFile: document.getElementById("import-save-file"),
+      resetHighScoresButton: document.getElementById("reset-high-scores-button"),
       autosaveIndicator: document.getElementById("autosave-indicator"),
       boardStatsOverlay: document.getElementById("board-stats-overlay"),
       boardStatsList: document.getElementById("board-stats-list"),
@@ -259,6 +260,32 @@ const UI = {
           });
           // Reset file input
           e.target.value = '';
+        }
+      });
+    }
+
+    // Reset high scores button
+    if (this.elements.resetHighScoresButton && self.storage) {
+      this.elements.resetHighScoresButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        // Show confirmation dialog
+        const confirmed = confirm(
+          "Are you sure you want to reset ALL high scores?\n\n" +
+          "This will permanently delete all your high score records!\n\n" +
+          "This action cannot be undone."
+        );
+
+        if (confirmed) {
+          const success = self.storage.clearHighScores();
+          if (success) {
+            self.showMessage("High scores have been reset!");
+            // Refresh high scores display if it's open
+            if (self.elements.highScoresOverlay && !self.elements.highScoresOverlay.classList.contains("hidden")) {
+              self.populateHighScores();
+            }
+          } else {
+            self.showMessage("Failed to reset high scores");
+          }
         }
       });
     }
