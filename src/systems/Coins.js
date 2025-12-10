@@ -960,6 +960,41 @@ const Coins = {
     };
   },
 
+  /**
+   * Save/Load Methods (Phase 9 - Run State Persistence)
+   */
+
+  // Get save data for coins system
+  getSaveData: function() {
+    return {
+      coinQueue: this.coinQueue,
+      maxQueueSize: this.maxQueueSize,
+      queueSpeed: this.queueSpeed,
+      valueMultiplier: this.valueMultiplier,
+      luckyChance: this.luckyChance,
+      multiDropCount: this.multiDropCount,
+      // Note: Not saving activeCoins as they're transient physics objects
+      // Players will resume with the queue state but coins in flight are lost
+    };
+  },
+
+  // Load save data for coins system
+  loadSaveData: function(data) {
+    if (!data) return;
+
+    this.coinQueue = data.coinQueue || 0;
+    this.maxQueueSize = data.maxQueueSize || 20;
+    this.queueSpeed = data.queueSpeed || 1.0;
+    this.valueMultiplier = data.valueMultiplier || 1.0;
+    this.luckyChance = data.luckyChance || 0.05;
+    this.multiDropCount = data.multiDropCount || 1;
+
+    // Update UI to reflect restored state
+    if (this.ui) {
+      this.ui.updateQueue(this.coinQueue);
+    }
+  },
+
   // Clean up all coins
   cleanup: function () {
     for (let i = this.activeCoins.length - 1; i >= 0; i--) {
