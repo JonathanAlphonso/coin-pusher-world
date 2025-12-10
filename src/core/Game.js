@@ -831,6 +831,25 @@ const Game = {
             this.ui.updateBoardCounter(status.totalBoards, status.maxBoards);
           }
 
+          // Show helpful tip about the new board's power (Phase 8 Polish)
+          const theme = tierThemes[selectedThemeIndex];
+          if (theme && this.ui && !status.isFull) {
+            // Helpful tip explaining what this board does
+            const tips = {
+              queueSpeed: 'Speeds up auto-drop! More coins, faster gameplay.',
+              coinValue: 'Increases coin value! Every coin is worth more.',
+              luckyCoins: 'Creates lucky coins! Watch for special high-value drops.',
+              multiDrop: 'Charges Multi-Drop gauge! Drop multiple coins at once.',
+              queueCapacity: 'Bigger coin queue! Store more coins for later.',
+              widerPusher: 'Wider push coverage! More coins get moved.',
+              comboTime: 'Longer combo windows! Chain scores for bigger multipliers.',
+              jackpotChance: 'Better jackpot odds! Watch for jackpot exits.',
+            };
+
+            const tip = tips[theme.powerupFocus] || theme.description;
+            this.ui.showMessage(`${theme.icon} ${theme.name}\n${tip}`, theme.glow ? `#${theme.glow.toString(16).padStart(6, '0')}` : '#00ffff', 3000);
+          }
+
           // Celebrate pyramid completion! (Phase 8 Polish - Design Spec Section 3.1)
           if (status.isFull && this.ui && this.sound) {
             // Visual celebration
