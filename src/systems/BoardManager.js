@@ -338,6 +338,45 @@ const BoardManager = {
     const excluded = this.getExcludedThemes();
     return getThemeOptions(excluded);
   },
+
+  /**
+   * Phase 9 - Save/Load support for run state persistence
+   * Get save data for BoardManager state
+   */
+  getSaveData: function() {
+    return {
+      boards: this.boards.map(board => ({
+        boardId: board.boardId,
+        themeIndex: board.themeIndex,
+        themeName: board.themeName,
+        powerupFocus: board.powerupFocus,
+        row: board.row,
+        col: board.col,
+        childLeft: board.childLeft,
+        childRight: board.childRight,
+      })),
+      maxBoards: this.maxBoards,
+      nextBoardId: this.nextBoardId,
+    };
+  },
+
+  /**
+   * Load save data for BoardManager
+   * Note: This only restores the board metadata. The actual 3D board objects
+   * need to be recreated by the Game system after loading this data.
+   */
+  loadSaveData: function(data) {
+    if (!data) return;
+
+    // Restore basic state
+    this.maxBoards = data.maxBoards || 8;
+    this.nextBoardId = data.nextBoardId || 1;
+
+    // Note: boards array will be empty here. The Game system will need to
+    // recreate the actual Board objects using the saved board metadata.
+    // This is because Board objects contain 3D meshes that can't be serialized.
+    // The saved data serves as a blueprint for reconstruction.
+  },
 };
 
 export default BoardManager;
