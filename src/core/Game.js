@@ -642,6 +642,13 @@ const Game = {
   addScore: function (amount, x, y, z, multiplier) {
     multiplier = multiplier || 1;
     const finalAmount = Math.floor(amount * multiplier);
+
+    // Safety check: prevent NaN/Infinity from corrupting score
+    if (!isFinite(finalAmount) || isNaN(finalAmount)) {
+      console.warn('Invalid score amount detected:', finalAmount, 'from', amount, 'x', multiplier);
+      return;
+    }
+
     this.score += finalAmount;
     this.sessionStats.coinsScored++;
     if (this.ui) this.ui.updateScore(this.score);
