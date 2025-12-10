@@ -76,6 +76,7 @@ const UI = {
       exportSaveButton: document.getElementById("export-save-button"),
       importSaveFile: document.getElementById("import-save-file"),
       resetHighScoresButton: document.getElementById("reset-high-scores-button"),
+      clearSavedGameButton: document.getElementById("clear-saved-game-button"),
       autosaveIndicator: document.getElementById("autosave-indicator"),
       boardStatsOverlay: document.getElementById("board-stats-overlay"),
       boardStatsList: document.getElementById("board-stats-list"),
@@ -285,6 +286,28 @@ const UI = {
             }
           } else {
             self.showMessage("Failed to reset high scores");
+          }
+        }
+      });
+    }
+
+    // Clear saved game button
+    if (this.elements.clearSavedGameButton && self.storage) {
+      this.elements.clearSavedGameButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        // Show confirmation dialog
+        const confirmed = confirm(
+          "Are you sure you want to clear your saved game?\n\n" +
+          "This will delete your current game progress (but NOT your high scores).\n\n" +
+          "This action cannot be undone."
+        );
+
+        if (confirmed) {
+          const success = self.storage.clearGame();
+          if (success) {
+            self.showMessage("Saved game cleared! Reload page to start fresh.");
+          } else {
+            self.showMessage("Failed to clear saved game");
           }
         }
       });
