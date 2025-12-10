@@ -224,7 +224,7 @@ const Jackpot = {
   update: function (deltaTime) {
     const time = performance.now() * 0.001;
 
-    if (this.mesh) {
+    if (this.mesh && this.value !== undefined && this.maxValue) {
       this.mesh.position.y = 14 + Math.sin(time * 2) * 0.3;
       const scale = 0.8 + (this.value / this.maxValue) * 0.4;
       this.mesh.scale.setScalar(scale);
