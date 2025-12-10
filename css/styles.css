@@ -1203,6 +1203,22 @@ body {
   margin-bottom: 5px;
 }
 
+/* Credits section (Phase 9 - Landing page) */
+.start-credits {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.start-credits p {
+  color: #666;
+  font-size: 11px;
+  margin: 0;
+  font-family: monospace;
+  letter-spacing: 0.5px;
+}
+
 /* Mobile responsive for new elements */
 @media (max-width: 480px) {
   #combo-container {
