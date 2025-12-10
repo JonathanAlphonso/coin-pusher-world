@@ -50,6 +50,10 @@ const UI = {
       statsGrid: document.getElementById("stats-grid"),
       closeStats: document.getElementById("close-stats"),
       autoDropButton: document.getElementById("auto-drop-button"),
+      multiDropButton: document.getElementById("multi-drop-button"),
+      multiDropGauge: document.getElementById("multi-drop-gauge"),
+      multiDropFill: document.getElementById("multi-drop-fill"),
+      multiDropCount: document.getElementById("multi-drop-count"),
       tierProgressContainer: document.getElementById("tier-progress-container"),
       tierProgressFill: document.getElementById("tier-progress-fill"),
       tierProgressLabel: document.getElementById("tier-progress-label"),
@@ -162,6 +166,29 @@ const UI = {
       this.elements.autoDropButton.addEventListener("touchstart", function (e) {
         e.preventDefault();
         if (self.game) self.game.toggleAutoDrop();
+      });
+    }
+
+    // Multi-Drop button (Design Spec 5.4)
+    if (this.elements.multiDropButton) {
+      this.elements.multiDropButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (self.game && self.game.coins) {
+          const success = self.game.coins.triggerMultiDrop(5);
+          if (!success) {
+            self.showMessage("Multi-Drop not ready!");
+          }
+        }
+      });
+
+      this.elements.multiDropButton.addEventListener("touchstart", function (e) {
+        e.preventDefault();
+        if (self.game && self.game.coins) {
+          const success = self.game.coins.triggerMultiDrop(5);
+          if (!success) {
+            self.showMessage("Multi-Drop not ready!");
+          }
+        }
       });
     }
 
@@ -813,6 +840,52 @@ const UI = {
   updateBoardCounter: function (currentBoards, maxBoards = 8) {
     if (this.elements.boardCounterValue) {
       this.elements.boardCounterValue.textContent = `${currentBoards} / ${maxBoards}`;
+    }
+  },
+
+  /**
+   * Design Spec 5.4 - Update Multi-Drop gauge display
+   * @param {object} gaugeData - { current, max, isFull, available }
+   */
+  updateMultiDropGauge: function(gaugeData) {
+    if (!gaugeData) return;
+
+    // Show/hide gauge and button based on availability
+    if (gaugeData.available) {
+      if (this.elements.multiDropGauge) {
+        this.elements.multiDropGauge.classList.remove('hidden');
+      }
+      if (this.elements.multiDropButton) {
+        this.elements.multiDropButton.classList.remove('hidden');
+      }
+    } else {
+      if (this.elements.multiDropGauge) {
+        this.elements.multiDropGauge.classList.add('hidden');
+      }
+      if (this.elements.multiDropButton) {
+        this.elements.multiDropButton.classList.add('hidden');
+      }
+      return;
+    }
+
+    // Update gauge fill
+    if (this.elements.multiDropFill) {
+      const percent = (gaugeData.current / gaugeData.max) * 100;
+      this.elements.multiDropFill.style.width = percent + '%';
+    }
+
+    // Update count text
+    if (this.elements.multiDropCount) {
+      this.elements.multiDropCount.textContent = `${gaugeData.current}/${gaugeData.max}`;
+    }
+
+    // Enable/disable button based on charge status
+    if (this.elements.multiDropButton) {
+      if (gaugeData.isFull) {
+        this.elements.multiDropButton.disabled = false;
+      } else {
+        this.elements.multiDropButton.disabled = true;
+      }
     }
   },
 

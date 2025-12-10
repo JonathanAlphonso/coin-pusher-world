@@ -67,6 +67,18 @@
       <!-- Auto-Drop Toggle Button -->
       <button id="auto-drop-button">AUTO: OFF</button>
 
+      <!-- Multi-Drop Button (Design Spec 5.4 - multiDrop powerupFocus) -->
+      <button id="multi-drop-button" class="hidden" disabled>MULTI-DROP</button>
+
+      <!-- Multi-Drop Gauge (Design Spec 5.4) -->
+      <div id="multi-drop-gauge" class="hidden">
+        <div class="gauge-label">MULTI-DROP</div>
+        <div class="gauge-bar">
+          <div id="multi-drop-fill" class="gauge-fill"></div>
+        </div>
+        <div id="multi-drop-count" class="gauge-count">0/10</div>
+      </div>
+
       <!-- Help Button -->
       <button id="help-button">?</button>
 
@@ -258,6 +270,13 @@
               <div class="help-item-text">
                 <h4>A</h4>
                 <p>Toggle Auto-Drop ON/OFF</p>
+              </div>
+            </div>
+            <div class="help-item">
+              <div class="help-item-icon">🅼</div>
+              <div class="help-item-text">
+                <h4>M</h4>
+                <p>Trigger Multi-Drop (when gauge is full) - Drop 5+ coins at once!</p>
               </div>
             </div>
             <div class="help-item">

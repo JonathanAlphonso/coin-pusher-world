@@ -275,6 +275,18 @@ const ThemeEffects = {
   },
 
   /**
+   * Get multi-drop bonus multiplier (Design Spec 5.4)
+   * @returns {number} Multiplier for number of coins dropped (1.0 = no bonus)
+   */
+  getMultiDropBonus: function() {
+    const effect = this.activeEffects.multiDrop;
+    if (!effect) return 1.0;
+
+    // Each multiDrop board adds bonus coins to the multi-drop
+    return 1.0 + (effect.multiDropBonusCoins * effect.count * 0.2);
+  },
+
+  /**
    * Get a summary of all active effects for display
    * @returns {Array} Array of active effect descriptions
    */

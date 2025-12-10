@@ -790,6 +790,12 @@ const Coins = {
       });
     }
 
+    // Charge Multi-Drop Gauge (Design Spec 5.4 - multiDrop powerupFocus)
+    // Gauge charges when coins are scored, enabling special multi-coin drops
+    if (this.boardManager && this.boardManager.chargeMultiDropGauge) {
+      this.boardManager.chargeMultiDropGauge(1);
+    }
+
     // Path Completion Celebration (Design Spec 7.1 - Path Tracking Feedback)
     // Reward players visually for coins that traverse multiple boards
     if (coin.pathBoards && coin.pathBoards.length >= 3) {
@@ -961,6 +967,86 @@ const Coins = {
 
     this.spawnCoin(dropX, dropY, dropZ, type, topBoardId);
     this.totalCoinsDropped++;
+    return true;
+  },
+
+  /**
+   * Design Spec 5.4 - Multi-Drop Feature
+   * Trigger a multi-coin drop when gauge is full
+   * @param {number} coinCount - Number of coins to drop (default: 5)
+   * @returns {boolean} Success
+   */
+  triggerMultiDrop: function(coinCount = 5) {
+    const dropZone = this.board?.getDropZone();
+    if (!dropZone) return false;
+
+    // Check if BoardManager has multi-drop available
+    if (!this.boardManager || !this.boardManager.hasMultiDropBoards()) {
+      return false;
+    }
+
+    const gauge = this.boardManager.getMultiDropGauge();
+    if (!gauge.isFull) {
+      return false;
+    }
+
+    // Get multiDrop bonus multiplier from prizes/theme effects
+    const multiDropBonus = this.themeEffects
+      ? this.themeEffects.getMultiDropBonus()
+      : 1.0;
+
+    // Calculate actual coin count with bonuses
+    const actualCoinCount = Math.floor(coinCount * multiDropBonus);
+
+    // Drop multiple coins in rapid succession
+    for (let i = 0; i < actualCoinCount; i++) {
+      setTimeout(() => {
+        // Random X position within drop zone
+        const dropX = random(dropZone.minX, dropZone.maxX);
+        const dropY = dropZone.y;
+        const dropZ = dropZone.z;
+
+        // Multi-drop coins have higher chance of being special
+        const luckyChance = 0.3; // 30% chance for special coins
+        let type = "gold";
+        const rand = Math.random();
+
+        if (rand < luckyChance * 0.3) {
+          type = "rainbow";
+        } else if (rand < luckyChance) {
+          type = "special";
+        } else if (rand < 0.3) {
+          type = "silver";
+        }
+
+        // Get top board ID
+        let topBoardId = null;
+        if (this.boardManager && this.boardManager.boards.length > 0) {
+          const topBoard = this.boardManager.boards.find(b => b.row === 0);
+          if (topBoard) {
+            topBoardId = topBoard.boardId;
+          }
+        }
+
+        this.spawnCoin(dropX, dropY, dropZ, type, topBoardId);
+        this.totalCoinsDropped++;
+      }, i * 100); // Stagger drops by 100ms
+    }
+
+    // Consume the gauge
+    this.boardManager.consumeMultiDropGauge();
+
+    // Visual/audio feedback
+    if (this.ui) {
+      this.ui.showMessage("MULTI-DROP!", dropZone.minX, dropZone.y + 2);
+    }
+    if (this.sound) {
+      this.sound.play("powerup");
+    }
+    if (this.game) {
+      this.game.shake(0.8, 0.4);
+    }
+
     return true;
   },
 

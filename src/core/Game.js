@@ -245,6 +245,17 @@ const Game = {
         }
       }
 
+      // M - Trigger Multi-Drop (Design Spec 5.4)
+      if (e.key === "m" || e.key === "M") {
+        if (this.isRunning && !this.isPaused && this.coins) {
+          e.preventDefault();
+          const success = this.coins.triggerMultiDrop(5);
+          if (!success && this.ui) {
+            this.ui.showMessage("Multi-Drop not ready!");
+          }
+        }
+      }
+
       // H - Toggle help overlay
       if (e.key === "h" || e.key === "H") {
         e.preventDefault();
@@ -492,6 +503,12 @@ const Game = {
     if (this.autoSaveTimer >= this.autoSaveInterval) {
       this.autoSaveTimer = 0;
       this.saveGameState();
+    }
+
+    // Update Multi-Drop gauge UI (Design Spec 5.4)
+    if (this.ui && this.boardManager) {
+      const gaugeData = this.boardManager.getMultiDropGauge();
+      this.ui.updateMultiDropGauge(gaugeData);
     }
 
     // Update UI

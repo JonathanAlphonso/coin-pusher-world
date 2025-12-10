@@ -418,6 +418,81 @@ const BoardManager = {
   },
 
   /**
+   * Design Spec 5.4 - Multi-Drop Gauge Management
+   * Charge the multi-drop gauge based on coins processed
+   */
+  chargeMultiDropGauge: function(amount = 1) {
+    // Find all boards with multiDrop focus
+    const multiDropBoards = this.boards.filter(b => b.powerupFocus === 'multiDrop');
+
+    if (multiDropBoards.length === 0) return 0;
+
+    // Add charge to all multiDrop boards
+    multiDropBoards.forEach(board => {
+      if (!board.gauges.multiDrop) {
+        board.gauges.multiDrop = { current: 0, max: 10 };
+      }
+      board.gauges.multiDrop.current = Math.min(
+        board.gauges.multiDrop.current + amount,
+        board.gauges.multiDrop.max
+      );
+    });
+
+    // Return the highest gauge value for UI display
+    const maxGauge = Math.max(...multiDropBoards.map(b => b.gauges.multiDrop.current));
+    return maxGauge;
+  },
+
+  /**
+   * Get the current multi-drop gauge charge level
+   * @returns {object} { current, max, isFull }
+   */
+  getMultiDropGauge: function() {
+    const multiDropBoards = this.boards.filter(b => b.powerupFocus === 'multiDrop');
+
+    if (multiDropBoards.length === 0) {
+      return { current: 0, max: 10, isFull: false, available: false };
+    }
+
+    // Use the highest gauge value among all multiDrop boards
+    const maxGauge = multiDropBoards.reduce((max, board) => {
+      if (!board.gauges.multiDrop) {
+        board.gauges.multiDrop = { current: 0, max: 10 };
+      }
+      return Math.max(max, board.gauges.multiDrop.current);
+    }, 0);
+
+    const maxCapacity = 10;
+    return {
+      current: maxGauge,
+      max: maxCapacity,
+      isFull: maxGauge >= maxCapacity,
+      available: true
+    };
+  },
+
+  /**
+   * Consume the multi-drop gauge (reset to 0 after use)
+   */
+  consumeMultiDropGauge: function() {
+    const multiDropBoards = this.boards.filter(b => b.powerupFocus === 'multiDrop');
+
+    multiDropBoards.forEach(board => {
+      if (board.gauges.multiDrop) {
+        board.gauges.multiDrop.current = 0;
+      }
+    });
+  },
+
+  /**
+   * Check if any multiDrop boards exist in the pyramid
+   * @returns {boolean}
+   */
+  hasMultiDropBoards: function() {
+    return this.boards.some(b => b.powerupFocus === 'multiDrop');
+  },
+
+  /**
    * Phase 9 - Save/Load support for run state persistence
    * Get save data for BoardManager state
    */
