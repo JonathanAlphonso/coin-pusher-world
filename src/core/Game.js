@@ -77,6 +77,12 @@ const Game = {
   expansionThresholds: [10000, 25000, 45000, 70000, 100000, 140000, 190000, 250000],
   currentExpansionIndex: 0,
 
+  // Milestone tracking for progress notifications (Phase 8 Polish)
+  milestoneNotifications: {
+    milestone75shown: false,
+    milestone90shown: false,
+  },
+
   // Canvas
   canvas: null,
 
@@ -330,6 +336,10 @@ const Game = {
     this.autoDrop = false;
     this.autoDropTimer = 0;
     this.autoSaveTimer = 0; // Reset auto-save timer
+
+    // Reset milestone notifications
+    this.milestoneNotifications.milestone75shown = false;
+    this.milestoneNotifications.milestone90shown = false;
 
     // Reset session stats
     this.sessionStats = {
@@ -721,8 +731,30 @@ const Game = {
   checkExpansion: function () {
     if (this.currentExpansionIndex >= this.expansionThresholds.length) return;
 
+    // Calculate progress to next unlock (Design Spec 8 - Polish & Tuning)
+    const tierProgress = this.getTierProgress();
+
+    // Show milestone notifications at 75% and 90% progress
+    if (tierProgress >= 0.75 && !this.milestoneNotifications.milestone75shown) {
+      this.milestoneNotifications.milestone75shown = true;
+      if (this.ui) {
+        this.ui.showMessage("75% to next board! 🎯", 2000, "#ffaa00");
+      }
+      if (this.sound) this.sound.play("collect");
+    } else if (tierProgress >= 0.90 && !this.milestoneNotifications.milestone90shown) {
+      this.milestoneNotifications.milestone90shown = true;
+      if (this.ui) {
+        this.ui.showMessage("90% to next board! 🔥", 2000, "#ff4400");
+      }
+      if (this.sound) this.sound.play("powerup");
+    }
+
     if (this.score >= this.expansionThresholds[this.currentExpansionIndex]) {
       this.currentExpansionIndex++;
+
+      // Reset milestone notifications for next board
+      this.milestoneNotifications.milestone75shown = false;
+      this.milestoneNotifications.milestone90shown = false;
 
       // Use BoardManager if available, otherwise fall back to old system
       if (this.boardManager) {
