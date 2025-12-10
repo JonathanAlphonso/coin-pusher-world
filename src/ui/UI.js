@@ -67,6 +67,7 @@ const UI = {
       settingsButton: document.getElementById("settings-button"),
       settingsOverlay: document.getElementById("settings-overlay"),
       closeSettings: document.getElementById("close-settings"),
+      fullscreenButton: document.getElementById("fullscreen-button"),
       masterVolumeSlider: document.getElementById("master-volume"),
       masterVolumeValue: document.getElementById("master-volume-value"),
       musicVolumeSlider: document.getElementById("music-volume"),
@@ -235,6 +236,14 @@ const UI = {
       this.elements.closeSettings.addEventListener("click", function (e) {
         e.preventDefault();
         self.hideSettings();
+      });
+    }
+
+    // Fullscreen button (Design Spec 10.4 - Mobile UX Enhancement)
+    if (this.elements.fullscreenButton) {
+      this.elements.fullscreenButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        self.toggleFullscreen();
       });
     }
 
@@ -582,6 +591,48 @@ const UI = {
       this.elements.settingsOverlay.classList.add("hidden");
       if (this.game && this.game.isPaused) {
         this.game.resume();
+      }
+    }
+  },
+
+  /**
+   * Toggle fullscreen mode (Design Spec 10.4 - Mobile UX Enhancement)
+   * Provides immersive experience on mobile devices, especially Android
+   */
+  toggleFullscreen: function () {
+    const elem = document.documentElement;
+
+    if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement) {
+      // Enter fullscreen
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen(); // Safari/iOS
+      } else if (elem.mozRequestFullScreen) {
+        elem.mozRequestFullScreen(); // Firefox
+      } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen(); // IE11
+      }
+
+      // Update button icon
+      if (this.elements.fullscreenButton) {
+        this.elements.fullscreenButton.textContent = '⛶'; // Exit fullscreen icon
+      }
+    } else {
+      // Exit fullscreen
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+
+      // Update button icon
+      if (this.elements.fullscreenButton) {
+        this.elements.fullscreenButton.textContent = '⛶'; // Enter fullscreen icon
       }
     }
   },
