@@ -170,7 +170,7 @@ async function main() {
       page.setDefaultTimeout(30000);
 
       // Navigate to game
-      await page.goto('http://localhost:3005', { waitUntil: 'networkidle' });
+      await page.goto('http://localhost:3000', { waitUntil: 'networkidle' });
 
       // Wait for UI to initialize
       await page.waitForFunction(() => typeof UI !== 'undefined', { timeout: 10000 });

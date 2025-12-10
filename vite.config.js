@@ -5,7 +5,18 @@ export default defineConfig({
   publicDir: 'public',
   build: {
     outDir: 'dist',
-    sourcemap: true
+    sourcemap: true,
+    // Suppress chunk size warning for game with three.js
+    // Per Design Spec 10.4, we prioritize compatibility over bundle splitting
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        // Manual chunking to separate three.js from game code
+        manualChunks: {
+          'three': ['three']
+        }
+      }
+    }
   },
   server: {
     port: 3000,

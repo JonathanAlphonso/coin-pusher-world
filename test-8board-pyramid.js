@@ -66,7 +66,7 @@ async function main() {
 
     // Navigate to game
     console.log('🌐 Loading game...');
-    await page.goto('http://localhost:3005', { waitUntil: 'networkidle' });
+    await page.goto('http://localhost:3000', { waitUntil: 'networkidle' });
 
     // Wait for game to initialize
     await page.waitForFunction(() => typeof Game !== 'undefined', { timeout: 10000 });
