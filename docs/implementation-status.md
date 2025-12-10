@@ -265,7 +265,27 @@ All low-priority items complete! ✅
 
 ## Recent Changes
 
-### 2025-12-10 (Latest - Queue Status Color Feedback & Bonus Zone Particles)
+### 2025-12-10 (Latest - Active Prizes Display Panel)
+- ✅ Added active prizes display panel (Phase 8 Polish - Design Spec 8.1)
+  - Real-time visual feedback panel showing all active prize bonuses
+  - Located in bottom-left corner with icon, name, and effect summary
+  - Rarity-specific border colors (common, uncommon, rare, legendary)
+  - Auto-hides when no prizes are active, shows when prizes selected
+  - Mobile-responsive design with compact layout for smaller screens
+  - Updates every frame via UI.updateActivePrizes() in game loop
+  - Enhances strategic decision-making by showing which bonuses are helping
+  - Improves player awareness of prize synergies during gameplay
+  - Non-intrusive placement with pointer-events: none
+- ✅ Technical implementation:
+  - HTML: #active-prizes-panel container with dynamic .active-prize-item elements
+  - CSS: Gradient background, rarity-based borders, hover effects, mobile breakpoints
+  - UI.js: updateActivePrizes() method populates panel from Prizes.activePrizes array
+  - Game.js: Updates panel every frame alongside Multi-Drop gauge
+  - Design Spec Section 8.1 (Prize Counter) and 4.4 (Prizes) compliance
+- ✅ All 50/50 tests passing after implementation
+- ✅ 1 commit: active prizes display panel
+
+### 2025-12-10 (Earlier - Queue Status Color Feedback & Bonus Zone Particles)
 - ✅ Added queue status color feedback system (Phase 8 Polish)
   - Dynamic color coding: red (<20%), orange (20-50%), green (>50%)
   - Visual feedback includes border color, text shadow, and box shadow changes
