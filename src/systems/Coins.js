@@ -33,6 +33,10 @@ const Coins = {
   regenInterval: 2.0, // Seconds between regen ticks
   regenAmount: 1, // Coins added per tick
 
+  // Statistics
+  totalCoinsDropped: 0,
+  totalCoinsScored: 0,
+
   // Coin settings
   coinRadius: 0.35,
   coinHeight: 0.12,
@@ -71,6 +75,8 @@ const Coins = {
     this.coinQueue = 0;
     this.queueTimer = 0;
     this.regenTimer = 0;
+    this.totalCoinsDropped = 0;
+    this.totalCoinsScored = 0;
 
     // Create enhanced coin geometry with beveled edge
     this.geometry = new THREE.CylinderGeometry(
@@ -731,6 +737,7 @@ const Coins = {
     }
 
     this.spawnCoin(dropX, dropY, dropZ, type);
+    this.totalCoinsDropped++;
     return true;
   },
 
