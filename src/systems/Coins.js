@@ -517,6 +517,12 @@ const Coins = {
         break;
     }
 
+    // Safety check: ensure coin value is valid
+    if (!isFinite(coin.value) || isNaN(coin.value) || coin.value < 0) {
+      console.warn('Invalid coin value detected:', coin.value, 'resetting to baseValue');
+      coin.value = this.baseValue;
+    }
+
     // Create physics body with initial rotation
     const self = this;
     coin.body = this.physics ? this.physics.createBody({

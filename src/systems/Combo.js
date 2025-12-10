@@ -95,7 +95,13 @@ const Combo = {
 
   // Get current multiplier
   getMultiplier: function () {
-    return this.getCurrentTier().mult;
+    const mult = this.getCurrentTier().mult;
+    // Safety check: ensure multiplier is valid
+    if (!isFinite(mult) || isNaN(mult) || mult < 1) {
+      console.warn('Invalid combo multiplier detected:', mult, 'defaulting to 1');
+      return 1;
+    }
+    return mult;
   },
 
   // Get current tier
