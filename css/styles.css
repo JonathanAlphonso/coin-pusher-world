@@ -3103,3 +3103,244 @@ body {
     display: none;
   }
 }
+
+/* ============================================
+   PRIZE COUNTER STYLES
+   ============================================ */
+#prize-counter-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(20, 10, 40, 0.97) 0%, rgba(5, 2, 10, 0.99) 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 120;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.prize-counter-modal {
+  background: linear-gradient(180deg, rgba(50, 25, 100, 0.95) 0%, rgba(25, 12, 50, 0.97) 100%);
+  border: 3px solid rgba(255, 215, 0, 0.4);
+  border-radius: 25px;
+  padding: 25px;
+  max-width: 600px;
+  width: 95%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 0 50px rgba(150, 100, 255, 0.6), 0 0 100px rgba(255, 215, 0, 0.3);
+}
+
+.prize-counter-title {
+  font-size: 36px;
+  color: #ffd700;
+  text-align: center;
+  margin-bottom: 10px;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 100, 0, 0.5);
+  animation: prizeTitlePulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes prizeTitlePulse {
+  0% {
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+  }
+  100% {
+    text-shadow: 0 0 30px rgba(255, 215, 0, 1), 0 0 50px rgba(255, 100, 0, 0.7);
+  }
+}
+
+.prize-counter-subtitle {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.prize-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.prize-option {
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.prize-option::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.prize-option:hover::before {
+  opacity: 1;
+}
+
+.prize-option:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.prize-option-header {
+  border-bottom: 2px solid;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.prize-option-name {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.prize-option-rarity {
+  font-size: 10px;
+  font-weight: bold;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.prize-option-summary {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  margin-bottom: 10px;
+  line-height: 1.4;
+  min-height: 40px;
+}
+
+.prize-option-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: center;
+}
+
+.prize-tag {
+  font-size: 9px;
+  padding: 3px 8px;
+  background: rgba(100, 150, 255, 0.3);
+  border: 1px solid rgba(100, 150, 255, 0.5);
+  border-radius: 10px;
+  color: rgba(200, 220, 255, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Rarity-specific styles */
+.prize-common {
+  border-color: rgba(170, 170, 170, 0.5);
+}
+
+.prize-common:hover {
+  border-color: rgba(170, 170, 170, 0.8);
+  box-shadow: 0 10px 30px rgba(170, 170, 170, 0.3);
+}
+
+.prize-uncommon {
+  border-color: rgba(68, 136, 255, 0.5);
+}
+
+.prize-uncommon:hover {
+  border-color: rgba(68, 136, 255, 0.8);
+  box-shadow: 0 10px 30px rgba(68, 136, 255, 0.4);
+}
+
+.prize-rare {
+  border-color: rgba(255, 68, 255, 0.5);
+}
+
+.prize-rare:hover {
+  border-color: rgba(255, 68, 255, 0.8);
+  box-shadow: 0 10px 30px rgba(255, 68, 255, 0.5);
+}
+
+.prize-legendary {
+  border-color: rgba(255, 170, 0, 0.6);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(100, 50, 0, 0.3) 100%);
+}
+
+.prize-legendary:hover {
+  border-color: rgba(255, 170, 0, 0.9);
+  box-shadow: 0 10px 40px rgba(255, 170, 0, 0.6);
+}
+
+/* Mobile adjustments for prize counter */
+@media (max-width: 768px) {
+  .prize-options {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .prize-counter-title {
+    font-size: 28px;
+  }
+
+  .prize-counter-subtitle {
+    font-size: 14px;
+  }
+
+  .prize-option {
+    padding: 12px;
+  }
+
+  .prize-option-name {
+    font-size: 14px;
+  }
+
+  .prize-option-summary {
+    font-size: 12px;
+    min-height: 35px;
+  }
+}
+
+@media (max-width: 480px) {
+  .prize-counter-modal {
+    padding: 15px;
+  }
+
+  .prize-options {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .prize-counter-title {
+    font-size: 24px;
+  }
+
+  .prize-counter-subtitle {
+    font-size: 12px;
+    margin-bottom: 15px;
+  }
+
+  .prize-option {
+    padding: 12px;
+  }
+
+  .prize-option-name {
+    font-size: 15px;
+  }
+
+  .prize-option-summary {
+    font-size: 13px;
+    min-height: auto;
+  }
+}

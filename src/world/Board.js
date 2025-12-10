@@ -4387,6 +4387,15 @@ const Board = {
     if (this.game && this.game.powerUps && theme.powerupFocus) {
       this.game.powerUps.applyThemeBonus(theme.powerupFocus);
     }
+
+    // Open prize counter after board unlock (tier 2+)
+    if (this.currentTierCount >= 2 && this.game && this.game.prizes) {
+      setTimeout(() => {
+        this.game.prizes.openPrizeCounter(theme, (selectedPrize) => {
+          console.log(`[Board] Prize selected: ${selectedPrize.name}`);
+        });
+      }, 2000); // Wait 2s for tier unlock animation
+    }
   },
 
   // Create tier with specific theme (used by expandWithTheme)

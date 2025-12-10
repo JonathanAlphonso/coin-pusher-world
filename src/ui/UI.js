@@ -969,6 +969,93 @@ const UI = {
     if (this.game) this.game.resume();
   },
 
+  // Create prize counter UI
+  createPrizeCounterUI: function () {
+    const overlay = document.createElement("div");
+    overlay.id = "prize-counter-overlay";
+    overlay.className = "hidden";
+    overlay.innerHTML = `
+      <div class="prize-counter-modal">
+        <h2 class="prize-counter-title">Choose Your Prize!</h2>
+        <p class="prize-counter-subtitle">Select one passive bonus for the rest of the run</p>
+        <div class="prize-options" id="prize-options"></div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    this.elements.prizeCounterOverlay = overlay;
+  },
+
+  // Show prize counter with 6 options
+  showPrizeCounter: function (prizes, callback) {
+    // Create UI if it doesn't exist
+    if (!this.elements.prizeCounterOverlay) {
+      this.createPrizeCounterUI();
+    }
+
+    const overlay = this.elements.prizeCounterOverlay;
+    if (!overlay) return;
+
+    this.prizeSelectionCallback = callback;
+    const optionsContainer = document.getElementById("prize-options");
+
+    if (!optionsContainer) return;
+
+    optionsContainer.innerHTML = "";
+
+    // Create prize options
+    prizes.forEach((prize, index) => {
+      const optionEl = document.createElement("div");
+      optionEl.className = `prize-option prize-${prize.rarity}`;
+      optionEl.dataset.prizeId = prize.id;
+
+      // Rarity colors
+      const rarityColors = {
+        common: '#aaaaaa',
+        uncommon: '#4488ff',
+        rare: '#ff44ff',
+        legendary: '#ffaa00',
+      };
+      const rarityColor = rarityColors[prize.rarity] || '#ffffff';
+
+      optionEl.innerHTML = `
+        <div class="prize-option-header" style="border-color: ${rarityColor}">
+          <div class="prize-option-name" style="color: ${rarityColor}">${prize.name}</div>
+          <div class="prize-option-rarity" style="color: ${rarityColor}">${prize.rarity.toUpperCase()}</div>
+        </div>
+        <div class="prize-option-summary">${prize.summary}</div>
+        <div class="prize-option-tags">${prize.tags.map(t => `<span class="prize-tag">${t}</span>`).join('')}</div>
+      `;
+
+      // Click handler
+      optionEl.addEventListener("click", () => {
+        if (this.prizeSelectionCallback) {
+          this.prizeSelectionCallback(prize);
+          this.prizeSelectionCallback = null;
+        }
+      });
+
+      optionsContainer.appendChild(optionEl);
+    });
+
+    // Show overlay
+    overlay.classList.remove("hidden");
+
+    // Pause game
+    if (this.game) this.game.pause();
+
+    console.log('[UI] Prize counter shown with', prizes.length, 'options');
+  },
+
+  // Hide prize counter
+  hidePrizeCounter: function () {
+    const overlay = this.elements.prizeCounterOverlay;
+    if (overlay) {
+      overlay.classList.add("hidden");
+    }
+
+    if (this.game) this.game.resume();
+  },
+
   // Update method called each frame
   update: function (deltaTime) {
     this.animateScore();
