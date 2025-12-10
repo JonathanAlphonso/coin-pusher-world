@@ -761,6 +761,16 @@ const Coins = {
     // Play sound
     if (this.sound) this.sound.play("coin");
 
+    // Attribute coin value to boards it passed through (Design Spec 2.2 - Board Performance)
+    if (coin.pathBoards && coin.pathBoards.length > 0 && this.boardManager && this.boardManager.updateBoardStats) {
+      const valuePerBoard = Math.floor((coin.value * comboMult) / coin.pathBoards.length);
+      coin.pathBoards.forEach(boardId => {
+        this.boardManager.updateBoardStats(boardId, {
+          valueAdded: valuePerBoard
+        });
+      });
+    }
+
     // Path Completion Celebration (Design Spec 7.1 - Path Tracking Feedback)
     // Reward players visually for coins that traverse multiple boards
     if (coin.pathBoards && coin.pathBoards.length >= 3) {
@@ -1073,6 +1083,13 @@ const Coins = {
     if (powerupFocus === 'coinValue' && this.game && this.game.themeEffects) {
       const bonus = this.game.themeEffects.getBoardPassBonus(powerupFocus);
       coin.pathMultiplier *= (1 + bonus);
+    }
+
+    // Update board statistics (Design Spec 2.2 - Board Performance Tracking)
+    if (this.boardManager && this.boardManager.updateBoardStats) {
+      this.boardManager.updateBoardStats(boardId, {
+        // Basic tracking: coin passed through this board
+      });
     }
   },
 
