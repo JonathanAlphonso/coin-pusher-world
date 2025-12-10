@@ -265,7 +265,29 @@ All low-priority items complete! ✅
 
 ## Recent Changes
 
-### 2025-12-10 (Latest - Milestone Notifications for Board Unlock Progress)
+### 2025-12-10 (Latest - Drop Zone Preview & Haptic Feedback)
+- ✅ Added drop zone preview indicator (Phase 8 Polish - Design Spec 2.2)
+  - Glowing ring indicator shows where coins will drop
+  - Gentle pulsing animation (scale + opacity) for visibility
+  - Color-coded based on queue status:
+    * Green (>70% queue) - ready to drop many coins
+    * Cyan (30-70% queue) - moderate queue
+    * Blue (<30% queue) - low queue warning
+  - Auto-hides when game not running
+  - Enhances "Physical Play" skill expression from Design Spec 2.2
+  - Helps players understand drop zone positioning and aim better
+- ✅ Added haptic feedback for mobile devices (Phase 8 Polish - Design Spec 10.4)
+  - Light haptic vibration (10ms) on coin drops
+  - Medium haptic (20ms) on moderate scores (2x multiplier or 500+ points)
+  - Heavy haptic (15-10-15ms pattern) on big scores (5x multiplier or 1000+ points)
+  - Uses Vibration API (supported on most Android/iOS devices)
+  - Graceful fallback on devices without vibration support
+  - Enhances mobile UX and arcade-like feel on touch devices
+  - More satisfying mobile gameplay experience
+- ✅ All 50/50 tests passing after both enhancements
+- ✅ 2 commits: drop zone preview, haptic feedback
+
+### 2025-12-10 (Earlier - Milestone Notifications for Board Unlock Progress)
 - ✅ Added milestone notifications at 75% and 90% progress toward next board unlock (Phase 8 Polish)
   - Visual feedback: Color-coded messages (orange at 75% "🎯", red at 90% "🔥")
   - Audio feedback: 'collect' sound at 75%, 'powerup' sound at 90%
