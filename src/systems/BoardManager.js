@@ -36,14 +36,16 @@ const BoardManager = {
   scene: null,
   board: null,  // Reference to Board system for creating actual 3D boards
   themeEffects: null,  // Reference to ThemeEffects system
+  sound: null,  // Reference to Sound system for audio feedback
 
   /**
    * Initialize the Board Manager
    */
-  init: function(scene, boardSystem, themeEffects = null) {
+  init: function(scene, boardSystem, themeEffects = null, sound = null) {
     this.scene = scene;
     this.board = boardSystem;
     this.themeEffects = themeEffects;
+    this.sound = sound;
     this.boards = [];
     this.boardsById = {};
     this.currentBoardCount = 0;
@@ -427,6 +429,12 @@ const BoardManager = {
 
     if (multiDropBoards.length === 0) return 0;
 
+    // Check if any gauge was not full before charging
+    const wasNotFull = multiDropBoards.some(board => {
+      if (!board.gauges.multiDrop) return true;
+      return board.gauges.multiDrop.current < board.gauges.multiDrop.max;
+    });
+
     // Add charge to all multiDrop boards
     multiDropBoards.forEach(board => {
       if (!board.gauges.multiDrop) {
@@ -440,6 +448,16 @@ const BoardManager = {
 
     // Return the highest gauge value for UI display
     const maxGauge = Math.max(...multiDropBoards.map(b => b.gauges.multiDrop.current));
+
+    // Play sound effect when gauge becomes full (audio feedback enhancement)
+    const isFull = multiDropBoards.some(board =>
+      board.gauges.multiDrop.current >= board.gauges.multiDrop.max
+    );
+
+    if (wasNotFull && isFull && this.sound) {
+      this.sound.play('powerup');
+    }
+
     return maxGauge;
   },
 

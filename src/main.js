@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
   Game.themeEffects = ThemeEffects;
 
   // Initialize BoardManager early (needed for Coins routing)
-  BoardManager.init(scene, Board, ThemeEffects);
+  BoardManager.init(scene, Board, ThemeEffects, Sound);
   Game.boardManager = BoardManager;
 
   // Initialize Coins with scene and all system references
