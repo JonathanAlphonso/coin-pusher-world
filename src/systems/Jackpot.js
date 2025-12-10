@@ -106,6 +106,9 @@ const Jackpot = {
 
   // Add to jackpot when coin scores
   contribute: function (coinValue) {
+    // Guard against uninitialized state
+    if (this.value === undefined || !this.maxValue) return;
+
     const contribution = Math.floor(coinValue * this.contributionRate);
     this.value = Math.min(this.value + contribution, this.maxValue);
     this.updateUI();
@@ -136,6 +139,8 @@ const Jackpot = {
 
   // Try to burst the jackpot
   tryBurst: function () {
+    // Guard against uninitialized state
+    if (this.value === undefined || !this.maxValue) return false;
     if (this.value < this.minBurst || this.isBursting) return false;
 
     // Apply jackpot chance bonus from ThemeEffects (design spec section 5.8)
