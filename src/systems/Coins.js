@@ -493,22 +493,27 @@ const Coins = {
     // Rotate around Z by 90 degrees so cylinder axis is horizontal (along X)
     coin.mesh.rotation.set(0, 0, Math.PI / 2);
 
+    // Get global value multiplier from ThemeEffects (design spec section 5.2)
+    const globalValueMult = this.themeEffects
+      ? this.themeEffects.getGlobalValueMultiplier()
+      : 1.0;
+
     // Set value based on type and multiplier
     switch (type) {
       case "gold":
-        coin.value = this.baseValue * this.valueMultiplier;
+        coin.value = this.baseValue * this.valueMultiplier * globalValueMult;
         break;
       case "silver":
-        coin.value = this.baseValue * 0.5 * this.valueMultiplier;
+        coin.value = this.baseValue * 0.5 * this.valueMultiplier * globalValueMult;
         break;
       case "bronze":
-        coin.value = this.baseValue * 0.25 * this.valueMultiplier;
+        coin.value = this.baseValue * 0.25 * this.valueMultiplier * globalValueMult;
         break;
       case "special":
-        coin.value = this.baseValue * 5 * this.valueMultiplier;
+        coin.value = this.baseValue * 5 * this.valueMultiplier * globalValueMult;
         break;
       case "rainbow":
-        coin.value = this.baseValue * 10 * this.valueMultiplier;
+        coin.value = this.baseValue * 10 * this.valueMultiplier * globalValueMult;
         break;
     }
 
