@@ -265,7 +265,20 @@ All low-priority items complete! ✅
 
 ## Recent Changes
 
-### 2025-12-10 (Latest - Queue Regeneration Progress Indicator)
+### 2025-12-10 (Latest - UI Button Overlap & Jackpot Error Fixes)
+- ✅ Fixed UI button overlap issues (Design Spec 11.3)
+  - Resolved stats-button overlapping with fullscreen-button and settings-button
+  - Adjusted button positions: stats-button (right: 70px), settings-button (right: 160px)
+  - Fixed mobile viewport positioning (480px, 380px breakpoints)
+  - All 19/19 UI hitbox tests now passing across all viewports
+- ✅ Fixed jackpot initialization errors
+  - Added defensive check in UI.js for jackpot.maxValue before division
+  - Added guard in Jackpot.js updateUI() to prevent uninitialized state access
+  - Eliminated "Cannot read properties of undefined (reading 'value')" console errors
+- ✅ All 50/50 tests passing (20+11+19) with zero console errors
+- ✅ Production build verified: 234.93 KB main bundle, 510.66 KB three.js bundle
+
+### 2025-12-10 (Earlier - Queue Regeneration Progress Indicator)
 - ✅ Added visual progress bar for queue regeneration (Design Spec 9.1)
   - Shows players when next free coin will arrive
   - Green gradient fill below queue counter
