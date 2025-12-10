@@ -65,6 +65,10 @@ document.addEventListener('DOMContentLoaded', function () {
   ThemeEffects.init();
   Game.themeEffects = ThemeEffects;
 
+  // Initialize BoardManager early (needed for Coins routing)
+  BoardManager.init(scene, Board, ThemeEffects);
+  Game.boardManager = BoardManager;
+
   // Initialize Coins with scene and all system references
   Coins.init(scene, {
     physics: Physics,
@@ -78,6 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
     collectibles: Collectibles,
     game: Game,
     themeEffects: ThemeEffects,
+    boardManager: BoardManager,
   });
 
   // Initialize PowerUps
@@ -198,10 +203,6 @@ document.addEventListener('DOMContentLoaded', function () {
     sound: Sound,
   });
   Game.prizes = Prizes;
-
-  // Initialize BoardManager with ThemeEffects reference (already initialized above)
-  BoardManager.init(scene, Board, ThemeEffects);
-  Game.boardManager = BoardManager;
 
   // Expose for console debugging and automated tests
   Object.assign(window, {

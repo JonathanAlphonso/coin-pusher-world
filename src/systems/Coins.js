@@ -56,6 +56,7 @@ const Coins = {
   collectibles: null,
   game: null,
   themeEffects: null,
+  boardManager: null,
 
   // Initialize coin system
   init: function (scene, refs = {}) {
@@ -71,6 +72,7 @@ const Coins = {
     this.collectibles = refs.collectibles;
     this.game = refs.game;
     this.themeEffects = refs.themeEffects;
+    this.boardManager = refs.boardManager;
 
     this.coinPool = [];
     this.activeCoins = [];
@@ -366,6 +368,7 @@ const Coins = {
       pathBoards: [],      // Array of board IDs visited
       pathEvents: [],      // Array of { boardId, focus, eventType }
       pathMultiplier: 1.0, // Cumulative path multiplier
+      currentBoard: null,  // Current board ID (for routing)
     });
 
     return this.coinPool[this.coinPool.length - 1];
@@ -472,7 +475,7 @@ const Coins = {
   },
 
   // Spawn a coin at position
-  spawnCoin: function (x, y, z, type) {
+  spawnCoin: function (x, y, z, type, boardId = null) {
     type = type || "gold";
 
     const coin = this.getCoin();
@@ -483,6 +486,7 @@ const Coins = {
     coin.pathBoards = [];
     coin.pathEvents = [];
     coin.pathMultiplier = 1.0;
+    coin.currentBoard = boardId;
 
     // Apply the visual theme for this coin type
     this.applyCoinType(coin, type);
@@ -559,8 +563,133 @@ const Coins = {
     return coin;
   },
 
+  /**
+   * Determine which exit zone a coin falls through
+   * Returns the exit zone name based on X position
+   */
+  determineExitZone: function(x) {
+    // Simple 4-zone division based on X position
+    // Assumes board width from -6 to 6
+    const boardWidth = 12;
+    const zoneWidth = boardWidth / 4;
+    const leftEdge = -6;
+
+    const relativeX = x - leftEdge;
+
+    if (relativeX < zoneWidth) {
+      return 'left';
+    } else if (relativeX < zoneWidth * 2) {
+      return 'center-left';
+    } else if (relativeX < zoneWidth * 3) {
+      return 'center-right';
+    } else {
+      return 'right';
+    }
+  },
+
+  /**
+   * Route a coin to a child board (Design Spec 6.3)
+   * Respawns the coin on the child board preserving its properties
+   */
+  routeCoinToBoard: function(coin, targetBoard, exitX) {
+    if (!coin || !targetBoard) return;
+
+    // Remove physics body from old board
+    if (coin.body && this.physics) {
+      this.physics.removeBody(coin.body);
+      coin.body = null;
+    }
+
+    // Calculate spawn position on target board
+    // Use board's world position from BoardManager
+    const boardWorldPos = targetBoard.worldPosition;
+
+    // Adjust X position based on exit - maintain some lateral position
+    const spawnX = boardWorldPos.x + (exitX * 0.5); // Dampen horizontal carry-over
+    const spawnY = boardWorldPos.y + 8; // Above the board
+    const spawnZ = boardWorldPos.z;
+
+    // Update coin's current board
+    coin.currentBoard = targetBoard.boardId;
+
+    // Reposition mesh
+    coin.mesh.position.set(spawnX, spawnY, spawnZ);
+    coin.mesh.rotation.set(0, 0, Math.PI / 2);
+
+    // Create new physics body on target board
+    const self = this;
+    coin.body = this.physics ? this.physics.createBody({
+      shape: "cylinder",
+      x: spawnX,
+      y: spawnY,
+      z: spawnZ,
+      radius: this.coinRadius,
+      height: this.coinHeight,
+      mass: 1,
+      friction: 0.35,
+      restitution: 0.25,
+      mesh: coin.mesh,
+      rx: 0,
+      ry: 0,
+      rz: Math.PI / 2,
+      data: { coin: coin },
+      onFallOff: function (body) {
+        self.onCoinFallOff(coin, body);
+      },
+    }) : null;
+
+    if (coin.body) {
+      // Give it some downward velocity to start
+      coin.body.vy = -2;
+      // Small random horizontal velocity for natural spread
+      coin.body.vx = random(-0.5, 0.5);
+    }
+  },
+
   // Called when a coin falls off
   onCoinFallOff: function (coin, body) {
+    // NEW ROUTING LOGIC (Design Spec 6.3 & 6.4)
+    // If BoardManager is active and coin has a current board, try to route to child board
+    if (this.boardManager && coin.currentBoard) {
+      const currentBoard = this.boardManager.getBoard(coin.currentBoard);
+
+      if (currentBoard) {
+        // Record board visit for path tracking
+        this.recordBoardVisit(coin, currentBoard.boardId, currentBoard.powerupFocus);
+
+        // Determine which exit zone the coin fell through
+        const exitZone = this.determineExitZone(body.x);
+
+        // Get exit target (child board or scoring tray)
+        const exitTarget = this.boardManager.getExitTarget(currentBoard.boardId, exitZone);
+
+        if (exitTarget && exitTarget.targetType === 'board' && exitTarget.targetId) {
+          // Route to child board
+          const childBoard = this.boardManager.getBoard(exitTarget.targetId);
+
+          if (childBoard) {
+            // Record path event
+            this.recordPathEvent(coin, currentBoard.boardId, currentBoard.powerupFocus, 'board_exit');
+
+            // Apply exit type bonuses
+            if (exitTarget.exitType === 'jackpot') {
+              this.recordPathEvent(coin, currentBoard.boardId, currentBoard.powerupFocus, 'jackpot_slot');
+            } else if (exitTarget.exitType === 'bonus') {
+              this.recordPathEvent(coin, currentBoard.boardId, currentBoard.powerupFocus, 'lucky_exit');
+            }
+
+            // Respawn coin on child board
+            this.routeCoinToBoard(coin, childBoard, body.x);
+            return; // Don't score yet, coin continues on child board
+          }
+        }
+
+        // If we reach here, coin should be scored (either bottom row or no valid child)
+        // Fall through to scoring logic below
+      }
+    }
+
+    // SCORING LOGIC (for bottom row boards or single-board mode)
     // Register with combo system
     if (this.combo) {
       this.combo.registerFall();
@@ -763,7 +892,17 @@ const Coins = {
       type = "bronze";
     }
 
-    this.spawnCoin(dropX, dropY, dropZ, type);
+    // Get the top board ID if BoardManager is available
+    let topBoardId = null;
+    if (this.boardManager && this.boardManager.boards.length > 0) {
+      // Find the top board (row 0)
+      const topBoard = this.boardManager.boards.find(b => b.row === 0);
+      if (topBoard) {
+        topBoardId = topBoard.boardId;
+      }
+    }
+
+    this.spawnCoin(dropX, dropY, dropZ, type, topBoardId);
     this.totalCoinsDropped++;
     return true;
   },
