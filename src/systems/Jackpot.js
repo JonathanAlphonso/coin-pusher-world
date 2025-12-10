@@ -258,6 +258,24 @@ const Jackpot = {
     }
     this.particles = [];
   },
+
+  // Phase 9 - Save/Load support for run state persistence
+  getSaveData: function () {
+    return {
+      value: this.value,
+      isBursting: this.isBursting,
+    };
+  },
+
+  loadSaveData: function (data) {
+    if (!data) return;
+
+    this.value = data.value || 0;
+    this.isBursting = data.isBursting || false;
+
+    // Update UI to reflect loaded state
+    this.updateUI();
+  },
 };
 
 export default Jackpot;

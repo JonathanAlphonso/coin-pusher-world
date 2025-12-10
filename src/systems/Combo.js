@@ -159,6 +159,28 @@ const Combo = {
     if (this.count < 3) return 0;
     return this.count * 5;
   },
+
+  // Phase 9 - Save/Load support for run state persistence
+  getSaveData: function () {
+    return {
+      count: this.count,
+      timer: this.timer,
+      bestCombo: this.bestCombo,
+    };
+  },
+
+  loadSaveData: function (data) {
+    if (!data) return;
+
+    this.count = data.count || 0;
+    this.timer = data.timer || 0;
+    this.bestCombo = data.bestCombo || 0;
+
+    // Update UI to reflect loaded state
+    if (this.count >= 3) {
+      this.updateUI();
+    }
+  },
 };
 
 export default Combo;

@@ -550,10 +550,10 @@ const UI = {
     stats.push({ icon: "SCORE", label: "Total Score", value: formatNumber(this.game.score || 0) });
     stats.push({ icon: "TIER", label: "World Tier", value: (this.game.board?.currentTierCount || 1) }); 
 
-    // Queue info - check various possible locations for queue count
+    // Queue info - use correct property name 'coinQueue'
     let queueValue = 0;
     if (this.game.coins) {
-        queueValue = this.game.coins.queue || 0;
+        queueValue = this.game.coins.coinQueue || 0;
     }
     stats.push({ icon: "QUEUE", label: "Coins in Queue", value: queueValue });
 
@@ -588,10 +588,10 @@ const UI = {
         stats.push({ icon: "💎", label: "Relics Found", value: `${totalCollected}/${totalItems}` });
     }
 
-    // Active coins on board - useful debug/stat
-    if (this.game.coins && this.game.coins.coins) {
-        // activeCoins might be a group or array, let's use the array length safely
-        const count = this.game.coins.coins.length || 0;
+    // Active coins on board - use correct property name 'activeCoins'
+    if (this.game.coins && this.game.coins.activeCoins) {
+        // activeCoins is an array
+        const count = this.game.coins.activeCoins.length || 0;
         stats.push({ icon: "COINS", label: "Coins on Board", value: count });
     }
 
