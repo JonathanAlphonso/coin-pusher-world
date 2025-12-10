@@ -330,7 +330,13 @@ const Game = {
     // Update auto-drop
     if (this.autoDrop && this.coins && this.coins.coinQueue > 0) {
       this.autoDropTimer += deltaTime;
-      if (this.autoDropTimer >= this.autoDropInterval) {
+
+      // Get dynamic auto-drop interval from ThemeEffects
+      const effectiveInterval = this.themeEffects
+        ? this.themeEffects.getAutoDropInterval(this.autoDropInterval)
+        : this.autoDropInterval;
+
+      if (this.autoDropTimer >= effectiveInterval) {
         this.autoDropTimer = 0;
         this.dropCoin();
       }

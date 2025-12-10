@@ -61,6 +61,10 @@ document.addEventListener('DOMContentLoaded', function () {
     game: Game,
   });
 
+  // Initialize ThemeEffects first (needed for Coins)
+  ThemeEffects.init();
+  Game.themeEffects = ThemeEffects;
+
   // Initialize Coins with scene and all system references
   Coins.init(scene, {
     physics: Physics,
@@ -73,6 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
     powerUps: PowerUps,
     collectibles: Collectibles,
     game: Game,
+    themeEffects: ThemeEffects,
   });
 
   // Initialize PowerUps
@@ -184,11 +189,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
   Game.prizes = Prizes;
 
-  // Initialize ThemeEffects first
-  ThemeEffects.init();
-  Game.themeEffects = ThemeEffects;
-
-  // Initialize BoardManager with ThemeEffects reference
+  // Initialize BoardManager with ThemeEffects reference (already initialized above)
   BoardManager.init(scene, Board, ThemeEffects);
   Game.boardManager = BoardManager;
 

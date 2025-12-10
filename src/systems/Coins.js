@@ -55,6 +55,7 @@ const Coins = {
   powerUps: null,
   collectibles: null,
   game: null,
+  themeEffects: null,
 
   // Initialize coin system
   init: function (scene, refs = {}) {
@@ -69,6 +70,7 @@ const Coins = {
     this.powerUps = refs.powerUps;
     this.collectibles = refs.collectibles;
     this.game = refs.game;
+    this.themeEffects = refs.themeEffects;
 
     this.coinPool = [];
     this.activeCoins = [];
@@ -752,7 +754,19 @@ const Coins = {
 
   // Add coins to queue
   addToQueue: function (amount) {
-    this.coinQueue = Math.min(this.coinQueue + amount, this.maxQueueSize);
+    // Get dynamic max queue size from ThemeEffects
+    const effectiveMaxQueue = this.themeEffects
+      ? this.themeEffects.getMaxQueueSize(this.maxQueueSize)
+      : this.maxQueueSize;
+
+    // Apply queue gain multiplier from ThemeEffects
+    const queueGainMult = this.themeEffects
+      ? this.themeEffects.getQueueGainMultiplier()
+      : 1.0;
+
+    const adjustedAmount = Math.round(amount * queueGainMult);
+
+    this.coinQueue = Math.min(this.coinQueue + adjustedAmount, effectiveMaxQueue);
     if (this.ui) this.ui.updateQueue(this.coinQueue);
   },
 
