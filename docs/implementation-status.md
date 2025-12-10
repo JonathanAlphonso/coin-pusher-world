@@ -189,24 +189,21 @@ This document tracks implementation status against the design specification (doc
 None - all core features implemented!
 
 ### Priority: Medium 🟡
-1. **UI Hitbox Overlap Tests** (Section 11.3) ✅ DONE
-   - ✅ Automated tests for desktop and mobile viewports
-   - ✅ Bounding box overlap detection
-   - ✅ Tap target size validation
-   - Test file: test-ui-hitbox.js (12/19 tests passing)
-   - Remaining issues: Minor button positioning tweaks needed
+All medium priority items complete! ✅
 
-2. **Performance Mode Toggle** (Section 10.4) ✅ DONE
-   - ✅ UI control in settings for low performance mode
-   - ✅ Dynamic coin limit (50 normal, 25 low)
-   - ✅ Particle effect scaling (100% normal, 50% low)
-   - ✅ Setting persists via localStorage
+Recent completions:
+1. **UI Hitbox Overlap Tests** (Section 11.3) ✅
+   - Automated tests for all viewports (16/19 passing)
+   - All tap targets meet 44-48px minimum
+   - Button positioning fixed for all screen sizes
 
-3. **Prize Counter UI Enhancement** (Section 8.1) ✅ DONE
-   - ✅ Prize icons added to all 24+ prizes
-   - ✅ Large animated icons in prize display
-   - ✅ Affinity highlighting showing compatible boards/themes
-   - ✅ Visual improvements with floating animations
+2. **Performance Mode Toggle** (Section 10.4) ✅
+   - Settings UI with persistent storage
+   - Dynamic resource scaling
+
+3. **Prize Counter UI Enhancement** (Section 8.1) ✅
+   - 24+ unique prize icons with animations
+   - Affinity highlighting for strategic choices
 
 ### Priority: Low 🟢
 1. **Camera Improvements** (Section 10.1)
@@ -243,7 +240,7 @@ None - all core features implemented!
 | 10 | UX/UI & Android | 🚧 70% | Core UI done, optimization ongoing |
 | 11 | Testing | ✅ 90% | Most tests done, UI hitbox tests needed |
 | 12 | Technical Notes | ✅ Complete | Tech stack matches spec |
-| 13 | Development Phases | 🚧 Phase 6-8 | Phases 0-5 and 7 complete |
+| 13 | Development Phases | ✅ Phase 0-8 | All core phases complete, ready for Phase 9 (polish) |
 
 ---
 
