@@ -534,6 +534,11 @@ const Game = {
       this.ui.updateMultiDropGauge(gaugeData);
     }
 
+    // Update active prizes display (Phase 8 Polish - Design Spec 8.1)
+    if (this.ui && this.prizes) {
+      this.ui.updateActivePrizes(this.prizes.activePrizes);
+    }
+
     // Update UI
     if (this.ui) this.ui.update(deltaTime);
 

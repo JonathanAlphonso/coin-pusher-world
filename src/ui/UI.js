@@ -82,6 +82,8 @@ const UI = {
       boardStatsOverlay: document.getElementById("board-stats-overlay"),
       boardStatsList: document.getElementById("board-stats-list"),
       closeBoardStats: document.getElementById("close-board-stats"),
+      activePrizesPanel: document.getElementById("active-prizes-panel"),
+      activePrizesList: document.getElementById("active-prizes-list"),
     };
 
     this.createBoardSelectionUI();
@@ -1009,6 +1011,58 @@ const UI = {
   // Update power-up display (now handled by stats overlay)
   updatePowerUp: function (powerUpId, level) {
     // Power-up display was removed - stats overlay shows this info now
+  },
+
+  /**
+   * Update active prizes display panel (Phase 8 Polish - Design Spec 8.1)
+   * Shows currently active prizes with icons and effects for real-time feedback
+   * @param {Array} activePrizes - Array of active prize objects from Prizes system
+   */
+  updateActivePrizes: function (activePrizes) {
+    if (!this.elements.activePrizesPanel || !this.elements.activePrizesList) return;
+
+    // Hide panel if no prizes
+    if (!activePrizes || activePrizes.length === 0) {
+      this.elements.activePrizesPanel.classList.add('hidden');
+      return;
+    }
+
+    // Show panel
+    this.elements.activePrizesPanel.classList.remove('hidden');
+
+    // Clear existing prizes
+    this.elements.activePrizesList.innerHTML = '';
+
+    // Add each active prize
+    activePrizes.forEach(prize => {
+      const prizeItem = document.createElement('div');
+      prizeItem.className = `active-prize-item rarity-${prize.rarity || 'common'}`;
+
+      // Icon
+      const icon = document.createElement('div');
+      icon.className = 'active-prize-icon';
+      icon.textContent = prize.icon || '🎁';
+      prizeItem.appendChild(icon);
+
+      // Info container
+      const info = document.createElement('div');
+      info.className = 'active-prize-info';
+
+      // Name
+      const name = document.createElement('div');
+      name.className = 'active-prize-name';
+      name.textContent = prize.name || 'Unknown Prize';
+      info.appendChild(name);
+
+      // Effect summary
+      const effect = document.createElement('div');
+      effect.className = 'active-prize-effect';
+      effect.textContent = prize.summary || 'Bonus effect active';
+      info.appendChild(effect);
+
+      prizeItem.appendChild(info);
+      this.elements.activePrizesList.appendChild(prizeItem);
+    });
   },
 
   // Show coin score popup

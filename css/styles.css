@@ -3410,6 +3410,150 @@ body {
   }
 }
 
+/* ==================== ACTIVE PRIZES PANEL (Phase 8 Polish) ==================== */
+#active-prizes-panel {
+  position: absolute;
+  bottom: 100px;
+  left: 10px;
+  background: linear-gradient(180deg, rgba(50, 25, 100, 0.92) 0%, rgba(25, 12, 50, 0.95) 100%);
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  border-radius: 12px;
+  padding: 10px;
+  max-width: 200px;
+  z-index: 25;
+  box-shadow: 0 0 20px rgba(150, 100, 255, 0.3);
+  pointer-events: none;
+}
+
+.active-prizes-header {
+  font-size: 12px;
+  color: #ffd700;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+  margin-bottom: 8px;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+  padding-bottom: 5px;
+}
+
+.active-prizes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.active-prize-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.active-prize-item:hover {
+  background: rgba(255, 215, 0, 0.1);
+  border-color: rgba(255, 215, 0, 0.4);
+  transform: translateX(3px);
+}
+
+.active-prize-icon {
+  font-size: 20px;
+  min-width: 24px;
+  text-align: center;
+  filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.3));
+}
+
+.active-prize-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.active-prize-name {
+  font-size: 11px;
+  font-weight: bold;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
+.active-prize-effect {
+  font-size: 9px;
+  color: rgba(255, 215, 0, 0.8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Rarity-specific border colors for active prizes */
+.active-prize-item.rarity-common {
+  border-color: rgba(170, 170, 170, 0.3);
+}
+
+.active-prize-item.rarity-uncommon {
+  border-color: rgba(68, 136, 255, 0.4);
+}
+
+.active-prize-item.rarity-rare {
+  border-color: rgba(255, 68, 255, 0.4);
+}
+
+.active-prize-item.rarity-legendary {
+  border-color: rgba(255, 170, 0, 0.5);
+  box-shadow: 0 0 10px rgba(255, 170, 0, 0.2);
+}
+
+/* Mobile adjustments for active prizes */
+@media (max-width: 480px) {
+  #active-prizes-panel {
+    bottom: 80px;
+    left: 5px;
+    max-width: 160px;
+    padding: 8px;
+  }
+
+  .active-prizes-header {
+    font-size: 10px;
+    margin-bottom: 6px;
+  }
+
+  .active-prize-item {
+    padding: 5px 6px;
+    gap: 6px;
+  }
+
+  .active-prize-icon {
+    font-size: 16px;
+    min-width: 20px;
+  }
+
+  .active-prize-name {
+    font-size: 10px;
+  }
+
+  .active-prize-effect {
+    font-size: 8px;
+  }
+}
+
+/* Very small screens - make more compact */
+@media (max-width: 360px) {
+  #active-prizes-panel {
+    max-width: 140px;
+    padding: 6px;
+  }
+
+  .active-prize-item {
+    padding: 4px 5px;
+  }
+}
+
 /* ==================== GAME OVER SESSION STATS ==================== */
 
 .final-score-display {
