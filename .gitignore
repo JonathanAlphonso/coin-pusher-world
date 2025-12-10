@@ -4,10 +4,17 @@ node_modules/
 # Build output
 dist/
 
-# Test files and results
-test-*.cjs
-test-*.js
+# Test results and temporary test files
 *-results.json
+test-temp-*.cjs
+test-debug-*.cjs
+
+# Keep core test suites in repo
+!test-comprehensive.cjs
+!test-full-playthrough.cjs
+!test-coin-flow.cjs
+!test-prize-system.cjs
+!test-ui-overlap.cjs
 
 # Screenshots and debug images
 *.png
