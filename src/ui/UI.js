@@ -289,6 +289,27 @@ const UI = {
     }
   },
 
+  // Show first-time tutorial (Phase 9 - onboarding)
+  showFirstTimeTutorial: function () {
+    // Briefly pause game and show help overlay for first-time players
+    if (this.game) {
+      this.game.pause();
+    }
+
+    // Show a welcome message
+    this.showMessage("Welcome! Here's a quick tutorial...", 2000);
+
+    // Wait a moment then show full help
+    setTimeout(() => {
+      this.showHelp();
+
+      // Mark player as having seen tutorial
+      if (this.storage) {
+        this.storage.markAsPlayed();
+      }
+    }, 300);
+  },
+
   // Show stats overlay
   showStats: function () {
     if (this.elements.statsOverlay) {
@@ -779,6 +800,11 @@ const UI = {
   hideStartScreen: function () {
     if (this.elements.startScreen) {
       this.elements.startScreen.classList.add("hidden");
+    }
+
+    // Show tutorial for first-time players (Phase 9 - onboarding)
+    if (this.storage && !this.storage.hasPlayedBefore()) {
+      this.showFirstTimeTutorial();
     }
   },
 

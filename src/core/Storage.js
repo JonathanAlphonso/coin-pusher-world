@@ -9,6 +9,7 @@ const SETTINGS_KEY = 'coinPusherWorld_settings';
 const LIFETIME_STATS_KEY = 'coinPusherWorld_lifetimeStats';
 const DAILY_CHALLENGES_KEY = 'coinPusherWorld_dailyChallenges';
 const CHALLENGE_BONUS_KEY = 'coinPusherWorld_challengeBonus';
+const FIRST_TIME_KEY = 'coinPusherWorld_hasPlayed';
 const MAX_HIGH_SCORES = 10;
 
 const Storage = {
@@ -318,6 +319,30 @@ const Storage = {
 
     try {
       localStorage.setItem(CHALLENGE_BONUS_KEY, String(amount));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  },
+
+  // Check if player has played before (Phase 9 - first-time tutorial)
+  hasPlayedBefore: function () {
+    if (!this.isAvailable()) return true; // Default to true if no storage
+
+    try {
+      const value = localStorage.getItem(FIRST_TIME_KEY);
+      return value === 'true';
+    } catch (e) {
+      return true;
+    }
+  },
+
+  // Mark player as having played (Phase 9 - first-time tutorial)
+  markAsPlayed: function () {
+    if (!this.isAvailable()) return false;
+
+    try {
+      localStorage.setItem(FIRST_TIME_KEY, 'true');
       return true;
     } catch (e) {
       return false;
