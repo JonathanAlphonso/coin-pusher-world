@@ -75,6 +75,37 @@ body {
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
+/* Queue color feedback (Phase 8 Polish) */
+#queue-display.queue-low {
+  border-color: rgba(255, 50, 50, 0.6);
+  box-shadow: 0 0 20px rgba(255, 50, 50, 0.4);
+}
+
+#queue-display.queue-low #queue-value {
+  color: #ff6666;
+  text-shadow: 0 0 10px rgba(255, 100, 100, 0.6);
+}
+
+#queue-display.queue-medium {
+  border-color: rgba(255, 165, 0, 0.6);
+  box-shadow: 0 0 20px rgba(255, 165, 0, 0.4);
+}
+
+#queue-display.queue-medium #queue-value {
+  color: #ffaa55;
+  text-shadow: 0 0 10px rgba(255, 165, 0, 0.6);
+}
+
+#queue-display.queue-high {
+  border-color: rgba(50, 255, 50, 0.6);
+  box-shadow: 0 0 20px rgba(50, 255, 50, 0.4);
+}
+
+#queue-display.queue-high #queue-value {
+  color: #66ff66;
+  text-shadow: 0 0 10px rgba(100, 255, 100, 0.6);
+}
+
 /* Tier Progress Bar */
 #tier-progress-container {
   background: linear-gradient(180deg, rgba(20, 10, 40, 0.9) 0%, rgba(10, 5, 20, 0.95) 100%);

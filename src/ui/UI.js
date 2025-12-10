@@ -873,10 +873,30 @@ const UI = {
     }
   },
 
-  // Update queue display
-  updateQueue: function (count) {
+  // Update queue display with color feedback (Phase 8 Polish)
+  updateQueue: function (count, maxQueue = null) {
     if (this.elements.queueValue) {
       this.elements.queueValue.textContent = count;
+
+      // Color-code queue based on fullness (if maxQueue is provided)
+      if (maxQueue !== null && maxQueue > 0) {
+        const fillPercent = count / maxQueue;
+        const queueElement = this.elements.queueValue.parentElement;
+
+        if (queueElement) {
+          // Remove previous color classes
+          queueElement.classList.remove('queue-low', 'queue-medium', 'queue-high');
+
+          // Add appropriate color class
+          if (fillPercent < 0.2) {
+            queueElement.classList.add('queue-low');  // Red warning
+          } else if (fillPercent < 0.5) {
+            queueElement.classList.add('queue-medium');  // Orange caution
+          } else {
+            queueElement.classList.add('queue-high');  // Green good
+          }
+        }
+      }
     }
   },
 

@@ -939,7 +939,7 @@ const Coins = {
     // Check queue
     if (this.coinQueue <= 0) return false;
     this.coinQueue--;
-    if (this.ui) this.ui.updateQueue(this.coinQueue);
+    if (this.ui) this.ui.updateQueue(this.coinQueue, this.getEffectiveMaxQueue());
 
     // Random X position within drop zone
     const dropX = random(dropZone.minX, dropZone.maxX);
@@ -1077,7 +1077,7 @@ const Coins = {
     const adjustedAmount = Math.round(amount * queueGainMult);
 
     this.coinQueue = Math.min(this.coinQueue + adjustedAmount, effectiveMaxQueue);
-    if (this.ui) this.ui.updateQueue(this.coinQueue);
+    if (this.ui) this.ui.updateQueue(this.coinQueue, effectiveMaxQueue);
 
     // Track queue generation per board (Design Spec 2.2 - Board Performance)
     if (boardId && this.boardManager && this.boardManager.updateBoardStats) {
@@ -1335,7 +1335,7 @@ const Coins = {
 
     // Update UI to reflect restored state
     if (this.ui) {
-      this.ui.updateQueue(this.coinQueue);
+      this.ui.updateQueue(this.coinQueue, this.getEffectiveMaxQueue());
     }
   },
 
