@@ -33,6 +33,7 @@ const UI = {
     this.elements = {
       scoreValue: document.getElementById("score-value"),
       queueValue: document.getElementById("queue-value"),
+      queueRegenFill: document.getElementById("queue-regen-fill"),
       expansionValue: document.getElementById("expansion-value"),
       boardCounterValue: document.getElementById("board-counter-value"),
       dropButton: document.getElementById("drop-button"),
@@ -899,6 +900,15 @@ const UI = {
           }
         }
       }
+    }
+  },
+
+  // Update queue regeneration progress (Design Spec 9.1 - Visual Feedback)
+  // Shows players when next free coin will arrive
+  updateQueueRegenProgress: function (progress) {
+    if (this.elements.queueRegenFill) {
+      const percentage = Math.max(0, Math.min(100, progress * 100));
+      this.elements.queueRegenFill.style.width = `${percentage}%`;
     }
   },
 

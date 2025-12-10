@@ -1092,6 +1092,13 @@ const Coins = {
     // Always regenerate coins over time (passive income)
     this.regenTimer += deltaTime;
 
+    // Update regeneration progress bar (Design Spec 9.1 - Visual Feedback)
+    // Shows players when next free coin will arrive
+    if (this.ui && this.ui.updateQueueRegenProgress) {
+      const regenProgress = this.regenTimer / this.regenInterval;
+      this.ui.updateQueueRegenProgress(regenProgress);
+    }
+
     if (this.regenTimer >= this.regenInterval) {
       this.regenTimer = 0;
 
