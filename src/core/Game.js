@@ -831,6 +831,25 @@ const Game = {
             this.ui.updateBoardCounter(status.totalBoards, status.maxBoards);
           }
 
+          // Celebrate pyramid completion! (Phase 8 Polish - Design Spec Section 3.1)
+          if (status.isFull && this.ui && this.sound) {
+            // Visual celebration
+            this.ui.showMessage('🎉 PYRAMID COMPLETE! 🎉\nMaximum Power Unlocked!', '#FFD700', 5000);
+
+            // Screen shake for epic feel
+            this.screenShake(2.0);
+
+            // Sound celebration
+            this.sound.play('powerup');
+
+            // Add bonus queue as a reward
+            if (this.coins) {
+              this.coins.addToQueue(10);
+            }
+
+            console.log('🎉 8-board pyramid completed! All theme synergies active!');
+          }
+
           // Update the physical board visualization (optional, can be implemented later)
           // if (this.board) {
           //   this.board.visualizeBoard(newBoard);
