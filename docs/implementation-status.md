@@ -387,11 +387,16 @@ All low-priority items complete! ✅
 ## Test Commands
 
 ```bash
-# Run comprehensive test suite (20 tests)
-node test-comprehensive.js
+# Run all primary test suites (50 tests)
+npm test
 
-# Run 8-board pyramid test (11 tests)
-node test-8board-pyramid.js
+# Run individual test suites
+npm run test:comprehensive  # 20 tests
+npm run test:pyramid        # 11 tests
+npm run test:ui             # 19 tests
+
+# Run unit tests
+node test-board-manager.js  # 12 tests
 
 # Start dev server
 npm run dev
@@ -399,6 +404,8 @@ npm run dev
 # Build for production
 npm run build
 ```
+
+**See [Testing Guide](testing-guide.md) for complete testing documentation.**
 
 ---
 
