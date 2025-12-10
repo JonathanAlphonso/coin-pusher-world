@@ -9,7 +9,7 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    open: true,
+    open: false,  // Don't auto-open during tests
     allowedHosts: ['coinpushergame.loca.lt', '.loca.lt', '.ngrok-free.dev']
   }
 });
