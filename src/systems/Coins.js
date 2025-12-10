@@ -868,6 +868,17 @@ const Coins = {
   // Trigger a bonus effect
   // coin parameter is optional - used to track which board generated the queue (Design Spec 2.2)
   triggerBonus: function (zone, x, y, coin = null) {
+    // Spawn particles for bonus zone hits (Phase 8 Polish - visual feedback)
+    if (this.game && this.game.spawnParticles) {
+      // Color-code particles based on bonus type
+      const particleColor = zone.type === "queue" ? 0x00ffff :  // Cyan for queue
+                           zone.type === "multiplier" ? 0xffff00 :  // Yellow for multiplier
+                           zone.type === "powerup" ? 0xff00ff :  // Magenta for powerup
+                           zone.type === "themeBonus" ? 0xff8800 :  // Orange for theme bonus
+                           0xffd700;  // Gold default
+      this.game.spawnParticles(x, y + 1, zone.z || 0, particleColor);
+    }
+
     switch (zone.type) {
       case "queue":
         const addAmount = randomInt(3, 8);
