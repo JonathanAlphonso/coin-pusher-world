@@ -70,6 +70,13 @@ Simply open the URL on your Android phone's browser. The game is optimized for t
 3. Coins are pushed forward and fall through the pyramid
 4. When coins exit the bottom row, they are scored
 
+### ⌨️ Keyboard Shortcuts
+- **SPACE** - Drop a coin
+- **A** - Toggle auto-drop ON/OFF
+- **H** - Toggle help overlay
+- **S** - Toggle settings menu
+- **ESC** - Close any open overlay
+
 ### Strategic Depth
 5. **Board Selection**: Choose from 3 theme options when expanding (8 boards max)
 6. **Prize Selection**: Pick 1 of 6 prizes from 30-prize pool (up to 8 active)

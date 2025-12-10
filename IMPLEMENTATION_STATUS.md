@@ -89,19 +89,27 @@ Last Updated: 2025-12-10
 
 ## ❌ Not Yet Implemented
 
-### Board Unlock Progression (Section 3.1) ⚠️
+### Board Unlock Progression (Section 3.1) ✅ PARTIALLY WORKING
 - ✅ Score thresholds defined
 - ✅ Board selection UI implemented
 - ✅ Prize Counter triggered after board unlock
-- ⚠️ NOT TESTED: Full playthrough from start to 8 boards in actual gameplay
-- ⚠️ NOT YET: Visual feedback for board unlocks
+- ✅ Tested via test-8board-pyramid.js (11/11 tests passing)
+- ⚠️ BoardManager creates logical boards but no 3D visualization yet
+- ⚠️ NOT YET: Visual feedback showing all boards in pyramid
 
-### Coin Routing Between Boards (Section 6.3) ❌
-- ❌ Physical geometry alignment for coin drops
-- ❌ Coins falling from parent exits to child boards
+### Coin Routing Between Boards (Section 6.3) ❌ CRITICAL GAP
+**Current Reality**: Game uses single expandable board with tiers (Board.js)
+**Design Spec Vision**: Multiple independent boards in 3D pyramid with coin routing
+
+This is a fundamental architectural difference:
+- ❌ Multiple 3D board instances in scene (one per BoardManager board)
+- ❌ Physical geometry alignment for coin drops between boards
+- ❌ Coins falling from parent board exits to child boards
 - ❌ Exit zone → child board targeting
-- ❌ Final scoring tray physical area
+- ❌ Final scoring tray physical area at pyramid bottom
 - ❌ Coin despawn and pooling at scoring tray
+
+**Note**: This requires significant refactoring of Board.js to support multiple independent board instances instead of one board with expandable tiers
 
 ### Phase 6 - UX & Old Android Support ❌
 - ❌ Low Performance Mode toggle
@@ -205,8 +213,26 @@ Based on design spec importance:
 
 ## 📝 Notes
 
-- All core systems are initialized and functional
-- ThemeEffects properly integrated with queue system
-- Pyramid structure is solid and well-tested
-- Prize system is complete and working
-- Ready for physical board routing implementation
+### Game is Playable and Fun! 🎮
+The game is fully functional and enjoyable to play, but uses a different architecture than the design spec:
+
+**Current Architecture (What's Actually Built)**:
+- Single 3D board that expands vertically with themed tiers
+- Tiers stack on top of each other within one board
+- Coins fall through multiple tiers on the same board
+- All systems work together cohesively
+- Full prize system with 30+ prizes and synergies
+- BoardManager tracks logical pyramid but serves as metadata
+
+**Design Spec Vision (Not Yet Implemented)**:
+- Multiple independent 3D board instances
+- Boards arranged in a branching pyramid (separate machines)
+- Coins physically route between different board instances
+- Each board is a standalone pusher machine
+
+### Technical Status
+- ✅ All core systems are initialized and functional
+- ✅ ThemeEffects properly integrated with queue system
+- ✅ Pyramid structure (logical) is solid and well-tested
+- ✅ Prize system is complete and working
+- ⚠️ Would need Board.js refactor to match design spec's multi-board vision
