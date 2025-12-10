@@ -360,6 +360,10 @@ const Coins = {
       active: false,
       type: "gold",
       value: this.baseValue,
+      // Path tracking (design spec section 4.1)
+      pathBoards: [],      // Array of board IDs visited
+      pathEvents: [],      // Array of { boardId, focus, eventType }
+      pathMultiplier: 1.0, // Cumulative path multiplier
     });
 
     return this.coinPool[this.coinPool.length - 1];
@@ -472,6 +476,11 @@ const Coins = {
     const coin = this.getCoin();
     coin.active = true;
     coin.type = type;
+
+    // Reset path tracking
+    coin.pathBoards = [];
+    coin.pathEvents = [];
+    coin.pathMultiplier = 1.0;
 
     // Apply the visual theme for this coin type
     this.applyCoinType(coin, type);
@@ -833,6 +842,108 @@ const Coins = {
 
   setValueMultiplier: function (mult) {
     this.valueMultiplier = mult;
+  },
+
+  /**
+   * Path Tracking Methods (Design Spec Section 7.1)
+   */
+
+  // Record that a coin visited a board
+  recordBoardVisit: function(coin, boardId, powerupFocus) {
+    if (!coin || !boardId) return;
+
+    // Add to pathBoards if not already recorded
+    if (!coin.pathBoards.includes(boardId)) {
+      coin.pathBoards.push(boardId);
+    }
+
+    // Apply board pass bonus (from ThemeEffects)
+    if (powerupFocus === 'coinValue' && this.game && this.game.themeEffects) {
+      const bonus = this.game.themeEffects.getBoardPassBonus(powerupFocus);
+      coin.pathMultiplier *= (1 + bonus);
+    }
+  },
+
+  // Record a path event (obstacle hit, jackpot, etc.)
+  recordPathEvent: function(coin, boardId, powerupFocus, eventType) {
+    if (!coin || !boardId || !eventType) return;
+
+    coin.pathEvents.push({
+      boardId: boardId,
+      focus: powerupFocus,
+      eventType: eventType
+    });
+
+    // Apply event-specific bonuses
+    switch (eventType) {
+      case 'obstacle_hit':
+        // Small path multiplier bonus for hitting obstacles
+        coin.pathMultiplier *= 1.02;
+        break;
+
+      case 'jackpot_slot':
+        // Jackpot slots give bigger multipliers
+        coin.pathMultiplier *= 1.5;
+        break;
+
+      case 'lucky_exit':
+        // Lucky exits give moderate multipliers
+        coin.pathMultiplier *= 1.25;
+        break;
+
+      case 'combo_exit':
+        // Combo exits work with combo system
+        coin.pathMultiplier *= 1.1;
+        break;
+    }
+  },
+
+  // Calculate final score for a coin based on its path
+  calculateCoinScore: function(coin) {
+    if (!coin) return 0;
+
+    // Base value
+    let score = coin.value;
+
+    // Apply path multiplier
+    score *= coin.pathMultiplier;
+
+    // Apply global value multiplier from theme effects
+    if (this.game && this.game.themeEffects) {
+      const globalMult = this.game.themeEffects.getGlobalValueMultiplier();
+      score *= globalMult;
+    }
+
+    // Combo multiplier (already handled in onCoinFallOff)
+    // Jackpot multiplier (already handled in onCoinFallOff)
+
+    // Prize effects (if any)
+    if (this.game && this.game.prizeEffects) {
+      // Value per board visited
+      if (this.game.prizeEffects.valuePerBoard) {
+        const boardBonus = coin.pathBoards.length * this.game.prizeEffects.valuePerBoard;
+        score *= (1 + boardBonus);
+      }
+
+      // Global multiplier from prizes
+      if (this.game.prizeEffects.globalMult) {
+        score *= (1 + this.game.prizeEffects.globalMult);
+      }
+    }
+
+    return Math.round(score);
+  },
+
+  // Get path summary for a coin (for debugging/display)
+  getPathSummary: function(coin) {
+    if (!coin) return null;
+
+    return {
+      boardsVisited: coin.pathBoards.length,
+      eventsTriggered: coin.pathEvents.length,
+      pathMultiplier: coin.pathMultiplier.toFixed(2),
+      events: coin.pathEvents.map(e => e.eventType)
+    };
   },
 
   // Clean up all coins

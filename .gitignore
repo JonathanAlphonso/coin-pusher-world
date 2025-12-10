@@ -14,6 +14,7 @@ test-debug-*.cjs
 !test-full-playthrough.cjs
 !test-coin-flow.cjs
 !test-prize-system.cjs
+!test-path-tracking.cjs
 !test-ui-overlap.cjs
 
 # Screenshots and debug images
