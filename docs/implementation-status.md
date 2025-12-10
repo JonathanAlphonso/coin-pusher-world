@@ -265,7 +265,22 @@ All low-priority items complete! ✅
 
 ## Recent Changes
 
-### 2025-12-10 (Latest - Auto-Save Visual Feedback)
+### 2025-12-10 (Latest - Board Statistics Enhancement)
+- ✅ Enhanced board statistics with comprehensive tracking (Design Spec 2.2)
+  - Queue gains now attributed to specific boards that generated them
+  - Jackpot exits tracked per board for strategic insight
+  - Combo contributions tracked per board when coins score in active combos
+  - Modified addToQueue() to accept optional boardId parameter
+  - Updated triggerBonus() to pass coin context for board attribution
+  - Provides players with meaningful data for optimal board placement
+- ✅ Implementation details:
+  - Queue gains from bonus zones attributed to last board in coin's path
+  - Jackpot statistics increment when coin exits through jackpot slot
+  - Combo statistics track all boards in coin's path when scoring in combo chain
+  - Board Performance UI (press B key) now shows complete strategic insights
+- ✅ All 50/50 tests passing after enhancements
+
+### 2025-12-10 (Earlier - Auto-Save Visual Feedback)
 - ✅ Added visual feedback for auto-save system (Phase 9 enhancement)
   - Subtle auto-save indicator appears when game saves every 30 seconds
   - Animated fade-in/fade-out with 2-second display duration
