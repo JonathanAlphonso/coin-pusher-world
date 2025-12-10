@@ -65,6 +65,12 @@ const Game = {
   lastTime: 0,
   deltaTime: 0,
 
+  // FPS tracking (for debug and performance monitoring per design spec 10.4)
+  fpsFrames: [],
+  fpsUpdateTimer: 0,
+  currentFPS: 0,
+  fpsElement: null,
+
   // Score thresholds for expansion (spaced out for gradual progression)
   // First unlock ~30s, then gradually increasing gaps for meaningful progression
   // Early game scores ~350-400 pts/sec, slowing as board fills
@@ -325,6 +331,9 @@ const Game = {
       }
     }
 
+    // Initialize FPS display in debug mode (Design Spec 10.4)
+    this.initFPSDisplay();
+
     // Start game loop
     this.lastTime = performance.now();
     this.gameLoop();
@@ -394,6 +403,11 @@ const Game = {
 
     // Cap delta time to prevent large jumps
     this.deltaTime = Math.min(this.deltaTime, 0.1);
+
+    // Track FPS (Design Spec 10.4 - performance monitoring)
+    if (this.DEBUG) {
+      this.updateFPS(this.deltaTime);
+    }
 
     // Update game systems
     this.update(this.deltaTime);
@@ -778,6 +792,9 @@ const Game = {
     this.isRunning = false;
     this.autoDrop = false;
 
+    // Remove FPS display on game over
+    this.removeFPSDisplay();
+
     const tier = this.board ? this.board.currentTierCount : 1;
 
     // Update session stats with final values
@@ -988,6 +1005,83 @@ const Game = {
   clearGameState: function () {
     if (!this.storage) return false;
     return this.storage.clearGame();
+  },
+
+  // Update FPS tracking (Design Spec 10.4 - performance monitoring)
+  updateFPS: function (deltaTime) {
+    // Add current frame time to tracking array
+    this.fpsFrames.push(deltaTime);
+
+    // Keep only the last 60 frames for averaging
+    if (this.fpsFrames.length > 60) {
+      this.fpsFrames.shift();
+    }
+
+    // Update FPS display every 0.5 seconds
+    this.fpsUpdateTimer += deltaTime;
+    if (this.fpsUpdateTimer >= 0.5) {
+      this.fpsUpdateTimer = 0;
+
+      // Calculate average FPS from frame times
+      const avgFrameTime = this.fpsFrames.reduce((a, b) => a + b, 0) / this.fpsFrames.length;
+      this.currentFPS = avgFrameTime > 0 ? Math.round(1 / avgFrameTime) : 0;
+
+      // Update FPS display
+      this.updateFPSDisplay();
+    }
+  },
+
+  // Initialize FPS display element
+  initFPSDisplay: function () {
+    if (!this.DEBUG) return;
+
+    // Create FPS display element if it doesn't exist
+    if (!this.fpsElement) {
+      this.fpsElement = document.createElement('div');
+      this.fpsElement.id = 'fps-counter';
+      this.fpsElement.style.position = 'fixed';
+      this.fpsElement.style.top = '10px';
+      this.fpsElement.style.right = '10px';
+      this.fpsElement.style.padding = '8px 12px';
+      this.fpsElement.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+      this.fpsElement.style.color = '#00ff00';
+      this.fpsElement.style.fontFamily = 'monospace';
+      this.fpsElement.style.fontSize = '14px';
+      this.fpsElement.style.borderRadius = '4px';
+      this.fpsElement.style.zIndex = '10000';
+      this.fpsElement.style.pointerEvents = 'none';
+      this.fpsElement.textContent = 'FPS: --';
+      document.body.appendChild(this.fpsElement);
+    }
+  },
+
+  // Update FPS display element
+  updateFPSDisplay: function () {
+    if (!this.fpsElement) return;
+
+    const targetFPS = this.lowPerformanceMode
+      ? this.performanceSettings.low.targetFPS
+      : this.performanceSettings.normal.targetFPS;
+
+    // Color code based on performance relative to target
+    let color = '#00ff00'; // Green - good
+    if (this.currentFPS < targetFPS * 0.8) {
+      color = '#ffff00'; // Yellow - warning
+    }
+    if (this.currentFPS < targetFPS * 0.5) {
+      color = '#ff0000'; // Red - poor
+    }
+
+    this.fpsElement.style.color = color;
+    this.fpsElement.textContent = `FPS: ${this.currentFPS} (Target: ${targetFPS})`;
+  },
+
+  // Remove FPS display element
+  removeFPSDisplay: function () {
+    if (this.fpsElement && this.fpsElement.parentNode) {
+      this.fpsElement.parentNode.removeChild(this.fpsElement);
+      this.fpsElement = null;
+    }
   },
 };
 
