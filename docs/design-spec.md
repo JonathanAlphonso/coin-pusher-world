@@ -1,488 +1,773 @@
-# Coin Pusher World – Game Design Specification and Task List
-
-## High-Level Vision
-
-- Single-player, run-based roguelite coin-pusher deckbuilder.
-- Core fantasy: you’re a dimension-hopping arcade shark, mastering a collection of magical coin-pusher boards to beat increasingly bizarre enemies.
-- Like *Slay the Spire*: branching map, runs, relics, deck-building–style progression and synergies.
-- Unlike *Slay the Spire*: your plays are physical coin drops onto a simulated board; positioning, timing, and board choice are as important as build choices.
-
-## Design Pillars
-
-- **Skillful Synergy** – Strong builds come from understanding how coins, boards, and relics multiply each other, not from raw RNG.
-- **Tactical Physics** – Coin placement matters: edges vs center, timing, stacking, and priming boards for big pushes.
-- **Adaptable Runs** – Each run forces you to adapt to the boards, coins, and relics you see; no single dominant strategy.
-- **Readable Chaos** – The board is visually busy but outcomes are predictable enough to plan around.
-
-## Core Player Experience
-
-- A run lasts roughly **30–45 minutes**.
-- The player chooses a path on a **node map** (battles, elites, events, shops, rest, board nodes).
-- Each battle is a series of **rounds**; during your turn you:
-  - Choose which **board** to use (if multiple are unlocked/equipped).
-  - Spend **energy** to drop coins onto that board.
-  - Coins that fall off the front tray or into special slots trigger effects (damage, block, status, gold, etc.).
-- Enemies respond with attacks and abilities; you manage HP, block, and statuses.
-- Between battles you:
-  - Gain new **coins** to add to your coin pool.
-  - Acquire **relics**.
-  - Upgrade **boards** and coins.
-  - Heal, remove coins, and change boards.
-
-## Run Structure
-
-### Acts and Map
-
-- **Acts**: 3 acts, each with increasing difficulty and its own enemy set and boss.
-- **Map**:
-  - Nodes connected in branching paths.
-  - Node types:
-    - **Normal Battle** – primary source of rewards.
-    - **Elite Battle** – tougher fights, high-value relics.
-    - **Shop** – buy coins, relics, board upgrades, heal, remove coins.
-    - **Rest** – heal or upgrade a coin or apply a minor board tweak.
-    - **Board Node** – unlock, upgrade, or modify boards.
-    - **Mystery/Event** – choices with narrative flavor and small swings in power.
-    - **Boss** – ends the act; grants high-impact relics and meta progression unlocks.
-
-### Run End
-
-- **Win**: defeat the Act 3 boss → meta rewards (currency, unlocks).
-- **Loss**: gain partial meta currency; track progress and achievements.
-
-## Player Resources
-
-- **HP** – Loss condition at 0; replenished partially at rests and via some coins/relics.
-- **Energy (per turn)** – Spent to drop coins or activate board abilities.
-- **Coin Pool (Deck)**:
-  - A bag or pool of coins drawn each turn (e.g., a hand of 5 each turn, drawn from a shuffled pool).
-  - Coins are returned to the pool at end of turn; some coins exhaust, transform, or upgrade mid-run.
-- **Relics** – Persistent passive modifiers for the duration of the run.
-- **Gold** – Used in shops, events, and board upgrades.
-- **Meta Currency** – Persistent resource between runs to unlock boards, coins, relics, and difficulty modifiers.
-
-## Coin System (Cards Equivalent)
-
-Coins are the primary tactical actions, like cards in a deckbuilder.
-
-### Coin Definition
-
-Each coin type has:
-
-- **Name** and **tier** (basic, rare, epic).
-- **Effect**: triggered when the coin falls off the board or enters a special slot.
-- **Cost**: energy required to drop the coin.
-- **Tags**: e.g., `Attack`, `Block`, `Draw`, `Status`, `Burn`, `Combo`, `Growth`, `Curse`.
-- **Physical traits**: size, weight, and shape that affect how it behaves on the board.
-
-### Example Coins
-
-- **Basic Attack Coin**
-  - Cost: 1
-  - Effect: Deal 6 damage when pushed off the front.
-  - Tags: `Attack`
-  - Traits: standard weight and size.
-- **Guard Token**
-  - Cost: 1
-  - Effect: Grant 5 block when it falls.
-  - Tags: `Block`
-  - Traits: standard weight and size.
-- **Heavy Slam**
-  - Cost: 2
-  - Effect: Deal 10 damage when it falls.
-  - Tags: `Attack`, `Heavy`
-  - Traits: heavier coin, produces stronger pushes.
-- **Chain Coin**
-  - Cost: 1
-  - Effect: Deal 2 damage plus +2 per other `Chain` coin that fell this turn.
-  - Tags: `Attack`, `Combo`
-  - Traits: light, encourages cascades.
-- **Interest Coin**
-  - Cost: 1
-  - Effect: Gain 5 gold when it falls; +1 gold per previous Interest Coin that fell this combat.
-  - Tags: `Economy`, `Growth`
-  - Traits: light, weak push.
-- **Curse Coin**
-  - Cost: 0
-  - Effect: When it falls, you take 3 damage and exhaust it.
-  - Tags: `Curse`, `Status`
-  - Traits: awkward shape that clogs lanes.
+```txt
+# Coin Pusher World – Game Design Specification
+
+Version: 0.3
+Status: Draft – implementation source of truth
+Rendering: three.js (WebGL1 compatible, runs on old Android devices)
+
+============================================================
+1. HIGH-LEVEL OVERVIEW
+============================================================
+
+Coin Pusher World is a single-player 3D coin pusher game focused entirely on:
+
+- Dropping coins onto dynamic 3D boards.
+- Routing coins through a **pyramid of themed boards**.
+- Building an engine of **board synergies + prizes** to maximize score.
+- Reaching and exploiting a full **8-board pyramid** in a single run.
+
+There are no separate layers beyond this: no map, no combat screens, no deck of actions. All meaningful decisions revolve around:
 
-### Draw and Turn Flow
+- Which **boards/themes** you unlock and where they sit in the pyramid.
+- Which **prizes** (relic-style passives) you select from a rotating counter.
+- How precisely and intelligently you drop coins.
+
+
+============================================================
+2. CORE FANTASY & SKILL EXPRESSION
+============================================================
 
-- At the **start of turn**, draw `N` coins from the coin pool into your hand (e.g., 5).
-- Spend energy to **drop coins** onto the active board (drag-and-drop at top, or lane buttons).
-- You may end the turn early; unused coins are:
-  - Discarded, or
-  - Retained in hand,
-  - Depending on relics and board rules.
-- At **end of turn**:
-  - Board resolves any lingering effects (e.g., shaker effects).
-  - Enemy takes its turn.
-  - Most coins re-enter the pool for reshuffling (unless exhausted or transformed).
+### 2.1 Core Fantasy
 
-## Board System
+You are effectively the owner and master of a fantastical multi-tier arcade machine:
 
-Boards are like classes or stances: each defines the geometry and rules for coin pushing. Players can own multiple boards in a run and swap between them in battles (with constraints).
+- Each board is a themed machine (Neon Arcade, Dino Land, Alien Invasion, etc.).
+- Boards can be stacked into a **downward-branching pyramid**.
+- Coins cascade from the top into deeper layers, picking up multipliers and queue bonuses as they go.
+- When coins finally exit the **bottom row**, their accumulated value is converted into score.
+
+### 2.2 Skill Target
+
+Difficulty and skill expression:
+
+- **More skillful than a standard coin pusher**:
+  - Random drops will work, but will underperform compared to smart routing.
+  - Players must understand and exploit theme synergies and prize choices.
+- **Less cognitively heavy than dense strategy games**:
+  - Fewer distinct systems: boards, coins, queue, prizes, score.
+  - Decisions are impactful but readable.
 
-### Board Characteristics
+Primary sources of skill expression:
+
+1. **Board Selection**
+   - Choosing themes (queue, value, jackpots, combo, etc.).
+   - Deciding which branch of the pyramid to strengthen (left vs right vs middle).
 
-Each board has:
+2. **Prize Selection**
+   - Picking passives from a rotating **6-option prize counter**.
+   - Combining prizes with chosen boards to form engines (queue engines, jackpot builds, combo builds, hybrid builds).
+
+3. **Physical Play**
+   - Lane selection and drop timing to:
+     - Hit key obstacles.
+     - Direct flow toward strong child boards.
+     - Sustain combo chains and jackpots.
+
+
+============================================================
+3. CORE LOOP & RUN STRUCTURE
+============================================================
+
+### 3.1 Core Loop
 
-- **Lane layout** – Number of lanes, lane width, and angle; influences how coins slide and stack.
-- **Shelf depth/height** – How many layers of coins accumulate before falling.
-- **Edge behaviors** – Side pockets, fall-off modifiers, or side rails.
-- **Special slots** – Holes or targets that trigger special effects.
-- **Active ability** – A board-specific ability activated with energy or another resource (shake, tilt, magnetize, etc.).
-- **Passive bonus** – Board-specific rules that modify coin effects (e.g., `+1 damage to first Attack coin that falls each turn`).
+One session (a “run”) looks like this:
 
-### Example Boards
+1. Start with a **single top board** (starter theme).
+2. Drop coins on that board:
+   - Coins slide, bounce, and are pushed forward.
+   - When coins reach the front, they fall into **exits**.
+3. Exits route coins:
+   - To **child boards** below (if those positions in the pyramid are filled), or
+   - Directly to the **final scoring tray** if the board is on the bottom row.
+4. Coins pick up numeric effects along their path:
+   - Value multipliers from some themes.
+   - Queue gain from others.
+   - Jackpot enhancements, combo bonuses, routing biases, etc.
+5. As score and milestones improve, the game periodically:
+   - Offers a **new board** to add to the pyramid.
+   - Opens the **Prize Counter** with 6 prize options; you choose 1.
+6. The pyramid grows up to a maximum of **8 boards**.
+7. The run is considered “complete” when:
+   - The pyramid has 8 boards, and
+   - The player’s active coins and queue eventually deplete (or the player manually cashes out / restarts).
+
+### 3.2 Resources in a Run
+
+- **Score** – Global scalar; total value of all scored coins.
+- **Coins** – Individual entities with base value and path data.
+- **Global Modifiers**
+  - `globalValueMultiplier`
+  - Global jackpot / queue / combo modifiers.
+- **Coin Queue**
+  - Integer count: number of coins to be auto-dropped.
+  - Max capacity: modifiable by boards and prizes.
+- **Pyramid State**
+  - Up to 8 boards.
+  - Each board has a theme, position, and link to its parent/children.
+- **Prize Slots**
+  - Fixed number of active prizes (e.g., up to 8).
+  - Each prize is a passive effect.
 
-#### Arcade Classic (Starter)
 
-- Layout: Straight, three-lane board, medium shelf depth.
-- Passive: `+1 damage` to the first Attack coin that falls each turn.
-- Active: **Shake** (cost 2 energy) – small extra push to all coins.
+============================================================
+4. GAME OBJECTS
+============================================================
 
-#### Combo Cascade
+### 4.1 Coins
 
-- Layout: Narrow central lane, wide side lanes with side pockets.
-- Side pockets: Trigger extra draws or energy when filled.
-- Passive: For each coin that falls this turn, the next coin’s effect is increased by `+10%`.
-- Active: **Cascade** (cost 1 energy) – drop a free lightweight `Combo` coin in the center lane.
+Representation:
 
-#### Bulwark Board
+- `baseValue: number` – starting coin value.
+- `size: number` – affects collision and how many can stack.
+- `mass: number` – affects push strength.
+- `visualVariant: string` – gold, silver, gem, etc.
+- `pathBoards: BoardId[]` – IDs of boards the coin has traversed.
+- `pathEvents: { boardId, focus, eventType }[]` – key events (e.g., obstacle hits, jackpots).
 
-- Layout: Deep shelf; coins fall slowly; one wide front zone.
-- Passive: Every 3rd coin that falls grants double block instead of its normal effect (if it grants block).
-- Active: **Fortify** (cost 2 energy) – convert the next 2 Attack coins that fall into Guard Tokens with +50% block.
+Coins are **purely numeric + physical** objects; they do not contain textual abilities.
 
-#### Risky Jackpot
+### 4.2 Boards
 
-- Layout: Many small jackpot slots at the front with multipliers; coins can also fall into void slots and do nothing.
-- Passive: Attack coin damage doubled if they fall into a jackpot; 50% chance coins fall into a void slot and have no effect.
-- Active: **Tilt** (cost 2 energy) – nudge coins toward the jackpot side for a turn.
+Boards are instantiated from themes (see section 5). Each board includes:
 
-### Board Progression and Upgrades
+- `boardId`
+- `themeIndex`, `themeName`, `powerupFocus`
+- Pyramid position: `row`, `column`
+- Child references: `childLeft`, `childRight` (BoardId or null)
+- Geometry & obstacles:
+  - 3D meshes for base, walls, pusher(s), obstacles.
+  - A fixed number of exit zones along the front edge.
+- Local state:
+  - Gauges (e.g., charge for multi-drop).
+  - Per-board counters (e.g., how many stomps, lasers, jackpots triggered).
 
-- Between nodes, players can:
-  - Unlock new boards.
-  - Upgrade boards (more slots, stronger passive, cheaper active, better geometry).
-  - Add small **mod chips** (board augment items) that slightly alter behavior:
-    - Example: `Left lane Attack coins deal +2 damage.`
-    - Example: `Board drops a free Guard Token at the start of battle.`
+### 4.3 Themes (tierThemes)
 
-## Relic System
+Themes are defined in a config module similar to:
 
-Relics are the primary long-term run modifiers and synergy amplifiers.
+- `tierThemes: Theme[]`
+- `getThemeOptions(excludeIndices)`
+- `getThemeByFocus(focus)`
 
-### Relic Types
+Each theme entry (e.g., Neon Arcade, Dino Land, Alien Invasion, Pirate Cove, Candy Kingdom, Space Station, Jungle Safari, Robot Factory) defines:
 
-- **Economy relics** – more gold, cheaper shops, better coin rewards.
-- **Board relics** – modify board physics or abilities.
-- **Coin relics** – buff coins with certain tags (`Attack`, `Block`, `Combo`, `Heavy`, `Light`).
-- **Status relics** – apply starting buffs/debuffs per combat or interact with statuses.
+- Visual palette:
+  - `shelf`, `wall`, `pusher`, `accent`, `glow`
+  - `particleColor`, `ambientGlow`
+  - `textureType`, `textureScale`
+  - `ledColor1`, `ledColor2`
+- Identity:
+  - `name`, `icon`, `description`, `focusLabel`
+- Mechanics:
+  - `powerupFocus` – mechanical identity string.
+  - `elements` – set of obstacle types to instantiate.
+  - `coinMover` – style of the main pusher/mover (e.g., `wavePusher`, `stomper`, `tractorBeam`, `cannonPusher`, etc.).
 
-### Example Relics
+Themes are **data**, not logic. Logic maps `powerupFocus` → mechanical effects.
 
-- **Weighted Edge**
-  - Heavy coins gain +3 push strength and +2 damage.
-- **Frontline Shields**
-  - First Block coin that falls each turn grants +50% block.
-- **Lucky Token**
-  - First coin that falls into a special slot each combat triggers its effect twice.
-- **Greedy Claw**
-  - Gain 5 gold each time more than 3 coins fall in a single chain.
-- **Safety Rails**
-  - Cursed coins are less likely to fall; when they do, reduce their self-damage by 2.
+### 4.4 Prizes (Relic-Style Passives)
 
-Relics should clearly suggest build directions (e.g., heavy coins, big cascades, board actives, curses).
+Prizes are passive run-long modifiers selected from the **Prize Counter**.
 
-## Synergy Design
+Each prize has:
 
-Synergies are the heart of skill expression. They arise from combining coins, boards, and relics.
+- `id`
+- `name`
+- `summary` – short description.
+- `tags: string[]` – e.g., `["queue", "value", "jackpot", "combo", "routing"]`.
+- `affinities` – references to:
+  - `powerupFocus` values (e.g., `queueSpeed`, `coinValue`).
+  - Or specific `themeName`s if needed.
+- `effects` – data describing how it changes:
+  - Base values (e.g., +1 to baseValue).
+  - Multipliers (e.g., +10% to jackpot).
+  - Chances (e.g., +5% chance for lucky coins).
+  - Caps or thresholds.
 
-### Coin Tag Synergies
+Implementation detail: prizes are applied via a generalized modifier/event system rather than custom `if` chains in random places.
 
-- **Attack + Combo**
-  - Coins that increase each other’s damage when multiple fall in a turn.
-  - Example: `Chain Coin` + relics that reward multi-fall turns.
-- **Defense + Growth**
-  - Block coins that grow stronger throughout a combat or run.
-  - Example: `Scaling Shield` coin that gains +1 block each time it falls.
-- **Economy + Greed**
-  - Coins that trade short-term damage for long-term gold or relic benefits.
-  - Example: Interest Coin plus relics that give combat bonuses based on gold.
-- **Status Coins**
-  - Poison/burn/freeze equivalents that stack with each other and with relics or boards.
 
-### Board Synergies
+============================================================
+5. BOARD THEMES & POWERUP FOCUS SEMANTICS
+============================================================
 
-- Boards that **reward stacking** (deep shelves) vs **quick falling** (shallow shelves).
-- Boards that favor **heavy** vs **light** coins.
-- Boards with high-value **special slots** vs general pushing.
+Each theme’s `powerupFocus` defines how it contributes to the overall engine. The code must centralize these rules (e.g., `themeEffects.ts`).
 
-### Relic Synergies
+Below is the intended meaning of each focus, which guides both board behavior and synergy with prizes.
 
-- Relics that **double down** on a board’s identity:
-  - Example: Board that loves cascades + relic that boosts damage per coin that fell this turn.
-- Relics that **invert drawbacks**:
-  - Example: curses that are bad on most boards become beneficial on a specific board with the right relic.
+### 5.1 queueSpeed (Neon Arcade)
 
-### Skillful Play
+- Modifies **auto-drop interval**:
+  - Base auto interval: e.g., 1500ms.
+  - Neon-related events can reduce interval by small steps, down to a minimum cap.
+- Typically interacts with:
+  - Queue size / queue gain.
+  - Combo systems (more frequent drops create more opportunities).
 
-Player skill shines in:
+### 5.2 coinValue (Dino Land)
 
-- Choosing which board to use each combat or turn.
-- Choosing coin drop positions to maximize the chance of key coins falling now vs later.
-- Planning several turns ahead to set up a **big push round** (hoarding heavy coins, setting board state).
-- Drafting coins and relics that support an emerging synergy rather than spreading power thinly.
+- Creates **persistent increases in coin value**:
+  - Dino events add to `globalValueMultiplier`.
+  - Possible base value tweaks on coins routed through these boards.
 
-## Combat and Enemy Design
+### 5.3 luckyCoins (Alien Invasion)
 
-### Enemy Behaviors
+- Introduces **occasionally super-valuable coins**:
+  - Chance for coins to become “lucky” and get large value multipliers.
+  - Can also spawn special lucky coins into the queue.
 
-- Enemies telegraph their intent (attack, buff, debuff, defend) similarly to Slay the Spire.
-- Enemy design includes:
-  - Enemies that **punish long setups** (e.g., damage scaling each turn).
-  - Enemies that **punish spam** of small pushes (e.g., reactive damage to every coin fall).
-  - Enemies that **reward burst turns** (e.g., break shields if hit hard in one turn).
-  - Enemies that **interact with the board**:
-    - Add junk coins.
-    - Add curse coins.
-    - Freeze or lock certain lanes.
+### 5.4 multiDrop (Pirate Cove)
 
-### Status Effects
+- Enhances **multi-coin drops**:
+  - Boards may charge a gauge; when full, you can press a Multi-Drop button.
+  - Multi-Drop may:
+    - Drop extra coins.
+    - Add a bonus multiplier to coins dropped this way.
 
-Core statuses include:
+### 5.5 queueCapacity (Candy Kingdom)
 
-- **Block/Armor** – temporary damage reduction.
-- **Poison** – damage at end of turn.
-- **Burn** – damage when the target takes certain actions.
-- **Stun** – skip next action.
-- **Fragile** – take extra damage from the next hit(s).
-- **Heavy** – harder to push; may be beneficial or harmful.
-- **Slippery** – easier to push; coins move farther.
+- Increases **maximum queue size** and sometimes queue gain:
+  - Boards boost `maxQueueSize`.
+  - They can also increase queue gain from obstacle hits across the whole pyramid.
 
-Some statuses affect the board:
+### 5.6 widerPusher (Space Station)
 
-- **Oiled** board: higher slip; coins slide farther than normal.
-- **Frozen** board: coins move less per push, requiring more turns to fall.
+- Improves **pusher coverage** and push strength:
+  - Slightly wider pusher mesh or additional side pushers.
+  - Special timed impulses that move more coins than usual.
 
-### Difficulty Curve
+### 5.7 comboTime (Jungle Safari)
 
-- **Act 1**:
-  - Low punishing mechanics.
-  - Focus on teaching board basics and simple synergies.
-- **Act 2**:
-  - Introduces enemies that constrain or pressure board strategies (e.g., lane-locking, curse spam).
-- **Act 3**:
-  - High synergy demands.
-  - Players must have a coherent build or be very skilled tactically to win.
+- Extends and rewards **combo windows**:
+  - Longer windows during which multiple coin scores count as a single “combo.”
+  - Stronger scaling for combo chains.
 
-## Progression and Meta
+### 5.8 jackpotChance (Robot Factory)
 
-### Meta Unlocks
+- Modulates **jackpot probability and payout**:
+  - Jackpot exits that occasionally yield huge multipliers.
+  - Boards can tweak the tradeoff between jackpot frequency and size.
 
-Between runs, meta progression can unlock:
 
-- New boards.
-- New coin types.
-- New relics.
-- New enemy packs and act variants.
+============================================================
+6. PYRAMID STRUCTURE & ROUTING
+============================================================
 
-### Ascension / Difficulty Levels
+### 6.1 Pyramid Layout
 
-- Ascension-style system (e.g., **Arcade Levels**):
-  - Enemies start with more HP.
-  - Fewer rest nodes.
-  - Less forgiving board geometry (shallower shelves, more voids).
-  - Stronger curses and junk coins.
-
-### Run Variety
-
-- Different **starting boards** and starter coin sets.
-- Optional **mutators**:
-  - *Heavy World* – all coins are heavier.
-  - *Tilted* – boards are permanently slanted.
-  - *Jackpot Fever* – more special slots, but they’re unpredictable.
-
-## UX and Aesthetic Direction
-
-### Visual Style
-
-- Colorful, arcade-inspired aesthetic with fantasy/sci-fi flair.
-- Distinct looks for each board (materials, glow, decorations).
-- Clear **lane** and **slot** indicators; coin types easily distinguished by color and iconography.
-
-### Feedback and Juice
-
-- Strong feedback when coins fall, especially big cascades:
-  - Screen shake (configurable).
-  - Sound and particle effects.
-- Clear state indicators:
-  - Enemy intent icons.
-  - Player HP and block.
-  - Status icons with tooltips.
-  - Upcoming enemy actions.
-
-### Readability
-
-- Slow motion or highlight effect for big pushes.
-- Option to **fast-forward** simple turns.
-- Hover tooltips for coins, boards, and relics with clear text summaries.
-
-## Implementation-Level Scope (High-Level)
-
-- Likely stack: JavaScript/TypeScript with a browser-based renderer.
-- Possible tech choices:
-  - Canvas/WebGL using a lightweight engine (e.g., Phaser) or custom rendering.
-  - Simple pseudo-physics model for coin pushing (grid/heightmap) rather than full rigid-body physics.
-- Core systems:
-  - **Run and map management** (acts, nodes, progression).
-  - **Combat loop** (turns, turns timers, enemy AI).
-  - **Board simulation** (lanes, pushes, slot triggers).
-  - **Coin pool** management (deckbuilder logic).
-  - **Relic and status effect** engine (event-driven).
-  - **Content data** stored in JSON/TS objects for coins, boards, relics, enemies, and events.
-
----
-
-# Development Task List
-
-This is a phased backlog for implementing the game.
-
-## Phase 0 – Spec and Foundations
-
-- Record this design spec in version control (`docs/design-spec.md`).
-- Define core terminology in code and documentation:
-  - Coin, board, relic, status, node, act, run.
-- Choose and document the tech stack (engine, renderer, physics approach).
-- Set up project structure, build tooling, linting, and basic tests.
-
-## Phase 1 – Core Systems Prototype
-
-- Implement a minimal **game shell** with a single run:
-  - State management for `Run → Map → Combat → Rewards`.
-- Implement the basic **coin pool** system:
-  - Define a coin data structure (stats, tags, effects).
-  - Draw/discard/reshuffle logic per turn.
-- Implement basic **board simulation**:
-  - Represent board as lanes and discrete positions (grid or height-based).
-  - Implement coin placement at the top and step-based pushing toward the front.
-  - Detect coins falling off the front vs into special slots.
-- Implement simple **combat**:
-  - Single enemy with HP and basic telegraphed attack.
-  - Player HP/block/damage resolution based on coin effects.
-  - End-of-combat reward: choose 1 of 3 new coins; gain gold.
-
-## Phase 2 – Boards and Relics Core
-
-- Implement multiple **board types**:
-  - Data model for boards (layout, passive, active).
-  - Board selection at run start and/or before combat.
-  - Board-specific geometry and special slots.
-- Implement **board active abilities**:
-  - Energy cost, per-turn or per-combat limits.
-  - UI elements (buttons, icons) and basic animations.
-- Implement the **relic system**:
-  - Data model for relics, acquisition, and persistent run effects.
-  - Hook relic effects into key events (coin drop, coin fall, start/end of turn, start/end of combat).
-
-## Phase 3 – Content Pass 1
-
-- Design and implement initial content sets:
-  - **Coins**:
-    - ~30–40 coins covering attacks, block, economy, combo, curses.
-  - **Boards**:
-    - 4–6 boards with distinct identities (starter + specialized boards).
-  - **Relics**:
-    - ~20–30 relics that support clear build archetypes.
-  - **Enemies**:
-    - 10–15 base enemies across Acts 1–2.
-    - 3–4 elite enemies.
-    - 2–3 bosses.
-- Implement the **node map**:
-  - Branching map generator for Acts 1–3.
-  - Node types: battle, elite, shop, rest, boss, event (event content can be stubbed).
-
-## Phase 4 – Synergy and Balance Iteration
-
-- Playtest internally to evaluate **core feel**:
-  - Tune coin damage, block values, and energy costs.
-  - Adjust board geometry and actives for clarity and power balance.
-- Establish **build archetypes** and ensure they are viable:
-  - Heavy coin builds.
-  - Combo/cascade builds.
-  - Defense/growth builds.
-  - Economy/greed builds.
-- Add basic **tooltips and synergy hints**:
-  - Highlight relevant tags (e.g., all `Heavy` coins when hovering a heavy-synergy relic).
-  - Add tutorial prompts explaining boards, coins, and relics in early runs.
-
-## Phase 5 – Map, Events, and Shops
-
-- Implement **shop nodes**:
-  - Buying coins, relics, board upgrades, removals, healing.
-  - Price curves, rarity tiers, and refresh behavior.
-- Implement **rest nodes**:
-  - Heal vs upgrade decisions (coins, board minor upgrades).
-- Implement **board nodes**:
-  - Introduce new boards mid-run.
-  - Offer board upgrades or mod chips.
-- Implement **event nodes**:
-  - 10–20 narrative events with multiple choices and outcomes.
-  - Mix of risk/reward (e.g., gain a powerful relic in exchange for a curse).
-
-## Phase 6 – Meta Progression
-
-- Implement **meta currency** and progression:
-  - Reward currency on win and on death.
-  - Build an unlock tree for boards, coins, relics, and enemy packs.
-- Implement **ascending difficulty**:
-  - Arcade Level / Ascension system with stacking modifiers.
-- Add **achievement tracking**:
-  - Wins with specific archetypes.
-  - Specific feats (e.g., chain 10 coins in a single push, win with only one board).
-
-## Phase 7 – UX, Visuals, and Juice
-
-- Upgrade **board visuals**:
-  - Distinct look and feel for each board.
-  - Clear lane and slot indicators.
-- Polish **animations and effects**:
-  - Coin falling, stacking, and cascading.
-  - Hit/block feedback and enemy animations.
-- Add **audio**:
-  - Coin clinks, board shuffles, push cascades.
-  - UI sound effects and simple music loops.
-- Add **options and accessibility**:
-  - Speed controls (normal/fast).
-  - Colorblind-friendly tags and contrast.
-  - Reduced motion option.
-
-## Phase 8 – Testing, Tuning, and Polish
-
-- Add unit tests for:
-  - Coin effects and triggers.
-  - Board behaviors and geometry logic.
-  - Relic interactions and status handling.
-- Add automated **sanity checks**:
-  - Simulation runs to approximate win rates and detect extreme outliers.
-- Balance iteration:
-  - Tune enemy HP/damage curves.
-  - Adjust coin and relic power levels.
-- Finalize **onboarding**:
-  - Tutorial battles.
-  - Quick-start tooltips and a minimal text walkthrough.
-
-## Phase 9 – Packaging and Release Prep
-
-- Implement **save/load** for ongoing runs.
-- Add player **settings**:
-  - Audio and graphics.
-  - Keybinds/mouse settings.
-- Build **distribution pipeline**:
-  - Web build and/or desktop packaging.
-- Create a minimal **landing page** and player-facing instructions.
+- The pyramid is a set of board slots arranged in rows.
+- Max boards: 8.
+- Example layout:
+  - Row 0: 1 board (top).
+  - Row 1: up to 2 boards.
+  - Row 2: up to 3 boards.
+  - Row 3: remaining boards (depending on configuration), total ≤ 8.
 
+Internally, each board has:
+
+- `row: number`
+- `col: number`
+- `childLeft: BoardId | null`
+- `childRight: BoardId | null`
+
+### 6.2 Board Unlock Flow
+
+- Player starts with a top board (starter theme).
+- When thresholds are met (usually score-based, possibly also board-specific milestones), the game prompts:
+  - “Add a new board.”
+  - Player is given **3 theme options** via `getThemeOptions(excludeIndices)`.
+  - Player chooses a theme; the new board is created in the next available slot.
+- The pyramid fills from top to bottom, row by row, left to right (exact rule documented in code).
+
+### 6.3 Routing Coins Between Boards
+
+- Each board has a number of **exit zones** on its front edge.
+- Each exit zone is mapped to a target route:
+  - Left child board.
+  - Right child board.
+  - Direct-to-final scoring tray, if this is a bottom row board or by design.
+- Physical layout must roughly align with routing:
+  - Board geometry is positioned in 3D so that coins falling off an exit will land onto the child board or into the scoring tray.
+- Some exits are special:
+  - Jackpot exits.
+  - Lucky exits.
+  - Combo exits.
+
+### 6.4 Final Scoring Tray
+
+- The final scoring tray is a virtual or physical area where coins are considered “scored.”
+- When a coin enters this area:
+  - Its path is finalized.
+  - Score is computed and added.
+  - The coin is then despawned and returned to a pool for performance.
+
+
+============================================================
+7. SCORING SYSTEM
+============================================================
+
+### 7.1 Coin Path Tracking
+
+Each coin tracks:
+
+- The sequence of boards visited.
+- Key events it triggered (e.g., “hit volcano obstacle,” “entered jackpot slot,” “became lucky”).
+
+These are used to compute a combined multiplier.
+
+### 7.2 Scoring Formula
+
+When a coin reaches the final scoring tray:
+
+1. Start with `baseValue`.
+2. Compute `pathMultiplier`:
+   - Per-board contributions.
+   - Per-theme contributions (e.g., each Dino Land board adds small value).
+3. Apply global modifiers:
+   - `globalValueMultiplier`.
+   - Jackpot multipliers (Robot Factory, lucky coins).
+   - Combo multipliers (Jungle Safari, prizes).
+4. Final:
+
+   `coinScore = baseValue * pathMultiplier * globalValueMultiplier * jackpotMultiplier * comboMultiplier`
+
+5. Add `coinScore` to `Score`.
+
+### 7.3 Score Feedback
+
+- Big score events:
+  - Larger text popups.
+  - Stronger VFX/sound.
+- Combo chains:
+  - On-screen combo counter.
+  - Fading meter showing remaining combo window time.
+
+
+============================================================
+8. PRIZE SYSTEM (ROTATING COUNTER)
+============================================================
+
+### 8.1 Prize Counter Overview
+
+The **Prize Counter** is a rotating carousel that offers **6 possible prizes** at a time, drawn from a **global pool of ~30 prizes**.
+
+- Visual:
+  - A small rotating bar or carousel showing 6 prize icons and brief summaries.
+- Interaction:
+  - Player selects exactly **1** prize from the 6.
+  - The selected prize is added to the player’s active prize slots (up to max).
+  - Other prizes go back into the pool or a “seen” pool, depending on implementation.
+
+### 8.2 When the Prize Counter Appears
+
+Recommended triggers (can be tuned):
+
+- On each **new board unlock**.
+- On crossing key **score thresholds**.
+- On special path/achievement events (optional, later).
+
+Initially, keep it simple and reliable:
+
+- **Every time the player adds a new board**, guarantee a prize roll.
+
+### 8.3 Prize Slots & Limits
+
+- The player can hold up to a set number of active prizes (e.g., 8).
+- If capacity is full:
+  - Option A (simple): newer prizes are unavailable until next run.
+  - Option B (more advanced): allow the player to **replace** an existing prize with a new one.
+
+### 8.4 Prize Effects
+
+Prizes modify the same numeric systems that boards do:
+
+- Queue size, queue speed, queue gain.
+- Global value multipliers.
+- Lucky coin frequency and behavior.
+- Multi-drop behavior.
+- Combo windows and rewards.
+- Routing probabilities (left/right bias, board specialization).
+- Jackpots.
+
+They often interact with themes via `powerupFocus`:
+
+- Example: “If a coin passes through any `queueSpeed` board, gain +1 queue.”
+- Example: “Coins exiting `jackpotChance` boards get an additional +10% jackpot multiplier.”
+
+### 8.5 Example Prize Categories (From the 30-Prize Pool)
+
+(Exact numbers are tuning targets, not final.)
+
+- **Queue Engine Prizes**
+  - Faster auto-drop.
+  - Bigger max queue.
+  - Queue gain from combos.
+- **Value & Luck Prizes**
+  - Flat base value increases.
+  - Global multipliers from cumulative coins.
+  - Lucky coin chance and lucky coin synergies.
+- **Multi-Drop & Pusher Prizes**
+  - More coins per Multi-Drop.
+  - Stronger push strength in certain situations.
+- **Combo & Timing Prizes**
+  - Longer combo windows.
+  - Extra queue gain from combo chains.
+  - Rewards for rhythmic manual dropping.
+- **Routing & Path Specialization**
+  - Bonuses for diverse paths (many themes).
+  - Bonuses for specialized paths (only one powerupFocus).
+  - Biasing left/right routes or central “backbone” routes.
+- **Safety & Control**
+  - Protection against despawned coins.
+  - Soft handling of overcrowded boards.
+  - Slight smoothing of extreme variance.
+
+The full 30-prize pool lives as data in a dedicated config (e.g., `prizes.ts`) and is used by the Prize Engine.
+
+
+============================================================
+9. COIN QUEUE & AUTO DROP
+============================================================
+
+### 9.1 Queue State
+
+- `coinQueue: number` – number of queued coins.
+- `maxQueueSize: number` – maximum queue size; increased by certain boards/prizes.
+- `autoDropIntervalMs: number` – base interval between automatic drops; affected by queueSpeed boards/prizes.
+
+### 9.2 Manual Drop
+
+- Player taps/clicks the **Drop Coin** button or a specific lane.
+- A coin is spawned above the current focus board, in the chosen lane.
+
+### 9.3 Auto Drop
+
+- When Auto is ON:
+  - Every `autoDropIntervalMs`, if `coinQueue > 0`, spawn a coin and decrement queue.
+- Lane selection:
+  - Initial: simple round-robin distribution over available lanes.
+  - Later: could be weighted based on lane load or board focus.
+
+### 9.4 Queue Gain
+
+- Certain obstacle hits and exits add to `coinQueue`.
+- Some boards and prizes amplify queue gain.
+- If queue would exceed `maxQueueSize`:
+  - Handle overflow via specific rules (e.g., convert excess into immediate score for certain prizes).
+
+
+============================================================
+10. UX / UI & OLD ANDROID SUPPORT
+============================================================
+
+### 10.1 HUD Layout
+
+Core screens:
+
+- **Main 3D view:**
+  - Shows the pyramid from an angle that makes flows understandable.
+  - Camera can pan/zoom but defaults to a whole-pyramid view once all 8 boards are unlocked.
+
+- **Top HUD:**
+  - Score.
+  - Global multiplier summary.
+  - Board count (e.g., `Boards: 5 / 8`).
+  - Queue state (e.g., `Queue: 12 / 40`).
+
+- **Bottom HUD:**
+  - Drop button.
+  - Auto toggle.
+  - Multi-Drop action (if unlocked/charged).
+  - Board focus selector (cycle through boards).
+
+- **Side HUD:**
+  - Current board’s theme icon, name, and focusLabel.
+  - Access to the **Prize Counter** when active.
+
+### 10.2 Prize Counter UI
+
+- Appears as an overlay panel with 6 prize options.
+- Each option:
+  - Icon.
+  - Name.
+  - Short summary text.
+- Player selects one; selection immediately applies.
+
+### 10.3 UI Testability
+
+All UI elements (labels, text, buttons) must:
+
+- Be known to a central layout system that provides:
+  - `id`, `x`, `y`, `width`, `height` (in screen or logical coordinates).
+- Be accessible to test code for:
+  - Overlap detection.
+  - Minimum size checks (tap target size).
+
+### 10.4 Old Android Constraints
+
+The game must run on older Android devices (weak CPU/GPU, WebView/Chrome).
+
+Guidelines:
+
+- Use **WebGL1-compatible** code paths in three.js.
+- Geometry:
+  - Low-poly meshes for coins and obstacles.
+  - Limited number of simultaneously active coins; strong pooling and re-use.
+- Textures:
+  - Moderate sizes (512×512, 1024×1024 at most).
+  - Use texture atlases to reduce draw calls.
+- Materials & Effects:
+  - Prefer `MeshLambertMaterial` / `MeshBasicMaterial` where acceptable.
+  - Limit dynamic shadows and heavy shaders.
+  - Provide a “Low Performance Mode”:
+    - Fewer coins.
+    - Reduced particle effects.
+    - No expensive post-processing.
+- Frame target:
+  - 30 FPS on low-end Android devices.
+
+Touch support:
+
+- All buttons at least ~48 CSS pixels in their smallest dimension on mobile.
+- Layout tested at small resolutions (e.g., 800×480).
+
+
+============================================================
+11. TESTING & AUTOMATION REQUIREMENTS
+============================================================
+
+All of the following suites must pass before any commit:
+
+### 11.1 Full Playthrough to 8 Boards
+
+Goal: ensure the game is structurally sound and a full pyramid is reachable.
+
+Test:
+
+- Start a new run with a **fixed RNG seed**.
+- Use a deterministic policy for:
+  - Manual/auto drops.
+  - Board choices.
+  - Prize choices (e.g., always pick index 0).
+- Simulate until:
+  - The pyramid reaches **8 boards**.
+  - The run ends in a stable way (queue and active coins eventually drain or max simulation time is reached).
+
+Assertions:
+
+- Exactly 8 boards exist in the pyramid.
+- No deadlocks (e.g., no new boards possible but pyramid not full due to logic bugs).
+- No NaN or infinite values for score or multipliers.
+- No unhandled exceptions.
+
+### 11.2 Coin Flow to Final Boards
+
+Goal: ensure board geometry and physics do not produce systematic traps.
+
+Test:
+
+- For each board type and layout:
+  - Spawn coins from representative spawn positions in each lane.
+  - Simulate physics for up to T seconds or N steps.
+- Track outcomes:
+  - Count coins that reach the final scoring tray.
+  - Count coins that remain “stuck” (never exiting within the budget).
+
+Assertions:
+
+- A high majority (e.g., ≥ 95%) of test coins reach the final tray.
+- No board layout exhibits systematic permanent trapping.
+- Any remaining non-scored coins must be in edge cases acceptable for gameplay, not systemic fail states.
+
+### 11.3 UI Hitbox Overlap & Touch Target Tests
+
+Goal: guarantee readable, tappable UI.
+
+Test:
+
+- Headless browser tests (e.g., Playwright/Cypress) render:
+  - Desktop viewport.
+  - Small mobile viewport (old Android-like).
+- For each visible text/button element:
+  - Retrieve bounding boxes.
+- Check:
+  - No two interactive or textual elements have overlapping bounding boxes beyond a small epsilon.
+  - On mobile:
+    - Each button’s shortest side ≥ minimum tap target (e.g., 44–48 logical pixels).
+
+Includes:
+
+- Main HUD elements.
+- Prize Counter UI.
+- Any modal overlays.
+
+### 11.4 Prize System Sanity
+
+Goal: ensure prize logic is stable and does not break runs.
+
+Test:
+
+- Run multiple full simulations with different fixed seeds.
+- Force prize triggers (board unlock, score thresholds).
+- Always select one of the prize options deterministically (e.g., 0).
+
+Assertions:
+
+- No NaN/infinite values after prize effects.
+- Prize stacks remain within reasonable numeric ranges (no overflow).
+- Prize selection never blocks future progression to 8 boards.
+
+### 11.5 Performance / Health Checks
+
+Goal: catch obvious performance or leak issues early.
+
+Test:
+
+- Run a long simulation (e.g., equivalent of several minutes of gameplay) with:
+  - Conservative but non-trivial number of coins.
+  - Active queue and pyramid.
+- Monitor:
+  - Object counts (coins, meshes, event listeners).
+  - Frame time or step time.
+
+Assertions:
+
+- Coin and board entities do not grow unbounded.
+- No unbounded event subscriptions.
+- Physics step remains within a defined time budget in test environment.
+
+
+============================================================
+12. IMPLEMENTATION & TECHNICAL NOTES
+============================================================
+
+### 12.1 Tech Stack
+
+- Language: TypeScript or modern JavaScript (ES modules).
+- Rendering: three.js (WebGL1 mode).
+- Physics:
+  - Either custom lightweight physics tailored for coin pushers, or
+  - A minimal physics library integrated with three.js for collisions, gravity, and friction.
+- Build:
+  - Vite / Webpack.
+- Tests:
+  - Unit/integration: Jest/Vitest.
+  - E2E/UI: Playwright/Cypress.
+
+Game code should be modular:
+
+- `GameState` – global run state.
+- `BoardManager` – board creation, layout, and routing.
+- `ThemeRegistry` – wraps `tierThemes`.
+- `PrizeEngine` – prize pool, roll logic, application of effects.
+- `CoinSystem` – coin spawning, pooling, path tracking, scoring.
+- `QueueSystem` – queue state, auto-drop logic.
+- `UISystem` – HUD, Prize Counter, hitbox export for tests.
+
+### 12.2 Data-Driven Content
+
+- Themes live in `tierThemes` (already exists).
+- Prizes live in `prizes.ts` (array of ~30 prize definitions).
+- Numeric tuning should be easy to adjust via data, not code edits.
+
+### 12.3 Old Android Performance Mode
+
+A config flag (e.g., `lowPerformanceMode`) can:
+
+- Limit simultaneous coin count.
+- Disable or reduce particle systems.
+- Simplify materials (no specular, no real-time shadows).
+- Lower texture resolutions.
+
+
+============================================================
+13. DEVELOPMENT PHASES
+============================================================
+
+### Phase 0 – Foundations
+
+- Add this document to `docs/design-spec.md`.
+- Implement basic project structure, bundler, and linting.
+- Stub:
+  - `GameState`.
+  - `BoardManager`.
+  - `CoinSystem`.
+  - `UISystem` (simple debug UI).
+
+### Phase 1 – Single Board Prototype
+
+- Implement a single board:
+  - Basic mesh, pusher, simple exits.
+- Implement coin spawning, gravity, and forward push.
+- Implement scoring when coins fall off the front into a simple scoring zone.
+- Add keyboard/mouse controls to drop coins.
+
+### Phase 2 – Pyramid & Routing
+
+- Implement the pyramid layout and board graph.
+- Allow adding boards and wiring them as children.
+- Ensure coins physically fall from parent boards onto child boards or the final tray.
+
+### Phase 3 – Themes & Focus Effects
+
+- Integrate `tierThemes`.
+- Implement:
+  - `powerupFocus` semantics (queueSpeed, coinValue, luckyCoins, etc.).
+  - Basic obstacle types from `elements`.
+- Boards visually and mechanically differ per theme.
+
+### Phase 4 – Queue System & Basic Prizes
+
+- Implement:
+  - Queue state, auto-drop.
+  - Simple board-driven queue gain.
+- Implement a basic Prize system:
+  - Define prize data.
+  - Prize Counter UI with 6-choice rolls at board unlocks.
+  - Apply a small subset of prize effects.
+
+### Phase 5 – Full Prize Pool & Synergy
+
+- Fill out the full 30-prize pool.
+- Wire all prizes through the Prize Engine (modifiers/events).
+- Ensure synergies between themes and prizes feel meaningful.
+
+### Phase 6 – UX & Old Android Support
+
+- Refine HUD and camera behavior.
+- Add Low Performance Mode.
+- Optimize geometry, textures, and materials.
+- Ensure reasonable performance on low-end test profiles.
+
+### Phase 7 – Test Harness & Automation
+
+- Implement:
+  - 8-board full-run simulation test.
+  - Coin-flow consistency tests.
+  - UI hitbox overlap tests (desktop + mobile).
+  - Prize sanity tests.
+  - Performance/health tests in CI.
+- Add pre-commit hooks to run core tests.
+
+### Phase 8 – Polish & Tuning
+
+- Fine-tune:
+  - Multiplier values.
+  - Queue growth.
+  - Jackpot rates.
+  - Combo window lengths.
+- Improve visual feedback:
+  - Particles, SFX, hit feedback, big-cascade celebration.
+- Add basic high score / run summary screen.
+
+### Phase 9 – Packaging
+
+- Implement save/load of runs (optional).
+- Add settings menu (audio, graphics quality, performance mode).
+- Prepare a simple landing page and instructions.
+
+
+============================================================
+END OF SPEC
+============================================================
+```
