@@ -71,6 +71,7 @@ const UI = {
       sfxToggle: document.getElementById("sfx-toggle"),
       exportSaveButton: document.getElementById("export-save-button"),
       importSaveFile: document.getElementById("import-save-file"),
+      autosaveIndicator: document.getElementById("autosave-indicator"),
     };
 
     this.createBoardSelectionUI();
@@ -827,6 +828,25 @@ const UI = {
     });
 
     this.displayNextMessage();
+  },
+
+  // Show auto-save indicator (Phase 9 - visual feedback for auto-save)
+  showAutoSaveIndicator: function () {
+    if (!this.elements.autosaveIndicator) return;
+
+    const indicator = this.elements.autosaveIndicator;
+
+    // Show the indicator
+    indicator.classList.remove('hidden');
+    indicator.classList.add('show');
+
+    // Hide after 2 seconds with smooth fade
+    setTimeout(() => {
+      indicator.classList.remove('show');
+      setTimeout(() => {
+        indicator.classList.add('hidden');
+      }, 300); // Wait for fade transition
+    }, 2000);
   },
 
   // Display next message in queue

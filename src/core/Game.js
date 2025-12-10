@@ -975,7 +975,9 @@ const Game = {
 
     const success = this.storage.saveGame(saveData);
     if (success) {
-      console.log('Game state saved');
+      if (this.DEBUG) console.log('Game state saved');
+      // Show auto-save indicator (Phase 9 - visual feedback)
+      if (this.ui) this.ui.showAutoSaveIndicator();
     }
     return success;
   },

@@ -121,6 +121,41 @@ body {
   font-weight: bold;
 }
 
+/* Auto-Save Indicator (Phase 9 - visual feedback) */
+#autosave-indicator {
+  background: linear-gradient(135deg, rgba(30, 20, 60, 0.95) 0%, rgba(20, 10, 40, 0.98) 100%);
+  color: #00ff88;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+  border: 1px solid rgba(0, 255, 136, 0.4);
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+
+#autosave-indicator.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#autosave-indicator .autosave-icon {
+  font-size: 16px;
+  filter: drop-shadow(0 0 4px rgba(0, 255, 136, 0.6));
+}
+
+#autosave-indicator .autosave-text {
+  color: #fff;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+}
+
 /* Stats Button */
 #stats-button {
   position: absolute;
