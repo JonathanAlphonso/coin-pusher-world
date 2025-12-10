@@ -761,6 +761,29 @@ const Coins = {
     // Play sound
     if (this.sound) this.sound.play("coin");
 
+    // Path Completion Celebration (Design Spec 7.1 - Path Tracking Feedback)
+    // Reward players visually for coins that traverse multiple boards
+    if (coin.pathBoards && coin.pathBoards.length >= 3) {
+      // Coins that visited 3+ boards get special celebration
+      const pathLength = coin.pathBoards.length;
+
+      // Visual feedback: show path bonus message
+      if (this.ui) {
+        const pathBonus = pathLength >= 5 ? "EPIC PATH!" : pathLength >= 4 ? "GREAT PATH!" : "NICE PATH!";
+        this.ui.showMessage(pathBonus, body.x, body.y + 1);
+      }
+
+      // Extra screen shake for epic paths (5+ boards)
+      if (pathLength >= 5 && this.game) {
+        this.game.shake(0.4, 0.3);
+      }
+
+      // Bonus sound effect for long paths
+      if (this.sound && pathLength >= 4) {
+        this.sound.play("bonus");
+      }
+    }
+
     // Check for relic drop
     if (this.relics) this.relics.checkDrop();
 
