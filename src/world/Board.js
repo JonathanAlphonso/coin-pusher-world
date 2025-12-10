@@ -177,57 +177,43 @@ const Board = {
     }
   },
 
-  // Create base materials
+  // Create base materials (using MeshPhongMaterial for WebGL1 compatibility - Design Spec 10.4)
   createBaseMaterials: function () {
     this.materials = {
-      peg: new THREE.MeshStandardMaterial({
+      peg: new THREE.MeshPhongMaterial({
         color: 0xff7043,
         emissive: 0x552200,
         emissiveIntensity: 0.4,
-        metalness: 0.45,
-        roughness: 0.35,
       }),
-      pegBonus: new THREE.MeshStandardMaterial({
+      pegBonus: new THREE.MeshPhongMaterial({
         color: 0x00e676,
         emissive: 0x007744,
         emissiveIntensity: 0.65,
-        metalness: 0.55,
-        roughness: 0.25,
       }),
-      divider: new THREE.MeshStandardMaterial({
+      divider: new THREE.MeshPhongMaterial({
         color: 0x7c4dff,
         emissive: 0x2b0a78,
         emissiveIntensity: 0.6,
-        metalness: 0.5,
-        roughness: 0.35,
       }),
-      slotGood: new THREE.MeshStandardMaterial({
+      slotGood: new THREE.MeshPhongMaterial({
         color: 0x00e676,
         emissive: 0x00b05a,
         emissiveIntensity: 0.65,
-        metalness: 0.35,
-        roughness: 0.25,
       }),
-      slotBad: new THREE.MeshStandardMaterial({
+      slotBad: new THREE.MeshPhongMaterial({
         color: 0xff1744,
         emissive: 0x8a0020,
         emissiveIntensity: 0.55,
-        metalness: 0.35,
-        roughness: 0.3,
       }),
-      slotBonus: new THREE.MeshStandardMaterial({
+      slotBonus: new THREE.MeshPhongMaterial({
         color: 0xffea00,
         emissive: 0xb28900,
         emissiveIntensity: 0.7,
-        metalness: 0.65,
-        roughness: 0.25,
       }),
-      ramp: new THREE.MeshStandardMaterial({
+      ramp: new THREE.MeshPhongMaterial({
         color: 0x455a64,
         emissive: 0x0b1115,
         emissiveIntensity: 0.15,
-        metalness: 0.35,
-        roughness: 0.45,
       }),
     };
   },
@@ -263,42 +249,32 @@ const Board = {
     }
 
     return {
-      shelf: new THREE.MeshStandardMaterial({
+      shelf: new THREE.MeshPhongMaterial({
         color: shelfTexture ? 0xffffff : theme.shelf,
         map: shelfTexture,
-        metalness: 0.35,
-        roughness: 0.5,
       }),
-      wall: new THREE.MeshStandardMaterial({
+      wall: new THREE.MeshPhongMaterial({
         color: wallTexture ? 0xffffff : theme.wall,
         map: wallTexture,
         emissive: theme.glow,
         emissiveIntensity: 0.25,
-        metalness: 0.45,
-        roughness: 0.4,
       }),
-      pusher: new THREE.MeshStandardMaterial({
+      pusher: new THREE.MeshPhongMaterial({
         color: theme.pusher,
         emissive: theme.pusher,
         emissiveIntensity: 0.25,
-        metalness: 0.65,
-        roughness: 0.25,
       }),
-      accent: new THREE.MeshStandardMaterial({
+      accent: new THREE.MeshPhongMaterial({
         color: theme.accent,
         emissive: theme.accent,
         emissiveIntensity: 0.55,
-        metalness: 0.35,
-        roughness: 0.35,
         transparent: true,
         opacity: 0.9,
       }),
-      glow: new THREE.MeshStandardMaterial({
+      glow: new THREE.MeshPhongMaterial({
         color: theme.glow,
         emissive: theme.glow,
         emissiveIntensity: 0.75,
-        metalness: 0.25,
-        roughness: 0.2,
         transparent: true,
         opacity: 0.8,
       }),
@@ -4666,42 +4642,32 @@ const Board = {
     }
 
     return {
-      shelf: new THREE.MeshStandardMaterial({
+      shelf: new THREE.MeshPhongMaterial({
         color: shelfTexture ? 0xffffff : theme.shelf,
         map: shelfTexture,
-        metalness: 0.35,
-        roughness: 0.5,
       }),
-      wall: new THREE.MeshStandardMaterial({
+      wall: new THREE.MeshPhongMaterial({
         color: wallTexture ? 0xffffff : theme.wall,
         map: wallTexture,
         emissive: theme.glow,
         emissiveIntensity: theme.ambientGlow || 0.25,
-        metalness: 0.45,
-        roughness: 0.4,
       }),
-      pusher: new THREE.MeshStandardMaterial({
+      pusher: new THREE.MeshPhongMaterial({
         color: theme.pusher,
         emissive: theme.pusher,
         emissiveIntensity: 0.25,
-        metalness: 0.65,
-        roughness: 0.25,
       }),
-      accent: new THREE.MeshStandardMaterial({
+      accent: new THREE.MeshPhongMaterial({
         color: theme.accent,
         emissive: theme.accent,
         emissiveIntensity: 0.55,
-        metalness: 0.35,
-        roughness: 0.35,
         transparent: true,
         opacity: 0.9,
       }),
-      glow: new THREE.MeshStandardMaterial({
+      glow: new THREE.MeshPhongMaterial({
         color: theme.glow,
         emissive: theme.glow,
         emissiveIntensity: 0.75,
-        metalness: 0.25,
-        roughness: 0.2,
         transparent: true,
         opacity: 0.8,
       }),
