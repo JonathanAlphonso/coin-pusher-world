@@ -265,7 +265,21 @@ All low-priority items complete! ✅
 
 ## Recent Changes
 
-### 2025-12-10 (Latest - Multi-Drop Feedback Enhancements)
+### 2025-12-10 (Latest - Milestone Notifications for Board Unlock Progress)
+- ✅ Added milestone notifications at 75% and 90% progress toward next board unlock (Phase 8 Polish)
+  - Visual feedback: Color-coded messages (orange at 75% "🎯", red at 90% "🔥")
+  - Audio feedback: 'collect' sound at 75%, 'powerup' sound at 90%
+  - Builds player anticipation and provides clear progression feedback
+  - Enhances engagement by celebrating incremental progress
+- ✅ Technical implementation:
+  - Game.milestoneNotifications object tracks shown status for each milestone
+  - Notifications trigger in Game.checkExpansion() based on getTierProgress()
+  - Milestone flags reset in Game.start() and after each board unlock
+  - Uses existing UI.showMessage() infrastructure with custom colors/duration
+  - Design Spec Section 8 (Polish & Tuning) - progression feedback enhancement
+- ✅ All 50/50 tests passing after implementation
+
+### 2025-12-10 (Earlier - Multi-Drop Feedback Enhancements)
 - ✅ Added comprehensive multi-modal feedback for Multi-Drop system (Phase 8 Polish)
   - Visual: Pulsing button animation when gauge is full (2s gentle scale + glow)
   - Visual: Pulsing gauge fill animation with enhanced shadow (1.5s cycle)
