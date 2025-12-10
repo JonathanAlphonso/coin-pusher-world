@@ -265,7 +265,23 @@ All low-priority items complete! ✅
 
 ## Recent Changes
 
-### 2025-12-10 (Latest - Phase 8 Visual Polish Complete!)
+### 2025-12-10 (Latest - Build Optimization & Test Infrastructure)
+- ✅ Optimized production build configuration
+  - Implemented manual chunking to separate three.js (510KB) from game code (213KB)
+  - Reduced main bundle size from 724KB to 213KB for better caching
+  - three.js now cached separately for improved repeat visit performance
+  - Increased chunk size warning limit to 1000KB (appropriate for 3D game)
+  - Per Design Spec 10.4: prioritize compatibility over excessive bundle splitting
+- ✅ Standardized test infrastructure
+  - All test suites now use port 3000 (matches vite dev server default)
+  - Updated test-comprehensive.js, test-8board-pyramid.js, test-ui-hitbox.js
+  - Ensures consistent test environment across all suites
+- ✅ All 50/50 tests passing after changes
+  - Comprehensive tests: 20/20 ✅
+  - 8-board pyramid tests: 11/11 ✅
+  - UI hitbox tests: 19/19 ✅
+
+### 2025-12-10 (Earlier - Phase 8 Visual Polish Complete!)
 - ✅ Added mega score visual feedback enhancement (Phase 8 - Design Spec 7.3)
   - Score popups scale with value: 1k+ (24px), 2k+ (28px+glow), 5k+ (36px+bold), 10k+ (48px+gold+intense glow)
   - Makes big score moments more exciting and satisfying
