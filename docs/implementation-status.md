@@ -265,7 +265,27 @@ All low-priority items complete! ✅
 
 ## Recent Changes
 
-### 2025-12-10 (Latest - Board Statistics Enhancement)
+### 2025-12-10 (Latest - Multi-Drop Gauge System)
+- ✅ Implemented complete Multi-Drop feature (Design Spec 5.4)
+  - Multi-Drop button and gauge UI with purple gradient styling
+  - Gauge charges automatically when coins are scored (1 charge per coin)
+  - Full gauge (10/10) enables Multi-Drop: releases 5+ coins at once
+  - Bonus coins scale with multiDrop board count via ThemeEffects.getMultiDropBonus()
+  - Multi-drop coins have enhanced luck (30% special/rainbow chance)
+  - Visual/audio feedback: "MULTI-DROP!" message, screen shake, powerup sound
+  - Keyboard shortcut: M key for quick activation
+  - UI automatically shows/hides based on multiDrop board presence in pyramid
+- ✅ Technical implementation:
+  - BoardManager methods: chargeMultiDropGauge(), getMultiDropGauge(), consumeMultiDropGauge(), hasMultiDropBoards()
+  - ThemeEffects.getMultiDropBonus() - scales coin count (1.0 + boards × 0.2)
+  - Coins.triggerMultiDrop() - drops multiple coins with 100ms stagger timing
+  - UI.updateMultiDropGauge() - real-time gauge display with fill percentage
+  - Game.update() - gauge state updates every frame
+  - HTML/CSS: Gauge widget positioned at right side, button at bottom-right
+- ✅ All 50/50 tests passing after implementation
+- ✅ Pirate Cove theme (multiDrop focus) now has visible, interactive mechanic
+
+### 2025-12-10 (Earlier - Board Statistics Enhancement)
 - ✅ Enhanced board statistics with comprehensive tracking (Design Spec 2.2)
   - Queue gains now attributed to specific boards that generated them
   - Jackpot exits tracked per board for strategic insight
