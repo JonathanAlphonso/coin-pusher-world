@@ -265,7 +265,24 @@ All low-priority items complete! ✅
 
 ## Recent Changes
 
-### 2025-12-10 (Latest - Drop Zone Preview & Haptic Feedback)
+### 2025-12-10 (Latest - Queue Status Color Feedback & Bonus Zone Particles)
+- ✅ Added queue status color feedback system (Phase 8 Polish)
+  - Dynamic color coding: red (<20%), orange (20-50%), green (>50%)
+  - Visual feedback includes border color, text shadow, and box shadow changes
+  - Helps players make strategic decisions about coin usage
+  - Integrated with queue system via UI.updateQueue() with maxQueue parameter
+- ✅ Added particle effects for bonus zone hits (Phase 8 Polish)
+  - Color-coded particles based on bonus type:
+    * Cyan for queue bonuses
+    * Yellow for multiplier bonuses
+    * Magenta for powerup bonuses
+    * Orange for theme-specific bonuses
+  - Makes bonus zone interactions more visually satisfying
+  - Enhances player feedback during gameplay
+- ✅ All 50/50 tests passing after both enhancements
+- ✅ 2 commits: bonus zone particles, queue color feedback
+
+### 2025-12-10 (Earlier - Drop Zone Preview & Haptic Feedback)
 - ✅ Added drop zone preview indicator (Phase 8 Polish - Design Spec 2.2)
   - Glowing ring indicator shows where coins will drop
   - Gentle pulsing animation (scale + opacity) for visibility
