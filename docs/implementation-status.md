@@ -265,7 +265,22 @@ All low-priority items complete! ✅
 
 ## Recent Changes
 
-### 2025-12-10 (Latest - Critical Bug Fixes & Save/Load Completion)
+### 2025-12-10 (Latest - Visual Polish Enhancements)
+- ✅ Added visual feedback for multi-board coin paths (Design Spec 7.1)
+  - Coins that visit multiple boards gain subtle emissive glow
+  - Glow intensity increases with each board visited (caps at 3 boards)
+  - Helps players visualize pyramid routing mechanics
+  - No performance impact, smooth interpolation
+- ✅ Added path completion celebration system (Design Spec 7.1)
+  - "NICE PATH!" for 3+ boards visited
+  - "GREAT PATH!" for 4+ boards (with bonus sound)
+  - "EPIC PATH!" for 5+ boards (with screen shake)
+  - Rewards strategic board placement and skillful coin routing
+  - Encourages exploration of pyramid depth mechanics
+- ✅ All enhancements gracefully degrade if systems unavailable
+- ✅ Code quality maintained with clear comments and spec references
+
+### 2025-12-10 (Earlier - Critical Bug Fixes & Save/Load Completion)
 - ✅ Fixed critical save/load system bugs
   - Added getSaveData() and loadSaveData() to Combo system (Combo.js)
     - Saves count, timer, bestCombo state
